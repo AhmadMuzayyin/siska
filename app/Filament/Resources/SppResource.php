@@ -19,6 +19,7 @@ use App\Filament\Resources\SppResource\Pages;
 
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SppResource\RelationManagers;
+use App\Models\TahunAkademik;
 use Filament\Forms\Components\Actions\Action;
 
 class SppResource extends Resource
@@ -38,8 +39,12 @@ class SppResource extends Resource
                 Select::make('tahun_akademik_id')
                     ->label('Tahun Akademik')
                     ->relationship('tahunAkademik', 'nama')
-                    ->searchable()
-                    ->preload(),
+                    ->default(function () {
+                        $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
+                        if ($tahunAkademik) {
+                            return $tahunAkademik->id;
+                        }
+                    }),
                 Select::make('santri_id')
                     ->label('Santri')
                     ->relationship('santri', 'nama_lengkap')
