@@ -58,6 +58,14 @@ class KelasResource extends Resource
                     ->label('Kapasitas'),
                 TextColumn::make('terisi')
                     ->label('Terisi'),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 SelectFilter::make('terisi')

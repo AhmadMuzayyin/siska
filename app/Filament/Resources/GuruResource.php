@@ -77,6 +77,14 @@ class GuruResource extends Resource
                     ->label('Alamat Lengkap'),
                 ImageColumn::make('foto')
                     ->label('Foto Guru'),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 SelectFilter::make('status')

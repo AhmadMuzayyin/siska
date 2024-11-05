@@ -79,6 +79,14 @@ class SppResource extends Resource
                     ->label('Status')
                     ->badge()
                     ->color(fn($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 //

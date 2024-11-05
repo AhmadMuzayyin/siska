@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('telepon');
             $table->string('logo');
             $table->string('favicon');
-            $table->string('meta_deskripsi');
-            $table->string('meta_keyword');
-            $table->string('nsm');
+            $table->string('meta_deskripsi')->nullable();
+            $table->string('meta_keyword')->nullable();
+            $table->string('nsm')->nullable();
             $table->timestamps();
         });
     }

@@ -64,6 +64,14 @@ class MapelResource extends Resource
                 TextColumn::make('nama'),
                 TextColumn::make('kitab'),
                 TextColumn::make('kkm')->label('KKM'),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 SelectFilter::make('tahun_akademik_id')

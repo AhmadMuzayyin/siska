@@ -67,6 +67,14 @@ class TahunAkademikResource extends Resource
                 IconColumn::make('is_locked')
                     ->label('Kunci')
                     ->boolean(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
             ])
             ->filters([
                 SelectFilter::make('is_aktif')
