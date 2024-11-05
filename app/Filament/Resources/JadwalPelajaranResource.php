@@ -36,7 +36,12 @@ class JadwalPelajaranResource extends Resource
                 Select::make('tahun_akademik_id')
                     ->required()
                     ->relationship('tahunAkademik', 'nama')
-                    ->default(fn() => TahunAkademik::where('is_aktif', true)->first()->id)
+                    ->default(function () {
+                        $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
+                        if ($tahunAkademik) {
+                            return $tahunAkademik->id;
+                        }
+                    })
                     ->columnSpanFull(),
                 Group::make([
                     Select::make('kelas_id')
