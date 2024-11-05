@@ -2,16 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SppResource\Pages;
-use App\Filament\Resources\SppResource\RelationManagers;
 use App\Models\Spp;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use function Laravel\Prompts\select;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\SppResource\Pages;
+
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\SppResource\RelationManagers;
+use Filament\Forms\Components\Actions\Action;
 
 class SppResource extends Resource
 {
@@ -19,6 +27,7 @@ class SppResource extends Resource
 
     protected static ?string $navigationIcon = 'fluentui-receipt-money-20-o';
     protected static ?string $navigationGroup = 'Keuangan';
+    protected static ?string $navigationLabel = 'SPP';
     public static ?int $navigationGroupSort = 3;
     public static ?int $navigationSort = 1;
 
@@ -26,7 +35,28 @@ class SppResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Select::make('tahun_akademik_id')
+                    ->label('Tahun Akademik')
+                    ->relationship('tahunAkademik', 'nama')
+                    ->searchable()
+                    ->preload(),
+                Select::make('santri_id')
+                    ->label('Santri')
+                    ->relationship('santri', 'nama_lengkap')
+                    ->searchable()
+                    ->preload(),
+                DatePicker::make('tanggal')
+                    ->label('Tanggal')
+                    ->required(),
+                TextInput::make('nominal')
+                    ->label('Nominal')
+                    ->required(),
+                Select::make('status')
+                    ->label('Status')
+                    ->options([
+                        'Belum Lunas' => 'Belum Lunas',
+                        'Sudah Lunas' => 'Sudah Lunas',
+                    ]),
             ]);
     }
 
@@ -34,14 +64,32 @@ class SppResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('tahunAkademik.nama')
+                    ->label('Tahun Akademik'),
+                TextColumn::make('santri.nama_lengkap')
+                    ->label('Santri'),
+                TextColumn::make('nominal')
+                    ->label('Nominal'),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label('Edit')
+                    ->modalHeading('Edit Data Pembayaran SPP')
+                    ->modalSubmitActionLabel('Perbarui')
+                    ->modalCancelActionLabel('Batal'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Hapus')
+                    ->modalHeading('Hapus Data Pembayaran SPP')
+                    ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
+                    ->modalCancelActionLabel('Batal')
+                    ->modalSubmitActionLabel('Hapus'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
