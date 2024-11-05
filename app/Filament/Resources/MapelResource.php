@@ -35,7 +35,12 @@ class MapelResource extends Resource
                 Select::make('tahun_akademik_id')
                     ->label('Tahun Akademik')
                     ->relationship('tahunAkademik', 'nama')
-                    ->options(fn() => TahunAkademik::where('is_aktif', true)->where('is_locked', false)->pluck('nama', 'id'))
+                    ->default(function () {
+                        $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
+                        if ($tahunAkademik) {
+                            return $tahunAkademik->id;
+                        }
+                    })
                     ->required(),
                 TextInput::make('nama')
                     ->label('Nama Mapel')
