@@ -54,7 +54,7 @@ class AbsensiController extends Controller
         return view('Absensi.create', [
             'jadwalPelajaran' => $jadwalPelajaran,
             'absensi' => Absensi::where('tanggal', now()->format('Y-m-d'))
-                ->where('tahun_akademik_id', $tahunAkademik->id)
+                ->where('tahun_akademik_id', $tahunAkademik?->id)
                 ->where('jadwal_pelajaran_id', session('jadwal_pelajaran'))
                 ->paginate(7),
         ]);
