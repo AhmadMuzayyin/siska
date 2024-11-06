@@ -8,6 +8,8 @@ export default {
         './resources/**/*.blade.php',
         './resources/**/*.js',
         './resources/**/*.vue',
+
+        "./vendor/chrisreedio/socialment/resources/**/*.blade.php",
     ],
     theme: {
         extend: {

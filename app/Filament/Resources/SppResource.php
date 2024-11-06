@@ -74,7 +74,8 @@ class SppResource extends Resource
                 TextColumn::make('santri.nama_lengkap')
                     ->label('Santri'),
                 TextColumn::make('nominal')
-                    ->label('Nominal'),
+                    ->label('Nominal')
+                    ->money('IDR'),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
