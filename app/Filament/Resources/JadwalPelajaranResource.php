@@ -2,27 +2,25 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use App\Models\TahunAkademik;
-use App\Models\JadwalPelajaran;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\JadwalPelajaranResource\Pages;
 use App\Filament\Resources\JadwalPelajaranResource\RelationManagers;
+use App\Models\JadwalPelajaran;
+use App\Models\TahunAkademik;
+use Filament\Forms;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class JadwalPelajaranResource extends Resource
 {
     protected static ?string $model = JadwalPelajaran::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $navigationGroup = 'Akademik';
     protected static ?string $navigationLabel = 'Jadwal Pelajaran';
@@ -42,7 +40,7 @@ class JadwalPelajaranResource extends Resource
                             return $tahunAkademik->id;
                         }
                     })
-                    ->columnSpanFull(),
+                    ->columnSpanFull()->disabled()->dehydrated(),
                 Group::make([
                     Select::make('kelas_id')
                         ->required()
@@ -125,19 +123,10 @@ class JadwalPelajaranResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListJadwalPelajarans::route('/'),
-            'create' => Pages\CreateJadwalPelajaran::route('/create'),
-            'edit' => Pages\EditJadwalPelajaran::route('/{record}/edit'),
+            'index' => Pages\ManageJadwalPelajarans::route('/'),
         ];
     }
 }

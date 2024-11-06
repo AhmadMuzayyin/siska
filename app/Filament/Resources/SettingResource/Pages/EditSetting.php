@@ -10,6 +10,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditSetting extends EditRecord
 {
     protected static string $resource = SettingResource::class;
+
     protected static ?string $title = 'Edit Data Pengaturan';
 
     protected function getHeaderActions(): array
@@ -18,6 +19,7 @@ class EditSetting extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
     protected function getSaveFormAction(): Action
     {
         return Action::make('save')
@@ -25,6 +27,7 @@ class EditSetting extends EditRecord
             ->color('success')
             ->action('save');
     }
+
     protected function getCloseFormAction(): Action
     {
         return Action::make('close')

@@ -2,31 +2,31 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
+use App\Filament\Resources\TahunAkademikResource\Pages;
 use App\Models\TahunAkademik;
-use Filament\Resources\Resource;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\TahunAkademikResource\Pages;
-use App\Filament\Resources\TahunAkademikResource\RelationManagers;
+use Filament\Tables\Table;
 
 class TahunAkademikResource extends Resource
 {
     protected static ?string $model = TahunAkademik::class;
 
     protected static ?string $navigationIcon = 'humble-calendar';
+
     protected static ?string $navigationGroup = 'Settings';
+
     protected static ?string $navigationLabel = 'Tahun Akademik';
+
     public static ?int $navigationGroupSort = 4;
+
     public static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -66,7 +66,8 @@ class TahunAkademikResource extends Resource
                     ->boolean(),
                 IconColumn::make('is_locked')
                     ->label('Kunci')
-                    ->boolean(),
+                    ->boolean()
+                    ->icon(fn(bool $state): string => $state ? 'heroicon-o-lock-closed' : 'heroicon-o-lock-open'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -74,7 +75,7 @@ class TahunAkademikResource extends Resource
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('is_aktif')

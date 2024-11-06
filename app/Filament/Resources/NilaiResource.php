@@ -3,24 +3,25 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\NilaiResource\Pages;
-use App\Filament\Resources\NilaiResource\RelationManagers;
 use App\Models\Nilai;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class NilaiResource extends Resource
 {
     protected static ?string $model = Nilai::class;
 
     protected static ?string $navigationIcon = 'tabler-checkup-list';
+
     protected static ?string $navigationGroup = 'Akademik';
+
     protected static ?string $navigationLabel = 'Nilai';
+
     public static ?int $navigationGroupSort = 2;
+
     public static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form

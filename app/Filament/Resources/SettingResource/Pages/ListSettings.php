@@ -10,6 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListSettings extends ListRecords
 {
     protected static string $resource = SettingResource::class;
+
     protected static ?string $navigationLabel = 'Pengaturan';
 
     protected function getHeaderActions(): array
@@ -18,9 +19,9 @@ class ListSettings extends ListRecords
             Actions\CreateAction::make()
                 ->label('Tambah Pengaturan')
                 ->color('success')
-                ->icon('phosphor-plus-bold')
+                ->icon('phosphor-plus')
                 ->createAnother(false)
-                ->hidden(fn(): bool => Setting::count() > 0),
+                ->hidden(fn (): bool => Setting::count() > 0),
         ];
     }
 }

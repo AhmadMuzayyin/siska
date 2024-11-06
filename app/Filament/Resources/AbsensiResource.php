@@ -3,32 +3,25 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AbsensiResource\Pages;
-use App\Filament\Resources\AbsensiResource\RelationManagers;
 use App\Models\Absensi;
-use App\Models\JadwalPelajaran;
-use App\Models\Mapel;
-use App\Models\Santri;
-use App\Models\TahunAkademik;
-use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\View;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AbsensiResource extends Resource
 {
     protected static ?string $model = Absensi::class;
 
     protected static ?string $navigationIcon = 'fluentui-data-usage-edit-20-o';
+
     protected static ?string $navigationGroup = 'Akademik';
+
     protected static ?string $navigationLabel = 'Absensi';
+
     public static ?int $navigationGroupSort = 2;
+
     public static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

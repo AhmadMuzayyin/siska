@@ -2,19 +2,21 @@
 
 namespace App\Filament\Resources\SantriResource\Pages;
 
-use Filament\Actions\Action;
 use App\Filament\Resources\SantriResource;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateSantri extends CreateRecord
 {
     protected static string $resource = SantriResource::class;
+
     protected static ?string $title = 'Tambah Data Santri';
 
     public static function canCreateAnother(): bool
     {
         return false;
     }
+
     protected function getCreateFormAction(): Action
     {
         return Action::make('create')
@@ -22,6 +24,7 @@ class CreateSantri extends CreateRecord
             ->color('success')
             ->action('create');
     }
+
     protected function getCancelFormAction(): Action
     {
         return Action::make('cancel')

@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ManageRecords;
 class ManageTahunAkademiks extends ManageRecords
 {
     protected static string $resource = TahunAkademikResource::class;
+
     protected static ?string $title = 'Tahun Akademik';
 
     protected function getHeaderActions(): array
@@ -20,7 +21,7 @@ class ManageTahunAkademiks extends ManageRecords
                 ->modalSubmitActionLabel('Tambah')
                 ->modalCancelActionLabel('Batal')
                 ->color('success')
-                ->icon('phosphor-plus-bold')
+                ->icon('phosphor-plus')
                 ->createAnother(false),
         ];
     }

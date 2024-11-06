@@ -2,30 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use App\Models\Mapel;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use App\Models\TahunAkademik;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\MapelResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\MapelResource\RelationManagers;
+use App\Models\Mapel;
+use App\Models\TahunAkademik;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 
 class MapelResource extends Resource
 {
     protected static ?string $model = Mapel::class;
 
     protected static ?string $navigationIcon = 'phosphor-books-thin';
+
     protected static ?string $navigationGroup = 'Master Data';
+
     protected static ?string $navigationLabel = 'Data Mapel';
+
     public static ?int $navigationGroupSort = 1;
+
     public static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -41,7 +41,7 @@ class MapelResource extends Resource
                             return $tahunAkademik->id;
                         }
                     })
-                    ->required(),
+                    ->required()->disabled()->dehydrated(),
                 TextInput::make('nama')
                     ->label('Nama Mapel')
                     ->required(),
@@ -71,7 +71,7 @@ class MapelResource extends Resource
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('tahun_akademik_id')

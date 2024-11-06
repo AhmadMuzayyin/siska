@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources\SantriResource\Pages;
 
+use App\Filament\Resources\SantriResource;
 use Filament\Actions;
 use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
-use App\Filament\Resources\SantriResource;
 
 class EditSantri extends EditRecord
 {
     protected static string $resource = SantriResource::class;
+
     protected static ?string $title = 'Edit Data Santri';
 
     protected function getHeaderActions(): array

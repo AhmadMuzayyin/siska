@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ManageRecords;
 class ManageKelas extends ManageRecords
 {
     protected static string $resource = KelasResource::class;
+
     protected static ?string $title = 'Data Kelas';
 
     protected function getHeaderActions(): array

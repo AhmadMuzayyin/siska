@@ -2,16 +2,16 @@
 
 namespace App\Providers\Filament;
 
-use ChrisReedIO\Socialment\SocialmentPlugin;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
+use App\Filament\Auth\Login;
 use Filament\Support\Colors\Color;
 use Filament\Http\Middleware\Authenticate;
+use ChrisReedIO\Socialment\SocialmentPlugin;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use TomatoPHP\FilamentLogger\FilamentLoggerPlugin;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -19,7 +19,6 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use TomatoPHP\FilamentSocial\FilamentSocialPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -30,7 +29,6 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->registration()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -57,7 +55,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 //
-                SocialmentPlugin::make()
+                SocialmentPlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,

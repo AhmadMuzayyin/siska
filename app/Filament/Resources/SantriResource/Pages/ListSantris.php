@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListSantris extends ListRecords
 {
     protected static string $resource = SantriResource::class;
+
     protected static ?string $title = 'Data Santri';
 
     protected function getHeaderActions(): array

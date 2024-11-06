@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ManageRecords;
 class ManageMapels extends ManageRecords
 {
     protected static string $resource = MapelResource::class;
+
     protected static ?string $title = 'Data Mapel';
 
     protected function getHeaderActions(): array

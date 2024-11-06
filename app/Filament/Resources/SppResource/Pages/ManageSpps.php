@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ManageRecords;
 class ManageSpps extends ManageRecords
 {
     protected static string $resource = SppResource::class;
+
     protected static ?string $title = 'Data Pembayaran SPP';
 
     protected function getHeaderActions(): array

@@ -2,31 +2,31 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use App\Models\Guru;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\GuruResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\GuruResource\RelationManagers;
+use App\Models\Guru;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 
 class GuruResource extends Resource
 {
     protected static ?string $model = Guru::class;
 
     protected static ?string $navigationIcon = 'phosphor-student';
+
     protected static ?string $navigationGroup = 'Master Data';
+
     protected static ?string $navigationLabel = 'Data Guru';
+
     public static ?int $navigationGroupSort = 1;
+
     public static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -84,7 +84,7 @@ class GuruResource extends Resource
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('status')

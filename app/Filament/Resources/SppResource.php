@@ -2,34 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\Spp;
-use Filament\Forms;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use function Laravel\Prompts\select;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\SppResource\Pages;
-
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\SppResource\RelationManagers;
+use App\Models\Spp;
 use App\Models\TahunAkademik;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class SppResource extends Resource
 {
     protected static ?string $model = Spp::class;
 
     protected static ?string $navigationIcon = 'fluentui-receipt-money-20-o';
+
     protected static ?string $navigationGroup = 'Keuangan';
+
     protected static ?string $navigationLabel = 'SPP';
+
     public static ?int $navigationGroupSort = 3;
+
     public static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -87,7 +83,7 @@ class SppResource extends Resource
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

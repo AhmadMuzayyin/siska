@@ -2,34 +2,32 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use App\Models\Santri;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\FileUpload;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\SantriResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\SantriResource\RelationManagers;
+use App\Models\Santri;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 
 class SantriResource extends Resource
 {
     protected static ?string $model = Santri::class;
 
     protected static ?string $navigationIcon = 'phosphor-users';
+
     protected static ?string $navigationGroup = 'Master Data';
+
     protected static ?string $navigationLabel = 'Data Santri';
+
     public static ?int $navigationGroupSort = 1;
+
     public static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
@@ -110,7 +108,7 @@ class SantriResource extends Resource
                             ->required()
                             ->maxLength(255)
                             ->label('Telepon Ibu'),
-                    ])
+                    ]),
             ]);
     }
 

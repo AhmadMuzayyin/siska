@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Absensi;
 use App\Models\JadwalPelajaran;
-use App\Models\Kelas;
-use App\Models\Mapel;
 use App\Models\Santri;
 use App\Models\TahunAkademik;
 use Illuminate\Http\Request;
@@ -23,20 +21,24 @@ class AbsensiController extends Controller
         }
         session(['jadwal_pelajaran' => $request->jadwal_pelajaran]);
         session(['has_ready' => true]);
+
         return response()->json([
             'success' => true,
-            'message' => 'Session created successfully'
+            'message' => 'Session created successfully',
         ]);
     }
+
     public function forget()
     {
         session()->forget('jadwal_pelajaran');
         session()->forget('has_ready');
+
         return response()->json([
             'success' => true,
-            'message' => 'Session deleted successfully'
+            'message' => 'Session deleted successfully',
         ]);
     }
+
     public function create()
     {
         $hari = now()->format('l');
@@ -51,6 +53,7 @@ class AbsensiController extends Controller
         ];
         $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
         $jadwalPelajaran = JadwalPelajaran::where('hari', $hariIndonesia[$hari])->get();
+
         return view('Absensi.create', [
             'jadwalPelajaran' => $jadwalPelajaran,
             'absensi' => Absensi::where('tanggal', now()->format('Y-m-d'))
@@ -59,6 +62,7 @@ class AbsensiController extends Controller
                 ->paginate(7),
         ]);
     }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -94,6 +98,7 @@ class AbsensiController extends Controller
                 'tanggal' => now()->format('Y-m-d'),
                 'status' => 'Hadir',
             ]);
+
             return response()->json(['success' => true, 'message' => 'Berhasil melakukan absensi']);
         } catch (\Throwable $th) {
             return response()->json(['error' => $th->getMessage()], 500);

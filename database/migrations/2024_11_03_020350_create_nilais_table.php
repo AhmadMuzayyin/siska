@@ -1,11 +1,11 @@
 <?php
 
+use App\Models\JadwalPelajaran;
 use App\Models\Santri;
 use App\Models\TahunAkademik;
-use App\Models\JadwalPelajaran;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {

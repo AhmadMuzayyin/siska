@@ -7,9 +7,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::post('/absensi/session', [AbsensiController::class, 'session'])->name('absensi.session');
-Route::post('/absensi/forget', [AbsensiController::class, 'forget'])->name('absensi.forget');
-Route::get('/absensi/create', [AbsensiController::class, 'create'])->name('absensi.create');
-Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
-
+Route::get('/login', function () {
+    return redirect('admin/login');
+})->name('login');
 Route::get('/google/callback', [SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+Route::middleware(['auth'])->group(function () {
+    Route::post('/absensi/session', [AbsensiController::class, 'session'])->name('absensi.session');
+    Route::post('/absensi/forget', [AbsensiController::class, 'forget'])->name('absensi.forget');
+    Route::get('/absensi/create', [AbsensiController::class, 'create'])->name('absensi.create');
+    Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
+});

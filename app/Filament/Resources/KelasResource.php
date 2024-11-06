@@ -2,34 +2,28 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use App\Models\Kelas;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Filament\Resources\Resource;
-use Filament\Pages\Actions\ViewAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
 use App\Filament\Resources\KelasResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\KelasResource\RelationManagers;
-use App\Filament\Resources\KelasResource\Pages\ManageKelas;
+use App\Models\Kelas;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 
 class KelasResource extends Resource
 {
     protected static ?string $model = Kelas::class;
 
     protected static ?string $navigationIcon = 'phosphor-building';
+
     protected static ?string $navigationGroup = 'Master Data';
+
     protected static ?string $navigationLabel = 'Data Kelas';
+
     public static ?int $navigationGroupSort = 1;
+
     public static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -65,7 +59,7 @@ class KelasResource extends Resource
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('terisi')

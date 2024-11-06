@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-	public function up()
-	{
-		if (Schema::hasTable('users')) {
-			Schema::table('users', function (Blueprint $table) {
-				$table->string('password')->nullable()->change();
-			});
-		}
-	}
+    public function up()
+    {
+        if (Schema::hasTable('users')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('password')->nullable()->change();
+            });
+        }
+    }
 };

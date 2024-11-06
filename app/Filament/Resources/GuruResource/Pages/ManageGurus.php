@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ManageRecords;
 class ManageGurus extends ManageRecords
 {
     protected static string $resource = GuruResource::class;
+
     protected static ?string $title = 'Data Guru';
 
     protected function getHeaderActions(): array

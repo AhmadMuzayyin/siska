@@ -3,9 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SettingResource\Pages;
-use App\Filament\Resources\SettingResource\RelationManagers;
 use App\Models\Setting;
-use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -14,18 +12,20 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SettingResource extends Resource
 {
     protected static ?string $model = Setting::class;
 
     protected static ?string $navigationIcon = 'humble-cog';
+
     protected static ?string $navigationGroup = 'Settings';
+
     protected static ?string $navigationLabel = 'Pengaturan';
+
     public static ?int $navigationGroupSort = 4;
-    public static ?int $navigationSort = 2;
+
+    public static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -94,7 +94,7 @@ class SettingResource extends Resource
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

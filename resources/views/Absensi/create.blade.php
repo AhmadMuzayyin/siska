@@ -246,6 +246,15 @@
                     @endforeach
                 </select>
             </div>
+            <a href="{{ url('/admin/absensis') }}"
+                class="w-full bg-gray-600 text-white p-2 rounded-md hover:bg-gray-500 flex items-center justify-center">
+                <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 19L8 12L15 5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round"></path>
+                </svg>
+                Batal
+            </a>
             {{-- <div class="mb-4">
                 <label for="mapel" class="block text-gray-700">Mata Pelajaran</label>
                 @foreach ($mapel as $item)
