@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\JadwalPelajaranResource\Pages;
+use App\Models\Guru;
 use App\Models\JadwalPelajaran;
 use App\Models\TahunAkademik;
 use Filament\Forms\Components\Group;
@@ -52,7 +53,9 @@ class JadwalPelajaranResource extends Resource
                         ->relationship('mapel', 'nama'),
                     Select::make('guru_id')
                         ->required()
-                        ->relationship('guru.user', 'name'),
+                        ->options(function () {
+                            return Guru::all()->pluck('user.name', 'id');
+                        }),
                 ])->columns(3)->columnSpanFull(),
                 TimePicker::make('jam_mulai')
                     ->required(),
