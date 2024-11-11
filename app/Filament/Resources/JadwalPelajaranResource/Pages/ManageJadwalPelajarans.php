@@ -10,6 +10,7 @@ use Filament\Resources\Pages\ManageRecords;
 class ManageJadwalPelajarans extends ManageRecords
 {
     protected static string $resource = JadwalPelajaranResource::class;
+
     protected static ?string $title = 'Jadwal Pelajaran';
 
     protected function getHeaderActions(): array

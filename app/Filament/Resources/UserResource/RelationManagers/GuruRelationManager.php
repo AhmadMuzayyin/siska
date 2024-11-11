@@ -1,57 +1,27 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\UserResource\RelationManagers;
 
-use App\Filament\Resources\GuruResource\Pages;
-use App\Filament\Resources\GuruResource\RelationManagers\UserRelationManager;
-use App\Models\Guru;
-use App\Models\User;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
-class GuruResource extends Resource
+class GuruRelationManager extends RelationManager
 {
-    protected static ?string $model = Guru::class;
+    protected static string $relationship = 'guru';
 
-    protected static ?string $navigationIcon = 'phosphor-student';
+    protected static ?string $title = 'Data Guru';
 
-    protected static ?string $navigationGroup = 'Master Data';
-
-    protected static ?string $navigationLabel = 'Data Guru';
-
-    public static ?int $navigationGroupSort = 1;
-
-    public static ?int $navigationSort = 1;
-
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->disabled(function ($state, $record) {
-                        if ($record) {
-                            $user = User::find($record->user_id);
-                            if ($user && $user->email === 'admin@admin.com') {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    })
-                    ->disableOptionWhen(function ($value, $label) {
-                        $user = User::find($value);
-
-                        return $user && $user->email === 'admin@admin.com';
-                    }),
                 TextInput::make('alamat')
                     ->required()
                     ->maxLength(255)
@@ -81,9 +51,10 @@ class GuruResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('alamat')
             ->columns([
                 TextColumn::make('user.name')
                     ->label('Nama Lengkap'),
@@ -101,27 +72,15 @@ class GuruResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('status')
-                    ->options([
-                        'Aktif' => 'Aktif',
-                        'Tidak Aktif' => 'Tidak Aktif',
-                    ]),
-                SelectFilter::make('jenis')
-                    ->options([
-                        'Guru' => 'Guru',
-                        'Kepala Sekolah' => 'Kepala Sekolah',
-                    ]),
-                SelectFilter::make('gender')
-                    ->options([
-                        'Laki-laki' => 'Laki-laki',
-                        'Perempuan' => 'Perempuan',
-                    ]),
+                //
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make()
+                    ->label('Tambah Data Guru')
+                    ->icon('phosphor-plus')
+                    ->color('success'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->label('Lihat')
-                    ->modalHeading('Detail Guru')
-                    ->modalCancelActionLabel('Tutup'),
                 Tables\Actions\EditAction::make()
                     ->label('Edit')
                     ->modalHeading('Edit Data Guru')
@@ -139,21 +98,5 @@ class GuruResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            UserRelationManager::class,
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListGurus::route('/'),
-            'create' => Pages\CreateGuru::route('/create'),
-            'edit' => Pages\EditGuru::route('/{record}/edit'),
-        ];
     }
 }

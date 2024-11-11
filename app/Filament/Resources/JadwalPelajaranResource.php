@@ -3,10 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\JadwalPelajaranResource\Pages;
-use App\Filament\Resources\JadwalPelajaranResource\RelationManagers;
 use App\Models\JadwalPelajaran;
 use App\Models\TahunAkademik;
-use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
@@ -15,16 +13,19 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class JadwalPelajaranResource extends Resource
 {
     protected static ?string $model = JadwalPelajaran::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+
     protected static ?string $navigationGroup = 'Akademik';
+
     protected static ?string $navigationLabel = 'Jadwal Pelajaran';
+
     public static ?int $navigationGroupSort = 2;
+
     public static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form

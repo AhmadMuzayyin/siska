@@ -67,7 +67,7 @@ class TahunAkademikResource extends Resource
                 IconColumn::make('is_locked')
                     ->label('Kunci')
                     ->boolean()
-                    ->icon(fn(bool $state): string => $state ? 'heroicon-o-lock-closed' : 'heroicon-o-lock-open'),
+                    ->icon(fn (bool $state): string => $state ? 'heroicon-o-lock-closed' : 'heroicon-o-lock-open'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -4,23 +4,21 @@ namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
 use Filament\Actions;
-use Filament\Resources\Pages\ManageRecords;
+use Filament\Resources\Pages\ListRecords;
 
-class ManageUsers extends ManageRecords
+class ListUsers extends ListRecords
 {
     protected static string $resource = UserResource::class;
+
+    protected static ?string $title = 'Data Pengguna';
 
     protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()
                 ->label('Tambah Pengguna')
-                ->modalHeading('Tambah Pengguna')
-                ->modalSubmitActionLabel('Simpan')
-                ->modalCancelActionLabel('Batal')
-                ->color('success')
                 ->icon('phosphor-plus')
-                ->createAnother(false),
+                ->color('success'),
         ];
     }
 }

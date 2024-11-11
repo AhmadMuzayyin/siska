@@ -77,7 +77,7 @@ class MapelResource extends Resource
                 SelectFilter::make('tahun_akademik_id')
                     ->label('Tahun Akademik')
                     ->relationship('tahunAkademik', 'nama')
-                    ->options(fn() => TahunAkademik::where('is_aktif', true)->where('is_locked', false)->pluck('nama', 'id')),
+                    ->options(fn () => TahunAkademik::where('is_aktif', true)->where('is_locked', false)->pluck('nama', 'id')),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()

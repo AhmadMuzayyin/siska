@@ -4,9 +4,9 @@ namespace App\Filament\Resources\GuruResource\Pages;
 
 use App\Filament\Resources\GuruResource;
 use Filament\Actions;
-use Filament\Resources\Pages\ManageRecords;
+use Filament\Resources\Pages\ListRecords;
 
-class ManageGurus extends ManageRecords
+class ListGurus extends ListRecords
 {
     protected static string $resource = GuruResource::class;
 
@@ -16,13 +16,9 @@ class ManageGurus extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label('Tambah Guru')
+                ->label('Tambah Data Guru')
                 ->icon('phosphor-plus')
-                ->color('success')
-                ->modalHeading('Tambah Guru')
-                ->modalSubmitActionLabel('Tambah Guru')
-                ->modalCancelActionLabel('Batal')
-                ->createAnother(false),
+                ->color('success'),
         ];
     }
 }

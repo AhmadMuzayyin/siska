@@ -36,12 +36,14 @@ class SocialiteController extends Controller
         ]);
         if ($user->is_verified) {
             Auth::login($user);
+
             return redirect()->route('filament.admin.pages.dashboard');
         } else {
             Notification::make()
                 ->title('Silahkan hubungi admin untuk melakukan verifikasi')
                 ->success()
                 ->send();
+
             return redirect()->to('admin/login');
         }
     }

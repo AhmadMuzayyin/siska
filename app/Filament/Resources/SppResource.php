@@ -75,7 +75,7 @@ class SppResource extends Resource
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
+                    ->color(fn ($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

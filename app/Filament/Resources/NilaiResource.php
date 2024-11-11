@@ -4,7 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\NilaiResource\Pages;
 use App\Models\Nilai;
-use Filament\Forms;
+use App\Models\TahunAkademik;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -28,18 +31,43 @@ class NilaiResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('tahun_akademik_id')
+                Select::make('tahun_akademik_id')
+                    ->label('Tahun Akademik')
+                    ->required()
+                    ->relationship('tahunAkademik', 'nama')
+                    ->default(function () {
+                        $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
+                        if ($tahunAkademik) {
+                            return $tahunAkademik->id;
+                        }
+                    })
+                    ->disabled()
+                    ->dehydrated(),
+                Select::make('jadwal_pelajaran_id')
+                    ->label('Mata Pelajaran')
+                    ->required()
+                    ->relationship('jadwalPelajaran.mapel', 'nama')
+                    ->searchable(),
+                Select::make('santri_id')
+                    ->label('Santri')
+                    ->required()
+                    ->relationship('santri', 'nama_lengkap')
+                    ->searchable(),
+                TextInput::make('nilai')
+                    ->label('Nilai Angka')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('santri_id')
+                TextInput::make('nilai_huruf')
+                    ->label('Nilai Huruf')
+                    ->required(),
+                TextInput::make('predikat')
+                    ->label('Predikat')
+                    ->required(),
+                Textarea::make('keterangan')
+                    ->label('Keterangan')
                     ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('jadwal_pelajaran_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('nilai')
-                    ->required()
-                    ->numeric(),
+                    ->rows(3)
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -47,32 +75,27 @@ class NilaiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tahun_akademik_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('santri_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('jadwal_pelajaran_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('nilai')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                //
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->label('Lihat')
+                    ->modalHeading('Detail Nilai')
+                    ->modalCancelActionLabel('Tutup'),
+                Tables\Actions\EditAction::make()
+                    ->label('Edit')
+                    ->modalHeading('Edit Data Nilai')
+                    ->modalSubmitActionLabel('Perbarui')
+                    ->modalCancelActionLabel('Batal'),
+                Tables\Actions\DeleteAction::make()
+                    ->label('Hapus')
+                    ->modalHeading('Hapus Data Nilai')
+                    ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
+                    ->modalCancelActionLabel('Batal')
+                    ->modalSubmitActionLabel('Hapus'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -81,19 +104,10 @@ class NilaiResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListNilais::route('/'),
-            'create' => Pages\CreateNilai::route('/create'),
-            'edit' => Pages\EditNilai::route('/{record}/edit'),
+            'index' => Pages\ManageNilais::route('/'),
         ];
     }
 }
