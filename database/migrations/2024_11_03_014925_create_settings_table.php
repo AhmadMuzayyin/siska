@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('meta_deskripsi')->nullable();
             $table->string('meta_keyword')->nullable();
             $table->string('nsm')->nullable();
+            $table->boolean('fitur_pesan_whatsapp')->default(false);
+            $table->text('pesan_whatsapp')->nullable();
+            $table->text('api_key_whatsapp')->nullable();
             $table->timestamps();
         });
     }

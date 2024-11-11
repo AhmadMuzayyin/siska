@@ -5,8 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SettingResource\Pages;
 use App\Models\Setting;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -72,6 +74,18 @@ class SettingResource extends Resource
                     ->label('Meta Deskripsi'),
                 TextInput::make('meta_keyword')
                     ->label('Meta Keyword'),
+                // TextInput::make('api_key_whatsapp')
+                //     ->label('API Key Whatsapp')
+                //     ->columnSpanFull(),
+                // RichEditor::make('pesan_whatsapp')
+                //     ->label('Pesan Whatsapp')
+                //     ->hint('Variable data yang dapat digunakan: {nama}, {noinduk}, {kelas}, {alamat}, {ayah}, {ibu}')
+                //     ->hintColor('danger')
+                //     ->hintIcon('phosphor-info')
+                //     ->columnSpanFull(),
+                // Toggle::make('fitur_pesan_whatsapp')
+                //     ->label('Fitur Pesan Whatsapp')
+                //     ->default(false),
             ]);
     }
 
