@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\NilaiResource\Pages;
+use App\Models\JadwalPelajaran;
 use App\Models\Nilai;
 use App\Models\TahunAkademik;
 use Filament\Forms\Components\Select;
@@ -47,7 +48,9 @@ class NilaiResource extends Resource
                 Select::make('jadwal_pelajaran_id')
                     ->label('Mata Pelajaran')
                     ->required()
-                    ->relationship('jadwalPelajaran.mapel', 'nama')
+                    ->options(function () {
+                        return JadwalPelajaran::all()->pluck('mapel.nama', 'id');
+                    })
                     ->searchable(),
                 Select::make('santri_id')
                     ->label('Santri')
