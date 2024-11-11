@@ -52,7 +52,7 @@ class JadwalPelajaranResource extends Resource
                         ->relationship('mapel', 'nama'),
                     Select::make('guru_id')
                         ->required()
-                        ->relationship('guru', 'nama'),
+                        ->relationship('guru.user', 'name'),
                 ])->columns(3)->columnSpanFull(),
                 TimePicker::make('jam_mulai')
                     ->required(),
@@ -86,7 +86,7 @@ class JadwalPelajaranResource extends Resource
                 TextColumn::make('mapel.nama')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('guru.nama')
+                TextColumn::make('guru.user.name')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('hari')

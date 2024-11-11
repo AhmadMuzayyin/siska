@@ -8,6 +8,8 @@ use App\Models\TahunAkademik;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -41,7 +43,9 @@ class SppResource extends Resource
                         if ($tahunAkademik) {
                             return $tahunAkademik->id;
                         }
-                    }),
+                    })
+                    ->disabled()
+                    ->dehydrated(),
                 Select::make('santri_id')
                     ->label('Santri')
                     ->relationship('santri', 'nama_lengkap')
@@ -53,12 +57,14 @@ class SppResource extends Resource
                 TextInput::make('nominal')
                     ->label('Nominal')
                     ->required(),
-                Select::make('status')
+                ToggleButtons::make('status')
                     ->label('Status')
+                    ->inline()
                     ->options([
                         'Belum Lunas' => 'Belum Lunas',
                         'Sudah Lunas' => 'Sudah Lunas',
-                    ]),
+                    ])
+                    ->default('Belum Lunas'),
             ]);
     }
 
