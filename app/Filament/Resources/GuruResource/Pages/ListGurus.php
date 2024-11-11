@@ -15,10 +15,10 @@ class ListGurus extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->label('Tambah Data Guru')
-                ->icon('phosphor-plus')
-                ->color('success'),
+            // Actions\CreateAction::make()
+            //     ->label('Tambah Data Guru')
+            //     ->icon('phosphor-plus')
+            //     ->color('success'),
         ];
     }
 }
