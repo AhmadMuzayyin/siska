@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->boolean('is_verified')->default(false);
+            $table->enum('role', ['admin', 'keuangan', 'guru', 'user'])->default('user');
             $table->timestamps();
         });
 

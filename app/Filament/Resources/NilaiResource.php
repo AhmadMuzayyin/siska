@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class NilaiResource extends Resource
 {
@@ -109,5 +110,10 @@ class NilaiResource extends Resource
         return [
             'index' => Pages\ManageNilais::route('/'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'admin' || $user->role == 'guru';
     }
 }

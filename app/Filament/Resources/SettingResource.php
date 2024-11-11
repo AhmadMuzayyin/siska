@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class SettingResource extends Resource
 {
@@ -147,5 +148,10 @@ class SettingResource extends Resource
             'create' => Pages\CreateSetting::route('/create'),
             'edit' => Pages\EditSetting::route('/{record}/edit'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'admin';
     }
 }

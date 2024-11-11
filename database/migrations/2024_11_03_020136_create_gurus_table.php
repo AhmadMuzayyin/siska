@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->text('alamat');
             $table->string('whatsapp');
-            $table->enum('jenis', ['Guru', 'Kepala Sekolah']);
             $table->enum('gender', ['Laki-laki', 'Perempuan']);
             $table->string('foto')->nullable();
             $table->enum('status', ['Aktif', 'Tidak Aktif']);

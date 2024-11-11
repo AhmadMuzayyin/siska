@@ -16,6 +16,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class GuruResource extends Resource
 {
@@ -61,11 +62,6 @@ class GuruResource extends Resource
                     ->minLength(12)
                     ->maxLength(15)
                     ->label('No. Whatsapp Aktif'),
-                Select::make('jenis')->options([
-                    'Guru' => 'Guru',
-                    'Kepala Sekolah' => 'Kepala Sekolah',
-                ])->required()
-                    ->label('Jabatan Guru'),
                 Select::make('gender')->options([
                     'Laki-laki' => 'Laki-laki',
                     'Perempuan' => 'Perempuan',
@@ -75,7 +71,7 @@ class GuruResource extends Resource
                     'Aktif' => 'Aktif',
                     'Tidak Aktif' => 'Tidak Aktif',
                 ])->required()
-                    ->label('Status Aktif'),
+                    ->label('Status Guru'),
                 FileUpload::make('foto')
                     ->columnSpanFull(),
             ]);
@@ -105,11 +101,6 @@ class GuruResource extends Resource
                     ->options([
                         'Aktif' => 'Aktif',
                         'Tidak Aktif' => 'Tidak Aktif',
-                    ]),
-                SelectFilter::make('jenis')
-                    ->options([
-                        'Guru' => 'Guru',
-                        'Kepala Sekolah' => 'Kepala Sekolah',
                     ]),
                 SelectFilter::make('gender')
                     ->options([
@@ -155,5 +146,10 @@ class GuruResource extends Resource
             'create' => Pages\CreateGuru::route('/create'),
             'edit' => Pages\EditGuru::route('/{record}/edit'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'admin';
     }
 }

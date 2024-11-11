@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class AbsensiResource extends Resource
 {
@@ -93,5 +94,10 @@ class AbsensiResource extends Resource
             'create' => Pages\CreateAbsensi::route('/create'),
             'edit' => Pages\EditAbsensi::route('/{record}/edit'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'admin' || $user->role == 'guru';
     }
 }

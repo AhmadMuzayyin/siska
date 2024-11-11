@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class SantriResource extends Resource
 {
@@ -184,5 +185,10 @@ class SantriResource extends Resource
             'create' => Pages\CreateSantri::route('/create'),
             'edit' => Pages\EditSantri::route('/{record}/edit'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'admin';
     }
 }

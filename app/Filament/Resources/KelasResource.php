@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class KelasResource extends Resource
 {
@@ -108,5 +109,10 @@ class KelasResource extends Resource
         return [
             'index' => Pages\ManageKelas::route('/'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'admin';
     }
 }

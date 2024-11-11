@@ -14,6 +14,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class TahunAkademikResource extends Resource
 {
@@ -67,7 +68,7 @@ class TahunAkademikResource extends Resource
                 IconColumn::make('is_locked')
                     ->label('Kunci')
                     ->boolean()
-                    ->icon(fn (bool $state): string => $state ? 'heroicon-o-lock-closed' : 'heroicon-o-lock-open'),
+                    ->icon(fn(bool $state): string => $state ? 'heroicon-o-lock-closed' : 'heroicon-o-lock-open'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -110,5 +111,10 @@ class TahunAkademikResource extends Resource
         return [
             'index' => Pages\ManageTahunAkademiks::route('/'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'admin';
     }
 }

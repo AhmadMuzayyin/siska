@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class MapelResource extends Resource
 {
@@ -77,7 +78,7 @@ class MapelResource extends Resource
                 SelectFilter::make('tahun_akademik_id')
                     ->label('Tahun Akademik')
                     ->relationship('tahunAkademik', 'nama')
-                    ->options(fn () => TahunAkademik::where('is_aktif', true)->where('is_locked', false)->pluck('nama', 'id')),
+                    ->options(fn() => TahunAkademik::where('is_aktif', true)->where('is_locked', false)->pluck('nama', 'id')),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
@@ -108,5 +109,10 @@ class MapelResource extends Resource
         return [
             'index' => Pages\ManageMapels::route('/'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'admin';
     }
 }

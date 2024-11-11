@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class SppResource extends Resource
 {
@@ -75,7 +76,7 @@ class SppResource extends Resource
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn ($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
+                    ->color(fn($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -113,5 +114,10 @@ class SppResource extends Resource
         return [
             'index' => Pages\ManageSpps::route('/'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'keuangan' || $user->role == 'admin';
     }
 }

@@ -31,11 +31,6 @@ class GuruRelationManager extends RelationManager
                     ->minLength(12)
                     ->maxLength(15)
                     ->label('No. Whatsapp Aktif'),
-                Select::make('jenis')->options([
-                    'Guru' => 'Guru',
-                    'Kepala Sekolah' => 'Kepala Sekolah',
-                ])->required()
-                    ->label('Jabatan Guru'),
                 Select::make('gender')->options([
                     'Laki-laki' => 'Laki-laki',
                     'Perempuan' => 'Perempuan',
@@ -45,7 +40,7 @@ class GuruRelationManager extends RelationManager
                     'Aktif' => 'Aktif',
                     'Tidak Aktif' => 'Tidak Aktif',
                 ])->required()
-                    ->label('Status Aktif'),
+                    ->label('Status Guru'),
                 FileUpload::make('foto')
                     ->columnSpanFull(),
             ]);
@@ -76,7 +71,7 @@ class GuruRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                    ->label('Tambah Data Guru')
+                    ->label('Lengkapi Data Guru')
                     ->icon('phosphor-plus')
                     ->color('success'),
             ])
@@ -84,8 +79,9 @@ class GuruRelationManager extends RelationManager
                 Tables\Actions\EditAction::make()
                     ->label('Edit')
                     ->modalHeading('Edit Data Guru')
-                    ->modalSubmitActionLabel('Perbarui')
-                    ->modalCancelActionLabel('Batal'),
+                    ->modalDescription('Apakah anda yakin ingin mengedit data ini?')
+                    ->modalCancelActionLabel('Batal')
+                    ->modalSubmitActionLabel('Perbarui'),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
                     ->modalHeading('Hapus Data Guru')

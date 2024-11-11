@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers\GuruRelationManager;
 use App\Models\User;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -13,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -56,9 +58,27 @@ class UserResource extends Resource
                     ->maxLength(255)
                     ->helperText('Kata sandi default adalah "password"')
                     ->default('password'),
+                Select::make('role')
+                    ->label('Role')
+                    ->options([
+                        'admin' => 'Admin',
+                        'keuangan' => 'Keuangan',
+                        'guru' => 'Guru',
+                    ])->columnSpanFull(),
                 Toggle::make('is_verified')
                     ->label('Status Pengguna')
-                    ->default(false),
+                    ->inline()
+                    ->onIcon('heroicon-o-check')
+                    ->offIcon('heroicon-o-x-mark')
+                    ->onColor('success')
+                    ->offColor('danger')
+                    ->default(false)
+                    ->disabled(function ($record) {
+                        if ($record && $record->email == 'admin@mq-alamin.com') {
+                            return true;
+                        }
+                        return false;
+                    }),
             ]);
     }
 
@@ -90,11 +110,10 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->label('Edit')
-                    ->modalHeading('Edit Data Pengguna')
-                    ->modalSubmitActionLabel('Perbarui')
-                    ->modalCancelActionLabel('Batal'),
+                    ->hidden(fn($record) => $record && ($record->email == 'admin@mq-alamin.com' || $record->email == 'keuangan@mq-alamin.com')),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
+                    ->hidden(fn($record) => $record && ($record->email == 'admin@mq-alamin.com' || $record->email == 'keuangan@mq-alamin.com'))
                     ->modalHeading('Hapus Data Pengguna')
                     ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
                     ->modalCancelActionLabel('Batal')
@@ -121,5 +140,10 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+        return $user->role == 'admin';
     }
 }
