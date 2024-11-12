@@ -57,7 +57,7 @@
                     </select>
                 </div>
                 <button type="button" class="w-full bg-green-600 text-white p-2 rounded-md hover:bg-green-500"
-                    id="submit">Simpan</button>
+                    id="save">Simpan</button>
                 <div class="flex gap-2 w-full">
                     <button type="button"
                         class="w-1/2 bg-sky-500 text-white p-2 rounded-md hover:bg-sky-600 my-2 flex items-center justify-center"
@@ -107,7 +107,7 @@
                             <td class="p-2 border-b">{{ $loop->iteration }}</td>
                             <td class="p-2 border-b">{{ $kehadiran->santri->nama_lengkap }}</td>
                             <td
-                                class="p-2 border-b text-{{ $kehadiran->status == 'hadir' ? 'green' : ($kehadiran->status == 'izin' ? 'yellow' : 'red') }}-600">
+                                class="p-2 border-b text-{{ $kehadiran->status == 'Hadir' ? 'green' : ($kehadiran->status == 'Izin' ? 'yellow' : 'red') }}-600">
                                 {{ $kehadiran->status }}</td>
                         </tr>
                     @endforeach
@@ -197,7 +197,7 @@
                     return false;
                 });
                 // submit absensi
-                $('#submit').click(function() {
+                $('#save').click(function() {
                     var noinduk = $('#noinduk').val();
                     var status = $('#status').val();
                     var _token = $('input[name="_token"]').val();
@@ -210,10 +210,10 @@
                             status: status
                         },
                         success: function(response) {
-                            console.log(response);
+                            alert(response.message);
                         },
                         error: function(xhr, status, error) {
-                            console.log(xhr.responseText);
+                            alert(xhr.responseJSON.error);
                         }
                     });
                 });
@@ -240,9 +240,18 @@
                     class="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <option value="" selected disabled>Pilih Mata Pelajaran</option>
                     @foreach ($jadwalPelajaran as $item)
-                        <option value="{{ $item->id }}">
-                            {{ $item->kelas->nama }} - {{ $item->mapel->nama }} - {{ $item->guru->nama }}
-                        </option>
+                        @if (auth()->user()->role == 'guru')
+                            @if (auth()->user()->id == $item->guru->user_id)
+                                <option value="{{ $item->id }}">
+                                    {{ $item->kelas->nama }} - {{ $item->mapel->nama }} -
+                                    {{ $item->jam_mulai }} - {{ $item->jam_selesai }}
+                                </option>
+                            @endif
+                        @else
+                            <option value="{{ $item->id }}">
+                                {{ $item->kelas->nama }} - {{ $item->mapel->nama }} - {{ $item->guru->user->name }}
+                            </option>
+                        @endif
                     @endforeach
                 </select>
             </div>

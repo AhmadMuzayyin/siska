@@ -50,14 +50,26 @@ class UserResource extends Resource
                     ->password()
                     ->maxLength(255)
                     ->helperText('Kata sandi default adalah "password"')
-                    ->default('password'),
+                    ->default('password')
+                    ->hidden(function ($record) {
+                        if ($record && $record->account_type == 'google') {
+                            return true;
+                        }
+                        return false;
+                    }),
                 TextInput::make('password_confirmation')
                     ->label('Konfirmasi Kata Sandi')
                     ->required()
                     ->password()
                     ->maxLength(255)
                     ->helperText('Kata sandi default adalah "password"')
-                    ->default('password'),
+                    ->default('password')
+                    ->hidden(function ($record) {
+                        if ($record && $record->account_type == 'google') {
+                            return true;
+                        }
+                        return false;
+                    }),
                 Select::make('role')
                     ->label('Role')
                     ->options([

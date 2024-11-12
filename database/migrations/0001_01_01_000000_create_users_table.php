@@ -20,6 +20,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->boolean('is_verified')->default(false);
             $table->enum('role', ['admin', 'keuangan', 'guru', 'user'])->default('user');
+            $table->enum('account_type', ['google', 'email'])->default('email');
             $table->timestamps();
         });
 

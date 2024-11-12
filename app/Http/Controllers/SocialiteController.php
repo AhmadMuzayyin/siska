@@ -20,6 +20,8 @@ class SocialiteController extends Controller
             'username' => $userGoogle->name,
             'email' => $userGoogle->email,
             'email_verified_at' => now(),
+            'role' => 'guru',
+            'account_type' => 'google',
         ]);
         ConnectedAccount::create([
             'user_id' => $user->id,

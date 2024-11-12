@@ -4,10 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AbsensiResource\Pages;
 use App\Models\Absensi;
+use App\Models\Kelas;
 use Filament\Forms\Components\View;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
@@ -63,7 +65,9 @@ class AbsensiResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('kelas_id')
+                    ->label('Kelas')
+                    ->relationship('jadwalPelajaran.kelas', 'nama'),
             ])
             ->actions([
                 Tables\Actions\DeleteAction::make()
