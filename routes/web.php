@@ -10,7 +10,7 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return redirect('admin/login');
 })->name('login');
-Route::get('/google/callback', [SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+Route::get(env('GOOGLE_CALLBACK_URL'), [SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 Route::middleware(['auth'])->group(function () {
     Route::post('/absensi/session', [AbsensiController::class, 'session'])->name('absensi.session');
     Route::post('/absensi/forget', [AbsensiController::class, 'forget'])->name('absensi.forget');
