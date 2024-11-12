@@ -23,14 +23,14 @@ class ViewServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $setting = Setting::first();
-        View::share('title', $setting->lembaga);
-        View::share('meta_deskripsi', $setting->meta_deskripsi);
-        View::share('meta_keyword', $setting->meta_keyword);
-        View::share('logo', "storage/{$setting->logo}");
-        View::share('favicon', "storage/{$setting->favicon}");
-        View::share('alamat', $setting->alamat);
-        View::share('telepon', $setting->telepon);
-        View::share('email', $setting->email);
+        View::share('title', $setting?->lembaga);
+        View::share('meta_deskripsi', $setting?->meta_deskripsi);
+        View::share('meta_keyword', $setting?->meta_keyword);
+        View::share('logo', "storage/{$setting?->logo}");
+        View::share('favicon', "storage/{$setting?->favicon}");
+        View::share('alamat', $setting?->alamat);
+        View::share('telepon', $setting?->telepon);
+        View::share('email', $setting?->email);
         View::share('kelas', Kelas::all());
     }
 }
