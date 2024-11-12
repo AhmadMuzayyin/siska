@@ -1,12 +1,17 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
+})->name('index');
+Route::get('/daftar', function () {
+    return view('register');
 });
+Route::post('/daftar', [RegisterController::class, 'store'])->name('santri.store');
 Route::get('/login', function () {
     return redirect('admin/login');
 })->name('login');
