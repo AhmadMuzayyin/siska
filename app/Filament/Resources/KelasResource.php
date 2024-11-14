@@ -59,6 +59,8 @@ class KelasResource extends Resource
                     ->label('Kapasitas'),
                 TextColumn::make('terisi')
                     ->label('Terisi'),
+                TextColumn::make('guru.user.name')
+                    ->label('Wali Kelas'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

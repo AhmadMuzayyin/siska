@@ -84,6 +84,7 @@ class TahunAkademikResource extends Resource
                     ->label('Aktif')
                     ->boolean()
                     ->icon(fn(bool $state): string => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle'),
+                TextColumn::make('semester'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
