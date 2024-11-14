@@ -27,7 +27,7 @@
                 </div>
                 <a href="/kontak" class="nav-item nav-link {{ request()->is('kontak') ? 'active' : '' }}">Kontak</a>
             </div>
-            <a href="/daftar" class="btn btn-primary px-3 ms-auto d-flex">Daftar</a>
+            <a href="/daftar" class="btn btn-primary px-3 d-flex">Daftar</a>
         </div>
     </nav>
 </div>
