@@ -18,4 +18,13 @@ class Santri extends Model
     {
         return $this->hasMany(Nilai::class);
     }
+
+    protected static function booted()
+    {
+        static::creating(function ($santri) {
+            if ($santri->kelas_id) {
+                $santri->kelas->update(['terisi' => $santri->kelas->terisi + 1]);
+            }
+        });
+    }
 }

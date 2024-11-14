@@ -17,7 +17,7 @@ class TahunAkademik extends Model
     protected static function booted()
     {
         static::deleting(function ($tahunAkademik) {
-            if ($tahunAkademik->jadwalPelajaran) {
+            if ($tahunAkademik->jadwalPelajaran->count() > 0) {
                 Notification::make()
                     ->title('Gagal Menghapus Tahun Akademik')
                     ->body('Tahun Akademik tidak bisa dihapus karena sudah digunakan')

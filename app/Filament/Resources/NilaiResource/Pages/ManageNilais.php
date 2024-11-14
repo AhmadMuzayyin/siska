@@ -15,6 +15,14 @@ class ManageNilais extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('print')
+                ->label('Print')
+                ->button()
+                ->color('info')
+                ->icon('phosphor-printer')
+                ->modalContent(fn($record) => view('Nilai.modal'))
+                ->modalSubmitAction(false)
+                ->modalCancelAction(false),
             Actions\CreateAction::make()
                 ->label('Tambah Nilai')
                 ->icon('phosphor-plus')

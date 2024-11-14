@@ -83,7 +83,12 @@ class GuruRelationManager extends RelationManager
                     ->label('Lengkapi Data Guru')
                     ->icon('phosphor-plus')
                     ->color('success')
-                    ->hidden(fn($livewire) => $livewire->ownerRecord->guru !== null),
+                    ->hidden(fn($livewire) => $livewire->ownerRecord->guru !== null)
+                    ->modalHeading('Lengkapi Data Guru')
+                    ->modalDescription('Silahkan lengkapi data guru anda')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->modalCancelActionLabel('Batal')
+                    ->createAnother(false),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -92,12 +97,6 @@ class GuruRelationManager extends RelationManager
                     ->modalDescription('Apakah anda yakin ingin mengedit data ini?')
                     ->modalCancelActionLabel('Batal')
                     ->modalSubmitActionLabel('Perbarui'),
-                Tables\Actions\DeleteAction::make()
-                    ->label('Hapus')
-                    ->modalHeading('Hapus Data Guru')
-                    ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
-                    ->modalCancelActionLabel('Batal')
-                    ->modalSubmitActionLabel('Hapus'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -5,9 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TahunAkademikResource\Pages;
 use App\Models\TahunAkademik;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
@@ -36,8 +39,14 @@ class TahunAkademikResource extends Resource
             ->schema([
                 TextInput::make('nama')
                     ->label('Nama Tahun Akademik')
-                    ->required()
-                    ->columnSpanFull(),
+                    ->required(),
+                Select::make('semester')
+                    ->label('Semester')
+                    ->options([
+                        'Ganjil' => 'Ganjil',
+                        'Genap' => 'Genap',
+                    ])
+                    ->required(),
                 DatePicker::make('mulai')
                     ->label('Mulai')
                     ->required(),
@@ -46,10 +55,19 @@ class TahunAkademikResource extends Resource
                     ->required(),
                 Toggle::make('is_aktif')
                     ->label('Aktif')
-                    ->default(false),
-                Toggle::make('is_locked')
-                    ->label('Kunci')
-                    ->default(false),
+                    ->default(false)
+                    ->afterStateUpdated(function ($state, $record, Set $set) {
+                        if ($state) {
+                            $existingActive = TahunAkademik::where('is_aktif', true)
+                                ->where('id', '!=', $record?->id)
+                                ->exists();
+                            if ($existingActive) {
+                                TahunAkademik::where('is_aktif', true)
+                                    ->where('id', '!=', $record?->id)
+                                    ->update(['is_aktif' => false]);
+                            }
+                        }
+                    }),
             ]);
     }
 
@@ -64,11 +82,8 @@ class TahunAkademikResource extends Resource
                     ->date('d M Y'),
                 IconColumn::make('is_aktif')
                     ->label('Aktif')
-                    ->boolean(),
-                IconColumn::make('is_locked')
-                    ->label('Kunci')
                     ->boolean()
-                    ->icon(fn(bool $state): string => $state ? 'heroicon-o-lock-closed' : 'heroicon-o-lock-open'),
+                    ->icon(fn(bool $state): string => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

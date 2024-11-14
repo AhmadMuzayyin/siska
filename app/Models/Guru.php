@@ -20,9 +20,22 @@ class Guru extends Model
         return $this->hasMany(JadwalPelajaran::class);
     }
 
+    public function kelas()
+    {
+        return $this->hasOne(Kelas::class);
+    }
+
     protected static function booted()
     {
         static::deleting(function ($guru) {
+            if ($guru->kelas->count() > 0) {
+                Notification::make()
+                    ->title('Gagal Menghapus Guru')
+                    ->body('Guru tidak bisa dihapus karena sudah menjadi wali kelas')
+                    ->danger()
+                    ->send();
+                return false;
+            }
             if ($guru->jadwalPelajaran->count() > 0) {
                 Notification::make()
                     ->title('Gagal Menghapus Guru')

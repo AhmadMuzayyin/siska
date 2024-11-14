@@ -19,6 +19,11 @@ class Kelas extends Model
         return $this->hasMany(JadwalPelajaran::class);
     }
 
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class);
+    }
+
     protected static function booted()
     {
         static::deleting(function ($kelas) {

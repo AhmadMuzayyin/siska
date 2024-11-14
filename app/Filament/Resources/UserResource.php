@@ -76,6 +76,7 @@ class UserResource extends Resource
                         'admin' => 'Admin',
                         'keuangan' => 'Keuangan',
                         'guru' => 'Guru',
+                        'kepala' => 'Kepala Madrasah',
                     ])->columnSpanFull(),
                 Toggle::make('is_verified')
                     ->label('Status Pengguna')

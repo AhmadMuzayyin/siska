@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\JadwalPelajaranController;
 use App\Http\Controllers\KontakController;
+use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SocialiteController;
 use App\Http\Controllers\SubscriptionController;
@@ -25,8 +27,16 @@ Route::get('/login', function () {
 })->name('login');
 Route::get(env('GOOGLE_CALLBACK_URL'), [SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 Route::middleware(['auth'])->group(function () {
-    Route::post('/absensi/session', [AbsensiController::class, 'session'])->name('absensi.session');
-    Route::post('/absensi/forget', [AbsensiController::class, 'forget'])->name('absensi.forget');
-    Route::get('/absensi/create', [AbsensiController::class, 'create'])->name('absensi.create');
-    Route::post('/absensi', [AbsensiController::class, 'store'])->name('absensi.store');
+    Route::controller(JadwalPelajaranController::class)->group(function () {
+        Route::get('/jadwal/print', 'print')->name('jadwal.print');
+    });
+    Route::controller(AbsensiController::class)->group(function () {
+        Route::post('/absensi/session', 'session')->name('absensi.session');
+        Route::post('/absensi/forget', 'forget')->name('absensi.forget');
+        Route::get('/absensi/create', 'create')->name('absensi.create');
+        Route::post('/absensi', 'store')->name('absensi.store');
+    });
+    Route::controller(NilaiController::class)->group(function () {
+        Route::get('/nilai/print/{santri}', 'print')->name('nilai.print');
+    });
 });

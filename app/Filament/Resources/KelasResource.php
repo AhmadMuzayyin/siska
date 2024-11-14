@@ -3,7 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\KelasResource\Pages;
+use App\Models\Guru;
 use App\Models\Kelas;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -31,6 +33,10 @@ class KelasResource extends Resource
     {
         return $form
             ->schema([
+                Select::make('guru_id')
+                    ->label('Wali Kelas')
+                    ->options(Guru::with('user')->get()->pluck('user.name', 'id'))
+                    ->searchable(),
                 TextInput::make('nama')
                     ->required()
                     ->maxLength(255),

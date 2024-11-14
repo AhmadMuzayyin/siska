@@ -26,7 +26,7 @@ class SubscriptionResource extends Resource
 
     protected static ?string $navigationLabel = 'Pengikut';
 
-    public static ?int $navigationGroupSort = 2;
+    public static ?int $navigationGroupSort = 3;
 
     public static ?int $navigationSort = 5;
 

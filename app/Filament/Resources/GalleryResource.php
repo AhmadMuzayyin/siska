@@ -30,7 +30,7 @@ class GalleryResource extends Resource
 
     protected static ?string $navigationLabel = 'Galeri';
 
-    public static ?int $navigationGroupSort = 3;
+    public static ?int $navigationGroupSort = 1;
 
     public static ?int $navigationSort = 5;
 

@@ -29,7 +29,7 @@ class ContactResource extends Resource
 
     protected static ?string $navigationLabel = 'Kontak';
 
-    public static ?int $navigationGroupSort = 1;
+    public static ?int $navigationGroupSort = 2;
 
     public static ?int $navigationSort = 5;
 

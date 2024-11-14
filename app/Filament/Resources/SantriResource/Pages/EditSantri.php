@@ -4,7 +4,7 @@ namespace App\Filament\Resources\SantriResource\Pages;
 
 use App\Filament\Resources\SantriResource;
 use Filament\Actions;
-use Filament\Pages\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 
 class EditSantri extends EditRecord
@@ -28,10 +28,10 @@ class EditSantri extends EditRecord
     protected function getFormActions(): array
     {
         return [
-            Action::make('save')->label('Perbarui')->color('success'),
+            Action::make('save')->label('Perbarui')->color('success')->action('save'),
             Action::make('cancel')
                 ->label('Batal')
-                ->url(fn () => SantriResource::getUrl('index'))
+                ->url(fn() => SantriResource::getUrl('index'))
                 ->color('gray'),
         ];
     }

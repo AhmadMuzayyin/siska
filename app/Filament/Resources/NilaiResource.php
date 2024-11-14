@@ -52,11 +52,7 @@ class NilaiResource extends Resource
                     ->required()
                     ->relationship('santri', 'nama_lengkap')
                     ->searchable()
-                    ->preload()
-                    ->disableOptionWhen(function ($value, $label) {
-                        $nilai = Nilai::where('santri_id', $value)->first();
-                        return $nilai;
-                    }),
+                    ->preload(),
                 Select::make('jadwal_pelajaran_id')
                     ->label('Mata Pelajaran')
                     ->required()
@@ -77,7 +73,6 @@ class NilaiResource extends Resource
                     ->required(),
                 Textarea::make('keterangan')
                     ->label('Keterangan')
-                    ->required()
                     ->rows(3)
                     ->columnSpanFull(),
             ]);
@@ -107,21 +102,23 @@ class NilaiResource extends Resource
                     ->relationship('santri', 'nama_lengkap'),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->label('Lihat')
-                    ->modalHeading('Detail Nilai')
-                    ->modalCancelActionLabel('Tutup'),
-                Tables\Actions\EditAction::make()
-                    ->label('Edit')
-                    ->modalHeading('Edit Data Nilai')
-                    ->modalSubmitActionLabel('Perbarui')
-                    ->modalCancelActionLabel('Batal'),
-                Tables\Actions\DeleteAction::make()
-                    ->label('Hapus')
-                    ->modalHeading('Hapus Data Nilai')
-                    ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
-                    ->modalCancelActionLabel('Batal')
-                    ->modalSubmitActionLabel('Hapus'),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make()
+                        ->label('Lihat')
+                        ->modalHeading('Detail Nilai')
+                        ->modalCancelActionLabel('Tutup'),
+                    Tables\Actions\EditAction::make()
+                        ->label('Edit')
+                        ->modalHeading('Edit Data Nilai')
+                        ->modalSubmitActionLabel('Perbarui')
+                        ->modalCancelActionLabel('Batal'),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Hapus')
+                        ->modalHeading('Hapus Data Nilai')
+                        ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
+                        ->modalCancelActionLabel('Batal')
+                        ->modalSubmitActionLabel('Hapus'),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
