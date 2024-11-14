@@ -37,22 +37,23 @@ class GuruResource extends Resource
         return $form
             ->schema([
                 Select::make('user_id')
+                    ->label('Nama Guru')
                     ->relationship('user', 'name')
                     ->disabled(function ($state, $record) {
                         if ($record) {
                             $user = User::find($record->user_id);
-                            if ($user && $user->email === 'admin@admin.com') {
+                            if ($user && $user->role === 'admin') {
                                 return true;
                             }
                         }
-
                         return false;
                     })
                     ->disableOptionWhen(function ($value, $label) {
                         $user = User::find($value);
-
-                        return $user && $user->email === 'admin@admin.com';
-                    }),
+                        return $user && $user->role === 'admin';
+                    })
+                    ->disabledOn(['edit'])
+                    ->dehydrated(),
                 TextInput::make('alamat')
                     ->required()
                     ->maxLength(255)
@@ -73,6 +74,14 @@ class GuruResource extends Resource
                 ])->required()
                     ->label('Status Guru'),
                 FileUpload::make('foto')
+                    ->image()
+                    ->directory('guru')
+                    ->rules([
+                        'dimensions' => 'dimensions:width=400,height=400',
+                    ])
+                    ->validationMessages([
+                        'dimensions' => 'Foto harus berukuran 400x400',
+                    ])
                     ->columnSpanFull(),
             ]);
     }

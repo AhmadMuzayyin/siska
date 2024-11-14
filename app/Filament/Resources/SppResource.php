@@ -50,7 +50,11 @@ class SppResource extends Resource
                     ->label('Santri')
                     ->relationship('santri', 'nama_lengkap')
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->disableOptionWhen(function ($value, $label) {
+                        $spp = Spp::where('santri_id', $value)->whereIn('status', ['Sudah Lunas', 'Bayar Setengah'])->first();
+                        return $spp;
+                    }),
                 DatePicker::make('tanggal')
                     ->label('Tanggal')
                     ->required(),

@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\GalleryType;
+use App\Models\Gallery;
+use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Setting;
 use Illuminate\Support\Facades\View;
@@ -32,5 +35,8 @@ class ViewServiceProvider extends ServiceProvider
         View::share('telepon', $setting?->telepon);
         View::share('email', $setting?->email);
         View::share('kelas', Kelas::all());
+        View::share('guru', Guru::all());
+        View::share('galery_types', GalleryType::values());
+        View::share('galleries', Gallery::take(15)->get());
     }
 }

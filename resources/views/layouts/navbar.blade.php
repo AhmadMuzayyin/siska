@@ -18,9 +18,9 @@
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Akademik</a>
                     <div class="dropdown-menu rounded-0 m-0">
-                        <a href="/kelas" class="dropdown-item {{ request()->is('kelas') ? 'active' : '' }}">Kelas</a>
-                        <a href="/galeri" class="dropdown-item {{ request()->is('galeri') ? 'active' : '' }}">Galeri</a>
-                        <a href="/santri-alumni"
+                        <a href="#" class="dropdown-item {{ request()->is('kelas') ? 'active' : '' }}">Kelas</a>
+                        <a href="#" class="dropdown-item {{ request()->is('galeri') ? 'active' : '' }}">Galeri</a>
+                        <a href="#"
                             class="dropdown-item {{ request()->is('santri-alumni') ? 'active' : '' }}">Santri &
                             Alumni</a>
                     </div>

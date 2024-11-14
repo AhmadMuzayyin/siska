@@ -105,6 +105,12 @@ class UserResource extends Resource
                 IconColumn::make('is_verified')
                     ->label('Aktif')
                     ->boolean(),
+                TextColumn::make('account_type')
+                    ->label('Tipe Akun')
+                    ->badge()
+                    ->color(fn($state) => $state == 'google' ? 'success' : 'info')
+                    ->icon(fn($state) => $state == 'google' ? 'heroicon-o-check' : 'heroicon-o-x-mark')
+                    ->formatStateUsing(fn($state) => $state == 'google' ? 'Google' : 'Email'),
                 TextColumn::make('created_at')
                     ->label('Dibuat Pada')
                     ->dateTime()

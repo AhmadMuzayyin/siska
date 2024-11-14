@@ -30,6 +30,7 @@ class GuruRelationManager extends RelationManager
                     ->required()
                     ->minLength(12)
                     ->maxLength(15)
+                    ->unique()
                     ->label('No. Whatsapp Aktif'),
                 Select::make('gender')->options([
                     'Laki-laki' => 'Laki-laki',
@@ -42,6 +43,14 @@ class GuruRelationManager extends RelationManager
                 ])->required()
                     ->label('Status Guru'),
                 FileUpload::make('foto')
+                    ->image()
+                    ->directory('guru')
+                    ->rules([
+                        'dimensions' => 'dimensions:width=400,height=400',
+                    ])
+                    ->validationMessages([
+                        'dimensions' => 'Foto harus berukuran 400x400',
+                    ])
                     ->columnSpanFull(),
             ]);
     }
@@ -73,7 +82,8 @@ class GuruRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->label('Lengkapi Data Guru')
                     ->icon('phosphor-plus')
-                    ->color('success'),
+                    ->color('success')
+                    ->hidden(fn($livewire) => $livewire->ownerRecord->guru !== null),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()

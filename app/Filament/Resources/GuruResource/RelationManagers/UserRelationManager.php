@@ -28,30 +28,36 @@ class UserRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('email'),
+                TextColumn::make('email')
+                    ->label('Email'),
+                TextColumn::make('role')
+                    ->label('Jabatan')
+                    ->badge()
+                    ->color(fn($state) => $state == 'guru' ? 'success' : ($state == 'admin' ? 'warning' : 'danger'))
+                    ->formatStateUsing(fn($state) => $state == 'guru' ? 'Guru' : ($state == 'admin' ? 'Admin' : 'Kepala Sekolah')),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->label('Tambah Pengguna')
-                    ->icon('phosphor-plus')
-                    ->color('success'),
+                // Tables\Actions\CreateAction::make()
+                //     ->label('Tambah Pengguna')
+                //     ->icon('phosphor-plus')
+                //     ->color('success')
+                //     ->hidden(fn($livewire) => $livewire->ownerRecord->user !== null),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->label('Edit')
-                    ->modalHeading('Edit Data Pengguna')
-                    ->modalSubmitActionLabel('Perbarui')
-                    ->modalCancelActionLabel('Batal'),
-                Tables\Actions\DeleteAction::make()
-                    ->label('Hapus')
-                    ->modalHeading('Hapus Data Pengguna')
-                    ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
-                    ->modalCancelActionLabel('Batal')
-                    ->modalSubmitActionLabel('Hapus'),
+                // Tables\Actions\EditAction::make()
+                //     ->label('Edit')
+                //     ->modalHeading('Edit Data Pengguna')
+                //     ->modalSubmitActionLabel('Perbarui')
+                //     ->modalCancelActionLabel('Batal'),
+                // Tables\Actions\DeleteAction::make()
+                //     ->label('Hapus')
+                //     ->modalHeading('Hapus Data Pengguna')
+                //     ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
+                //     ->modalCancelActionLabel('Batal')
+                //     ->modalSubmitActionLabel('Hapus'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

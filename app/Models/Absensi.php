@@ -22,4 +22,12 @@ class Absensi extends Model
     {
         return $this->belongsTo(JadwalPelajaran::class);
     }
+    protected static function booted()
+    {
+        static::deleting(function ($absensi) {
+            if ($absensi->jadwalPelajaran) {
+                return false;
+            }
+        });
+    }
 }

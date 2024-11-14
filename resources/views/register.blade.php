@@ -8,7 +8,25 @@
                 <p class="mb-4">
                     Silahkan isi form dibawah ini untuk mendaftar di MQ-Alamin
                 </p>
-                <form action="" method="post">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @elseif (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                <form action="{{ route('register.store') }}" method="post">
                     @csrf
                     <div class="mb-3">
                         <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
@@ -63,6 +81,11 @@
                         <label for="pendidikan_ayah" class="form-label">Pendidikan Ayah</label>
                         <input type="text" class="form-control" id="pendidikan_ayah" name="pendidikan_ayah"
                             value="{{ old('pendidikan_ayah') }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="pekerjaan_ayah" class="form-label">Pekerjaan Ayah</label>
+                        <input type="text" class="form-control" id="pekerjaan_ayah" name="pekerjaan_ayah"
+                            value="{{ old('pekerjaan_ayah') }}">
                     </div>
                     <div class="mb-3">
                         <label for="telepon_ayah" class="form-label">Telepon Ayah</label>

@@ -75,18 +75,18 @@ class SettingResource extends Resource
                     ->label('Meta Deskripsi'),
                 TextInput::make('meta_keyword')
                     ->label('Meta Keyword'),
-                // TextInput::make('api_key_whatsapp')
-                //     ->label('API Key Whatsapp')
-                //     ->columnSpanFull(),
-                // RichEditor::make('pesan_whatsapp')
-                //     ->label('Pesan Whatsapp')
-                //     ->hint('Variable data yang dapat digunakan: {nama}, {noinduk}, {kelas}, {alamat}, {ayah}, {ibu}')
-                //     ->hintColor('danger')
-                //     ->hintIcon('phosphor-info')
-                //     ->columnSpanFull(),
-                // Toggle::make('fitur_pesan_whatsapp')
-                //     ->label('Fitur Pesan Whatsapp')
-                //     ->default(false),
+                TextInput::make('api_key_whatsapp')
+                    ->label('API Key Whatsapp')
+                    ->columnSpanFull(),
+                RichEditor::make('pesan_whatsapp')
+                    ->label('Pesan Whatsapp')
+                    ->hint('Variable data yang dapat digunakan: {nama}, {noinduk}, {kelas}, {alamat}, {ayah}, {ibu}')
+                    ->hintColor('danger')
+                    ->hintIcon('phosphor-info')
+                    ->columnSpanFull(),
+                Toggle::make('fitur_pesan_whatsapp')
+                    ->label('Fitur Pesan Whatsapp')
+                    ->default(false),
             ]);
     }
 

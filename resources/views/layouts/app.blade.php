@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="utf-8">
-    <title>{{ $title }}</title>
+    <title>{{ $title ?? '-' }}</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="{{ $meta_keyword }}" name="keywords">
-    <meta content="{{ $meta_deskripsi }}" name="description">
+    <meta content="{{ $meta_keyword ?? '-' }}" name="keywords">
+    <meta content="{{ $meta_deskripsi ?? '-' }}" name="description">
 
     <!-- Favicon -->
-    <link href="{{ asset($favicon) }}" rel="icon">
+    <link href="{{ asset($favicon ?? '-') }}" rel="icon">
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,9 +51,9 @@
                 <div class="row g-5">
                     <div class="col-lg-6 col-md-6">
                         <h5 class="text-white mb-4">Hubungi Kami</h5>
-                        <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>{{ $alamat }}</p>
-                        <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>{{ $telepon }}</p>
-                        <p class="mb-2"><i class="fa fa-envelope me-3"></i>{{ $email }}</p>
+                        <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>{{ $alamat ?? '-' }}</p>
+                        <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>{{ $telepon ?? '-' }}</p>
+                        <p class="mb-2"><i class="fa fa-envelope me-3"></i>{{ $email ?? '-' }}</p>
                         <div class="d-flex pt-2">
                             <a class="btn btn-outline-light btn-social" href=""><i
                                     class="fab fa-twitter"></i></a>
@@ -80,8 +80,8 @@
                         </p>
                         <div class="position-relative mx-auto" style="max-width: 400px;">
                             <input class="form-control bg-transparent w-100 py-3 ps-4 pe-5" type="text"
-                                placeholder="Email Anda">
-                            <button type="button"
+                                placeholder="Email Anda" id="subscribe-email" name="">
+                            <button type="submit" id="subscribe-button"
                                 class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">Ikuti</button>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                 <div class="copyright">
                     <div class="row">
                         <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                            &copy; <a class="border-bottom" href="#">{{ $title }}</a>, All Right
+                            &copy; <a class="border-bottom" href="#">{{ $title ?? '-' }}</a>, All Right
                             Reserved.
 
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
@@ -114,7 +114,7 @@
 
         <!-- Back to Top -->
         <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-        <button type="button" class="btn btn-lg btn-primary btn-lg-square whatsapp">
+        <button type="button" class="btn btn-lg btn-primary btn-lg-square whatsapp" id="whatsapp-button">
             <i class="bi bi-whatsapp"></i>
         </button>
     </div>
@@ -126,9 +126,46 @@
     <script src="{{ asset('assets/lib/easing/easing.min.js') }}"></script>
     <script src="{{ asset('assets/lib/waypoints/waypoints.min.js') }}"></script>
     <script src="{{ asset('assets/lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Template Javascript -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    @stack('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#subscribe-button').click(function() {
+                var email = $('#subscribe-email').val();
+                var _token = "{{ csrf_token() }}";
+                $.ajax({
+                    url: "{{ route('subscribe.store') }}",
+                    method: "POST",
+                    data: {
+                        email: email,
+                        _token: _token
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: response.message,
+                            confirmButtonColor: '#0EBD94',
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: xhr.responseJSON.message,
+                            confirmButtonColor: '#FF0000',
+                        });
+                    }
+                });
+            });
+            $('#whatsapp-button').click(function() {
+                window.open(
+                    'https://wa.me/{{ $telepon ?? '-' }}?text=Assalamualaikum%20Ustadz%2C%20saya%20ingin%20mengetahui%20informasi%20lebih%20lanjut%20tentang%20MQ-Alamin',
+                    '_blank');
+            });
+        });
+    </script>
 </body>
 
 </html>

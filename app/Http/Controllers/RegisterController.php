@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Santri;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller
@@ -10,21 +11,22 @@ class RegisterController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_lengkap' => 'required',
-            'nama_panggilan' => 'required',
-            'tempat_lahir' => 'required',
-            'tanggal_lahir' => 'required',
-            'kelas' => 'required',
-            'alamat' => 'required',
-            'jenis_kelamin' => 'required',
-            'nama_ayah' => 'required',
-            'pendidikan_ayah' => 'required',
-            'pekerjaan_ayah' => 'required',
-            'telepon_ayah' => 'required',
-            'nama_ibu' => 'required',
-            'pendidikan_ibu' => 'required',
-            'pekerjaan_ibu' => 'required',
-            'telepon_ibu' => 'required',
+            'nama_lengkap' => 'required|string|max:255',
+            'nama_panggilan' => 'required|string|max:255',
+            'tempat_lahir' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'kelas' => 'required|exists:kelas,id',
+            'alamat' => 'required|string|max:255',
+            'jenis_kelamin' => 'required|string|in:Laki-laki,Perempuan',
+            'nama_ayah' => 'required|string|max:255',
+            'pendidikan_ayah' => 'required|string|max:255',
+            'pekerjaan_ayah' => 'required|string|max:255',
+            'telepon_ayah' => 'required|numeric',
+            'nama_ibu' => 'required|string|max:255',
+            'pendidikan_ibu' => 'required|string|max:255',
+            'pekerjaan_ibu' => 'required|string|max:255',
+            'telepon_ibu' => 'required|numeric',
+            'anak_ke' => 'required|numeric|min:1',
         ], [
             'nama_lengkap.required' => 'Nama Lengkap harus diisi',
             'nama_panggilan.required' => 'Nama Panggilan harus diisi',
@@ -41,15 +43,54 @@ class RegisterController extends Controller
             'pendidikan_ibu.required' => 'Pendidikan Ibu harus diisi',
             'pekerjaan_ibu.required' => 'Pekerjaan Ibu harus diisi',
             'telepon_ibu.required' => 'Telepon Ibu harus diisi',
+            'telepon_ayah.numeric' => 'Telepon Ayah harus berupa angka',
+            'telepon_ibu.numeric' => 'Telepon Ibu harus berupa angka',
+            'jenis_kelamin.in' => 'Jenis Kelamin harus Laki-laki atau Perempuan',
+            'tanggal_lahir.date' => 'Tanggal Lahir harus berupa tanggal',
+            'kelas.exists' => 'Kelas tidak ditemukan',
+            'nama_lengkap.string' => 'Nama Lengkap harus berupa string',
+            'nama_panggilan.string' => 'Nama Panggilan harus berupa string',
+            'tempat_lahir.string' => 'Tempat Lahir harus berupa string',
+            'alamat.string' => 'Alamat harus berupa string',
+            'nama_ayah.string' => 'Nama Ayah harus berupa string',
+            'nama_ibu.string' => 'Nama Ibu harus berupa string',
+            'pendidikan_ayah.string' => 'Pendidikan Ayah harus berupa string',
+            'pekerjaan_ayah.string' => 'Pekerjaan Ayah harus berupa string',
+            'pendidikan_ibu.string' => 'Pendidikan Ibu harus berupa string',
+            'pekerjaan_ibu.string' => 'Pekerjaan Ibu harus berupa string',
+            'telepon_ayah.max' => 'Telepon Ayah maksimal 255 digit',
+            'telepon_ibu.max' => 'Telepon Ibu maksimal 255 digit',
+            'nama_lengkap.max' => 'Nama Lengkap maksimal 255 karakter',
+            'nama_panggilan.max' => 'Nama Panggilan maksimal 255 karakter',
+            'alamat.max' => 'Alamat maksimal 255 karakter',
+            'nama_ayah.max' => 'Nama Ayah maksimal 255 karakter',
+            'nama_ibu.max' => 'Nama Ibu maksimal 255 karakter',
+            'pendidikan_ayah.max' => 'Pendidikan Ayah maksimal 255 karakter',
+            'pekerjaan_ayah.max' => 'Pekerjaan Ayah maksimal 255 karakter',
+            'pendidikan_ibu.max' => 'Pendidikan Ibu maksimal 255 karakter',
+            'pekerjaan_ibu.max' => 'Pekerjaan Ibu maksimal 255 karakter',
+            'anak_ke.numeric' => 'Anak ke harus berupa angka',
+            'anak_ke.min' => 'Anak ke minimal 1',
+            'anak_ke.required' => 'Anak ke harus diisi',
         ]);
         try {
             $validated['noinduk'] = 'S' . date('Y') . sprintf('%04d', Santri::count() + 1);
             $validated['kelas_id'] = $validated['kelas'];
             unset($validated['kelas']);
+            $now = Carbon::now();
+            if ($validated['tanggal_lahir'] == $now->format('Y-m-d')) {
+                return redirect()->back()->with('error', 'Tanggal Lahir tidak valid')->withInput();
+            }
+            $umur = $now->year - Carbon::parse($validated['tanggal_lahir'])->year;
+            if ($umur < 4) {
+                return redirect()->back()->with('error', 'Umur minimal 4 tahun')->withInput();
+            }
+            $validated['telepon_ayah'] = substr($validated['telepon_ayah'], 0, 1) === '0' ? '62' . substr($validated['telepon_ayah'], 1) : (substr($validated['telepon_ayah'], 0, 1) === '8' ? '62' . $validated['telepon_ayah'] : $validated['telepon_ayah']);
+            $validated['telepon_ibu'] = substr($validated['telepon_ibu'], 0, 1) === '0' ? '62' . substr($validated['telepon_ibu'], 1) : (substr($validated['telepon_ibu'], 0, 1) === '8' ? '62' . $validated['telepon_ibu'] : $validated['telepon_ibu']);
             Santri::create($validated);
-            return redirect()->route('index')->with('success', 'Berhasil mendaftar');
+            return redirect()->back()->with('success', 'Berhasil melakukan pendaftaran, silahkan konfirmasi ke admin');
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Gagal mendaftar');
+            return redirect()->back()->with('error', 'Gagal melakukan pendaftaran')->withInput();
         }
     }
 }

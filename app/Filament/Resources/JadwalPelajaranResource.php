@@ -52,6 +52,7 @@ class JadwalPelajaranResource extends Resource
                         ->required()
                         ->relationship('mapel', 'nama'),
                     Select::make('guru_id')
+                        ->label('Guru')
                         ->required()
                         ->options(function () {
                             return Guru::all()->pluck('user.name', 'id');

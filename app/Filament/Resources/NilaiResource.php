@@ -12,6 +12,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,17 +47,23 @@ class NilaiResource extends Resource
                     })
                     ->disabled()
                     ->dehydrated(),
+                Select::make('santri_id')
+                    ->label('Santri')
+                    ->required()
+                    ->relationship('santri', 'nama_lengkap')
+                    ->searchable()
+                    ->preload()
+                    ->disableOptionWhen(function ($value, $label) {
+                        $nilai = Nilai::where('santri_id', $value)->first();
+                        return $nilai;
+                    }),
                 Select::make('jadwal_pelajaran_id')
                     ->label('Mata Pelajaran')
                     ->required()
                     ->options(function () {
                         return JadwalPelajaran::all()->pluck('mapel.nama', 'id');
                     })
-                    ->searchable(),
-                Select::make('santri_id')
-                    ->label('Santri')
-                    ->required()
-                    ->relationship('santri', 'nama_lengkap')
+                    ->preload()
                     ->searchable(),
                 TextInput::make('nilai')
                     ->label('Nilai Angka')
@@ -79,10 +87,24 @@ class NilaiResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('tahunAkademik.nama')
+                    ->label('Tahun Akademik'),
+                TextColumn::make('santri.nama_lengkap')
+                    ->label('Santri'),
+                TextColumn::make('jadwalPelajaran.mapel.nama')
+                    ->label('Mata Pelajaran'),
+                TextColumn::make('nilai')
+                    ->label('Nilai Angka'),
+                TextColumn::make('predikat')
+                    ->label('Predikat'),
             ])
             ->filters([
-                //
+                SelectFilter::make('tahun_akademik_id')
+                    ->label('Tahun Akademik')
+                    ->relationship('tahunAkademik', 'nama'),
+                SelectFilter::make('santri_id')
+                    ->label('Santri')
+                    ->relationship('santri', 'nama_lengkap'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
