@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 
 class Absensi extends Model

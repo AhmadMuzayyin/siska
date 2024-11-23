@@ -10,7 +10,8 @@ use Filament\Resources\Pages\ListRecords;
 class ListSemesters extends ListRecords
 {
     protected static string $resource = SemesterResource::class;
-    protected static ?string $title = "Data Semester";
+
+    protected static ?string $title = 'Data Semester';
 
     protected function getTableRecordUrlUsing(): ?Closure
     {

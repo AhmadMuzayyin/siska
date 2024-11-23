@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SemesterResource\Pages;
 use App\Models\Semester;
-use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -80,7 +79,7 @@ class SemesterResource extends Resource
                     ->label('Status')
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->color(fn ($state) => $state ? 'success' : 'danger')
                     ->action(function (Semester $record) {
                         $record->tahunAkademik->semester()
                             ->where('id', '!=', $record->id)

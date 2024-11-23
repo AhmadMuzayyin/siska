@@ -10,7 +10,7 @@ class CreateSemester extends CreateRecord
 {
     protected static string $resource = SemesterResource::class;
 
-    protected static ?string $title = "Tambah Semester";
+    protected static ?string $title = 'Tambah Semester';
 
     public static function canCreateAnother(): bool
     {

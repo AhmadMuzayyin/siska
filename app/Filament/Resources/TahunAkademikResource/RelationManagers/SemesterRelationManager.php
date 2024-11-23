@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\TahunAkademikResource\RelationManagers;
 
-use App\Models\Semester;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
@@ -62,8 +61,8 @@ class SemesterRelationManager extends RelationManager
                 Tables\Columns\IconColumn::make('is_aktif')
                     ->label('Status')
                     ->boolean()
-                    ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
-                    ->color(fn($state) => $state ? 'success' : 'danger')
+                    ->icon(fn ($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                    ->color(fn ($state) => $state ? 'success' : 'danger')
                     ->action(function ($record) {
                         if (! $record->is_aktif) {
                             $record->tahunAkademik->semester()
@@ -91,7 +90,7 @@ class SemesterRelationManager extends RelationManager
                     ->color('success')
                     ->icon('phosphor-plus')
                     ->createAnother(false)
-                    ->hidden(fn($livewire) => $livewire->ownerRecord->semester()->count() >= 2),
+                    ->hidden(fn ($livewire) => $livewire->ownerRecord->semester()->count() >= 2),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
