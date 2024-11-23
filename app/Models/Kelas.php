@@ -42,5 +42,8 @@ class Kelas extends Model
                 return false;
             }
         });
+        static::creating(function ($kelas) {
+            $kelas->terisi = $kelas->santri->count();
+        });
     }
 }
