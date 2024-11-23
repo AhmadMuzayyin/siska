@@ -14,10 +14,6 @@ return new class extends Migration
         Schema::create('tahun_akademiks', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->string('semester');
-            $table->date('mulai');
-            $table->date('selesai');
-            $table->boolean('is_aktif')->default(false);
             $table->timestamps();
         });
     }

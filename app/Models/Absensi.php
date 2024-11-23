@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 
 class Absensi extends Model
 {
     protected $guarded = ['id'];
 
-    public function tahunAkademik()
+    public function semester()
     {
-        return $this->belongsTo(TahunAkademik::class);
+        return $this->belongsTo(Semester::class, 'semester_id');
     }
 
     public function santri()
@@ -21,13 +22,5 @@ class Absensi extends Model
     public function jadwalPelajaran()
     {
         return $this->belongsTo(JadwalPelajaran::class);
-    }
-    protected static function booted()
-    {
-        static::deleting(function ($absensi) {
-            if ($absensi->jadwalPelajaran) {
-                return false;
-            }
-        });
     }
 }

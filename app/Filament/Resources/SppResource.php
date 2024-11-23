@@ -3,12 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SppResource\Pages;
+use App\Models\Semester;
 use App\Models\Spp;
-use App\Models\TahunAkademik;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -35,13 +34,15 @@ class SppResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('tahun_akademik_id')
+                Select::make('semester_id')
                     ->label('Tahun Akademik')
-                    ->relationship('tahunAkademik', 'nama')
+                    ->options(function () {
+                        return Semester::where('is_aktif', true)->first()->tahunAkademik->pluck('nama', 'id');
+                    })
                     ->default(function () {
-                        $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
-                        if ($tahunAkademik) {
-                            return $tahunAkademik->id;
+                        $semester = Semester::where('is_aktif', true)->first();
+                        if ($semester) {
+                            return $semester->tahunAkademik->id;
                         }
                     })
                     ->disabled()
@@ -53,6 +54,7 @@ class SppResource extends Resource
                     ->preload()
                     ->disableOptionWhen(function ($value, $label) {
                         $spp = Spp::where('santri_id', $value)->whereIn('status', ['Sudah Lunas', 'Bayar Setengah'])->first();
+
                         return $spp;
                     }),
                 DatePicker::make('tanggal')
@@ -76,7 +78,7 @@ class SppResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('tahunAkademik.nama')
+                TextColumn::make('semester.tahunAkademik.nama')
                     ->label('Tahun Akademik'),
                 TextColumn::make('santri.nama_lengkap')
                     ->label('Santri'),
@@ -86,7 +88,7 @@ class SppResource extends Resource
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
+                    ->color(fn ($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -125,9 +127,11 @@ class SppResource extends Resource
             'index' => Pages\ManageSpps::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'keuangan' || $user->role == 'admin';
     }
 }

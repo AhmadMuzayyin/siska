@@ -9,20 +9,21 @@ class TahunAkademik extends Model
 {
     protected $guarded = ['id'];
 
-    public function jadwalPelajaran()
+    public function semester()
     {
-        return $this->hasMany(JadwalPelajaran::class);
+        return $this->hasMany(Semester::class);
     }
 
     protected static function booted()
     {
         static::deleting(function ($tahunAkademik) {
-            if ($tahunAkademik->jadwalPelajaran->count() > 0) {
+            if ($tahunAkademik->semester->count() > 0) {
                 Notification::make()
                     ->title('Gagal Menghapus Tahun Akademik')
                     ->body('Tahun Akademik tidak bisa dihapus karena sudah digunakan')
                     ->danger()
                     ->send();
+
                 return false;
             }
         });

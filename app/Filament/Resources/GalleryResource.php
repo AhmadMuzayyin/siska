@@ -3,9 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\GalleryResource\Pages;
-use App\Filament\Resources\GalleryResource\RelationManagers;
 use App\Models\Gallery;
-use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -17,8 +15,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class GalleryResource extends Resource
 {
@@ -115,7 +111,7 @@ class GalleryResource extends Resource
                     ->modalHeading('Hapus Data Galeri')
                     ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
                     ->modalCancelActionLabel('Batal')
-                    ->modalSubmitActionLabel('Hapus')
+                    ->modalSubmitActionLabel('Hapus'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

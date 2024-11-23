@@ -44,93 +44,67 @@
         <img src="{{ asset($logo) }}" alt="Logo Sekolah"
             style="height: 120px; width: auto; position: absolute; left: 50px;">
         <div class="text-center flex-grow-1 mx-auto" style="max-width: 800px;">
-            <h5 class="m-0 font-weight-bold text-center" style="font-size: 1.1rem;">JADWAL PELAJARAN {{ $title ?? '' }}
+            <h5 class="m-0  text-center" style="font-size: 1.1rem;">
+                JADWAL PELAJARAN
             </h5>
-            <h6 class="m-0 font-weight-bold text-center" style="font-size: 1rem;">TAHUN PELAJARAN
-                {{ $tahunAkademik?->nama }}</h6>
-            <p class="m-0 font-weight-bold text-center" style="font-size: 0.9rem;">
-                NSM : {{ $nsm ?? '' }}
-            </p>
-            <p class="m-0 font-weight-bold text-center" style="font-size: 0.9rem;">
-                {{ $alamat ?? '' }}
-                <br>
-                Telp. {{ $telepon ?? '' }} {{ $email ?? '' }} {{ env('APP_URL') }}
-            </p>
+            <h5 class="m-0 text-center" style="font-size: 1rem;">MADRASAH DINIYAH TAKMILIYAH AWWALIYAH (MDTA)</h5>
+            <h6 class="m-0 fw-bold text-center" style="font-size: 1rem;">
+                {{ $title ?? '' }} {{ $tahunAkademik?->nama }}
+            </h6>
         </div>
     </div>
+    @php
+        $kelas_id = [];
+    @endphp
     <table class="table table-bordered table-sm">
         <thead>
             <tr>
                 <th rowspan="2" class="text-center align-middle" style="font-size: 0.9rem; width: 8%;">No</th>
-                <th rowspan="2" class="text-center align-middle" style="font-size: 0.9rem; width: 8%;">Kelas</th>
-                <th colspan="12" class="text-center" style="font-size: 0.9rem;">Mata Pelajaran</th>
+                <th rowspan="2" class="text-center align-middle" style="font-size: 0.9rem; width: 8%;">Hari</th>
+                <th colspan="12" class="text-center text-uppercase" style="font-size: 0.9rem;">Kelas & Wali Kelas
+                </th>
             </tr>
             <tr>
-                <td class="text-center" style="font-size: 0.85rem; width: 7%;">Senin</td>
-                <td style="font-size: 0.85rem; width: 10%;">Guru</td>
-                <td class="text-center" style="font-size: 0.85rem; width: 7%;">Selasa</td>
-                <td style="font-size: 0.85rem; width: 10%;">Guru</td>
-                <td class="text-center" style="font-size: 0.85rem; width: 7%;">Rabu</td>
-                <td style="font-size: 0.85rem; width: 10%;">Guru</td>
-                <td class="text-center" style="font-size: 0.85rem; width: 7%;">Kamis</td>
-                <td style="font-size: 0.85rem; width: 10%;">Guru</td>
-                <td class="text-center" style="font-size: 0.85rem; width: 7%;">Sabtu</td>
-                <td style="font-size: 0.85rem; width: 10%;">Guru</td>
-                <td class="text-center" style="font-size: 0.85rem; width: 7%;">Minggu</td>
-                <td style="font-size: 0.85rem; width: 10%;">Guru</td>
+                @foreach ($kelas as $kelas)
+                    @php
+                        $kelas_id[] = $kelas->id;
+                    @endphp
+                    <td class="text-center text-uppercase" style="font-size: 0.85rem; width: 7%;">
+                        <span class="d-block fw-bold">{{ $kelas->nama }}</span>
+                        <span class="d-block text-muted">
+                            {{ $kelas->waliKelas?->guru->gender == 'Laki-laki' ? 'Ustadz' : 'Ustadzah' }}
+                            {{ $kelas->waliKelas?->guru->user->name }}
+                        </span>
+                    </td>
+                @endforeach
             </tr>
         </thead>
         <tbody>
-            @foreach ($jadwalPelajaran->groupBy('kelas.nama') as $kelas => $jadwals)
+            @php
+                $hari = ['Sabtu', 'Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis'];
+            @endphp
+            @foreach ($hari as $index => $h)
                 <tr>
-                    <td class="text-center" style="font-size: 0.85rem;">{{ $loop->iteration }}</td>
-                    <td style="font-size: 0.85rem;">{{ $kelas }}</td>
-
-                    @php
-                        $seninJadwal = $jadwals->where('hari', 'Senin')->first();
-                    @endphp
-                    <td style="font-size: 0.85rem;">{{ $seninJadwal ? $seninJadwal->mapel->nama : '' }}</td>
-                    <td style="font-size: 0.85rem;">{{ $seninJadwal ? $seninJadwal->guru->user->name : '' }}</td>
-
-                    @php
-                        $selasaJadwal = $jadwals->where('hari', 'Selasa')->first();
-                    @endphp
-                    <td style="font-size: 0.85rem;">{{ $selasaJadwal ? $selasaJadwal->mapel->nama : '' }}</td>
-                    <td style="font-size: 0.85rem;">{{ $selasaJadwal ? $selasaJadwal->guru->user->name : '' }}</td>
-
-                    @php
-                        $rabuJadwal = $jadwals->where('hari', 'Rabu')->first();
-                    @endphp
-                    <td style="font-size: 0.85rem;">{{ $rabuJadwal ? $rabuJadwal->mapel->nama : '' }}</td>
-                    <td style="font-size: 0.85rem;">{{ $rabuJadwal ? $rabuJadwal->guru->user->name : '' }}</td>
-
-                    @php
-                        $kamisJadwal = $jadwals->where('hari', 'Kamis')->first();
-                    @endphp
-                    <td style="font-size: 0.85rem;">{{ $kamisJadwal ? $kamisJadwal->mapel->nama : '' }}</td>
-                    <td style="font-size: 0.85rem;">{{ $kamisJadwal ? $kamisJadwal->guru->user->name : '' }}</td>
-
-                    @php
-                        $sabtuJadwal = $jadwals->where('hari', 'Sabtu')->first();
-                    @endphp
-                    <td style="font-size: 0.85rem;">{{ $sabtuJadwal ? $sabtuJadwal->mapel->nama : '' }}</td>
-                    <td style="font-size: 0.85rem;">{{ $sabtuJadwal ? $sabtuJadwal->guru->user->name : '' }}</td>
-
-                    @php
-                        $mingguJadwal = $jadwals->where('hari', 'Minggu')->first();
-                    @endphp
-                    <td style="font-size: 0.85rem;">{{ $mingguJadwal ? $mingguJadwal->mapel->nama : '' }}</td>
-                    <td style="font-size: 0.85rem;">{{ $mingguJadwal ? $mingguJadwal->guru->user->name : '' }}</td>
+                    <td class="text-center" style="font-size: 0.85rem;">{{ $index + 1 }}</td>
+                    <td style="font-size: 0.85rem;">{{ $h }}</td>
+                    @foreach ($jadwalPelajaran as $item)
+                        @if (in_array($item->kelas_id, $kelas_id) && $item->hari == $h)
+                            <th class="text-center text-uppercase" style="font-size: 0.85rem;">
+                                <span class="d-block">{{ $item->mapel->nama }}</span>
+                                <span class="d-block text-muted fw-normal">{{ $item->guru->user->name }}</span>
+                            </th>
+                        @endif
+                    @endforeach
                 </tr>
             @endforeach
         </tbody>
     </table>
-    <script>
+    {{-- <script>
         window.print();
         setTimeout(() => {
             window.close();
         }, 1000);
-    </script>
+    </script> --}}
 </body>
 
 </html>

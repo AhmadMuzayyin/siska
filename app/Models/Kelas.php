@@ -24,6 +24,11 @@ class Kelas extends Model
         return $this->belongsTo(Guru::class);
     }
 
+    public function waliKelas()
+    {
+        return $this->hasOne(WaliKelas::class);
+    }
+
     protected static function booted()
     {
         static::deleting(function ($kelas) {
@@ -33,6 +38,7 @@ class Kelas extends Model
                     ->body('Kelas tidak bisa dihapus karena sudah digunakan')
                     ->danger()
                     ->send();
+
                 return false;
             }
         });

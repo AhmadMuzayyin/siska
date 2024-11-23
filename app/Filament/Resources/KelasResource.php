@@ -118,9 +118,11 @@ class KelasResource extends Resource
             'index' => Pages\ManageKelas::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin';
     }
 }

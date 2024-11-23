@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Subscription;
+use Illuminate\Http\Request;
 
 class SubscriptionController extends Controller
 {
@@ -17,6 +17,7 @@ class SubscriptionController extends Controller
         ]);
         try {
             Subscription::create($validated);
+
             return response()->json(['message' => 'Terima kasih telah mengikuti newsletter kami']);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Gagal mengikuti newsletter kami'], 500);

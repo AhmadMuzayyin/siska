@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ManageRecords;
 class ManageGalleries extends ManageRecords
 {
     protected static string $resource = GalleryResource::class;
+
     protected static ?string $title = 'Galeri';
 
     protected function getHeaderActions(): array

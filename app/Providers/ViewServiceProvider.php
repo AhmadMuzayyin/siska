@@ -40,6 +40,8 @@ class ViewServiceProvider extends ServiceProvider
         View::share('kelas', Kelas::all());
         View::share('guru', Guru::all());
         View::share('galleries', Gallery::take(15)->get());
-        View::share('tahunAkademik', TahunAkademik::where('is_aktif', true)->first());
+        View::share('tahunAkademik', TahunAkademik::with('semester')->whereHas('semester', function ($query) {
+            $query->where('is_aktif', true);
+        })->first());
     }
 }

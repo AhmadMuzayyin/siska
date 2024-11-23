@@ -74,7 +74,7 @@ class RegisterController extends Controller
             'anak_ke.required' => 'Anak ke harus diisi',
         ]);
         try {
-            $validated['noinduk'] = 'S' . date('Y') . sprintf('%04d', Santri::count() + 1);
+            $validated['noinduk'] = 'S'.date('Y').sprintf('%04d', Santri::count() + 1);
             $validated['kelas_id'] = $validated['kelas'];
             unset($validated['kelas']);
             $now = Carbon::now();
@@ -85,9 +85,10 @@ class RegisterController extends Controller
             if ($umur < 4) {
                 return redirect()->back()->with('error', 'Umur minimal 4 tahun')->withInput();
             }
-            $validated['telepon_ayah'] = substr($validated['telepon_ayah'], 0, 1) === '0' ? '62' . substr($validated['telepon_ayah'], 1) : (substr($validated['telepon_ayah'], 0, 1) === '8' ? '62' . $validated['telepon_ayah'] : $validated['telepon_ayah']);
-            $validated['telepon_ibu'] = substr($validated['telepon_ibu'], 0, 1) === '0' ? '62' . substr($validated['telepon_ibu'], 1) : (substr($validated['telepon_ibu'], 0, 1) === '8' ? '62' . $validated['telepon_ibu'] : $validated['telepon_ibu']);
+            $validated['telepon_ayah'] = substr($validated['telepon_ayah'], 0, 1) === '0' ? '62'.substr($validated['telepon_ayah'], 1) : (substr($validated['telepon_ayah'], 0, 1) === '8' ? '62'.$validated['telepon_ayah'] : $validated['telepon_ayah']);
+            $validated['telepon_ibu'] = substr($validated['telepon_ibu'], 0, 1) === '0' ? '62'.substr($validated['telepon_ibu'], 1) : (substr($validated['telepon_ibu'], 0, 1) === '8' ? '62'.$validated['telepon_ibu'] : $validated['telepon_ibu']);
             Santri::create($validated);
+
             return redirect()->back()->with('success', 'Berhasil melakukan pendaftaran, silahkan konfirmasi ke admin');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Gagal melakukan pendaftaran')->withInput();

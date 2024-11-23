@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 class Gallery extends Model
 {
     protected $guarded = ['id'];
+
     protected static function booted()
     {
         static::deleting(function ($gallery) {

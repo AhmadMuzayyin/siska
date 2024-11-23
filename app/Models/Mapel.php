@@ -28,6 +28,7 @@ class Mapel extends Model
                     ->body('Mapel tidak bisa dihapus karena sudah digunakan')
                     ->danger()
                     ->send();
+
                 return false;
             }
         });

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Absensi;
 use App\Models\JadwalPelajaran;
 use App\Models\Santri;
-use App\Models\TahunAkademik;
+use App\Models\Semester;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -51,13 +51,13 @@ class AbsensiController extends Controller
             'Friday' => 'Jumat',
             'Saturday' => 'Sabtu',
         ];
-        $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
+        $semester = Semester::where('is_aktif', true)->first();
         $jadwalPelajaran = JadwalPelajaran::where('hari', $hariIndonesia[$hari])->get();
 
         return view('Absensi.create', [
             'jadwalPelajaran' => $jadwalPelajaran,
             'absensi' => Absensi::where('tanggal', now()->format('Y-m-d'))
-                ->where('tahun_akademik_id', $tahunAkademik?->id)
+                ->where('semester_id', $semester?->id)
                 ->where('jadwal_pelajaran_id', session('jadwal_pelajaran'))
                 ->paginate(7),
         ]);
@@ -72,7 +72,7 @@ class AbsensiController extends Controller
             return response()->json(['error' => $validator->errors()], 400);
         }
         try {
-            $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
+            $semester = Semester::where('is_aktif', true)->first();
             $santri = Santri::where('noinduk', $request->noinduk)->first();
             $jamMulai = JadwalPelajaran::find(session('jadwal_pelajaran'))->jam_mulai;
             if (now()->format('H:i') < $jamMulai) {
@@ -83,7 +83,7 @@ class AbsensiController extends Controller
                 return response()->json(['error' => 'Tidak bisa melakukan absen, karena jam pelajaran sudah selesai.'], 400);
             }
             $absensi = Absensi::query();
-            $absensi->where('tahun_akademik_id', $tahunAkademik->id);
+            $absensi->where('semester_id', $semester?->id);
             $absensi->where('santri_id', $santri->id);
             $absensi->where('jadwal_pelajaran_id', session('jadwal_pelajaran'));
             $absensi->where('tanggal', now()->format('Y-m-d'));
@@ -92,7 +92,7 @@ class AbsensiController extends Controller
                 return response()->json(['error' => 'Anda sudah melakukan absen pada mata pelajaran hari ini'], 400);
             }
             Absensi::create([
-                'tahun_akademik_id' => $tahunAkademik->id,
+                'semester_id' => $semester?->id,
                 'santri_id' => $santri->id,
                 'jadwal_pelajaran_id' => session('jadwal_pelajaran'),
                 'tanggal' => now()->format('Y-m-d'),

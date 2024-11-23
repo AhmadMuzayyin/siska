@@ -28,7 +28,7 @@ class SettingResource extends Resource
 
     public static ?int $navigationGroupSort = 4;
 
-    public static ?int $navigationSort = 3;
+    public static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -149,9 +149,11 @@ class SettingResource extends Resource
             'edit' => Pages\EditSetting::route('/{record}/edit'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin';
     }
 }

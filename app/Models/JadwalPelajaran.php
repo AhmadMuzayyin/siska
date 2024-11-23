@@ -8,9 +8,9 @@ class JadwalPelajaran extends Model
 {
     protected $guarded = ['id'];
 
-    public function tahunAkademik()
+    public function semester()
     {
-        return $this->belongsTo(TahunAkademik::class);
+        return $this->belongsTo(Semester::class, 'semester_id');
     }
 
     public function kelas()

@@ -33,8 +33,8 @@ class UserRelationManager extends RelationManager
                 TextColumn::make('role')
                     ->label('Jabatan')
                     ->badge()
-                    ->color(fn($state) => $state == 'guru' ? 'success' : ($state == 'admin' ? 'warning' : 'danger'))
-                    ->formatStateUsing(fn($state) => $state == 'guru' ? 'Guru' : ($state == 'admin' ? 'Admin' : 'Kepala Sekolah')),
+                    ->color(fn ($state) => $state == 'guru' ? 'success' : ($state == 'admin' ? 'warning' : 'danger'))
+                    ->formatStateUsing(fn ($state) => $state == 'guru' ? 'Guru' : ($state == 'admin' ? 'Admin' : 'Kepala Sekolah')),
             ])
             ->filters([
                 //

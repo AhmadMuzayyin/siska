@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\JadwalPelajaranResource\Pages;
 use App\Models\Guru;
 use App\Models\JadwalPelajaran;
-use App\Models\TahunAkademik;
+use App\Models\Semester;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
@@ -34,13 +34,15 @@ class JadwalPelajaranResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('tahun_akademik_id')
+                Select::make('semester_id')
                     ->required()
-                    ->relationship('tahunAkademik', 'nama')
+                    ->options(function () {
+                        return Semester::join('tahun_akademiks', 'tahun_akademiks.id', '=', 'semesters.tahun_akademik_id')->where('semesters.is_aktif', true)->pluck('tahun_akademiks.nama', 'semesters.id');
+                    })
                     ->default(function () {
-                        $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
-                        if ($tahunAkademik) {
-                            return $tahunAkademik->id;
+                        $semester = Semester::where('is_aktif', true)->first();
+                        if ($semester) {
+                            return $semester->id;
                         }
                     })
                     ->columnSpanFull()->disabled()->dehydrated(),
@@ -81,7 +83,7 @@ class JadwalPelajaranResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('tahunAkademik.nama')
+                TextColumn::make('semester.tahunAkademik.nama')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('kelas.nama')
@@ -135,9 +137,11 @@ class JadwalPelajaranResource extends Resource
             'index' => Pages\ManageJadwalPelajarans::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin';
     }
 }

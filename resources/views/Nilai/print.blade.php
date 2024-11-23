@@ -45,7 +45,7 @@
         <div class="text-center flex-grow mx-auto max-w-[800px] ml-[20%]">
             <h5 class="m-0 font-bold text-center text-[1.1rem]">YAYASAN PENDIDIKAN & SOSIAL
             </h5>
-            <h6 class="m-0 font-bold text-center text-base">MADRASATUL QU'AN AL-AMIN</h6>
+            <h6 class="m-0 font-bold text-center text-base">MADRASATUL QUR'AN AL-AMIN</h6>
             <p class="m-0 text-center text-[0.8rem]">
                 NSM : {{ $nsm ?? '' }}
             </p>
@@ -80,8 +80,8 @@
         </div>
         <div>
             <p class="m-0">: {{ strtoupper($nilai[0]->santri->kelas->nama ?? '') }}</p>
-            <p class="m-0">: {{ $nilai[0]->tahunAkademik->semester ?? '' }}</p>
-            <p class="m-0">: {{ $nilai[0]->tahunAkademik->nama ?? '' }}</p>
+            <p class="m-0">: {{ $nilai[0]->semester->tipe ?? '' }}</p>
+            <p class="m-0">: {{ $nilai[0]->semester->tahunAkademik->nama ?? '' }}</p>
         </div>
     </div>
     <table
@@ -121,7 +121,8 @@
             </tr>
             <tr>
                 <td colspan="4" class="text-center font-bold">RATA-RATA</td>
-                <td class="text-center font-bold">{{ number_format($nilai->sum('nilai') / $nilai->count(), 2) ?? '' }}
+                <td class="text-center font-bold">
+                    {{ $nilai->count() > 0 ? number_format($nilai->sum('nilai') / $nilai->count(), 2) : '' }}
                 </td>
                 <td colspan="4"></td>
             </tr>
@@ -198,7 +199,9 @@
                 </tr>
                 <tr>
                     <td class="text-center font-bold" colspan="2">JUMLAH</td>
-                    <td class="text-center" colspan="2">{{ $absensi->count() }}</td>
+                    <td class="text-center" colspan="2">
+                        {{ $absensi->where('status', 'Izin')->count() + $absensi->where('status', 'Sakit')->count() + $absensi->where('status', 'Alpa')->count() }}
+                    </td>
                 </tr>
             </tbody>
         </table>

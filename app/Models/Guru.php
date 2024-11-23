@@ -34,6 +34,7 @@ class Guru extends Model
                     ->body('Guru tidak bisa dihapus karena sudah menjadi wali kelas')
                     ->danger()
                     ->send();
+
                 return false;
             }
             if ($guru->jadwalPelajaran->count() > 0) {
@@ -42,6 +43,7 @@ class Guru extends Model
                     ->body('Guru tidak bisa dihapus karena sudah memiliki jadwal pelajaran')
                     ->danger()
                     ->send();
+
                 return false;
             } else {
                 if ($guru->foto) {

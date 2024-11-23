@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 
 class Nilai extends Model
 {
     protected $guarded = ['id'];
 
-    public function tahunAkademik()
+    public function semester()
     {
-        return $this->belongsTo(TahunAkademik::class);
+        return $this->belongsTo(Semester::class, 'semester_id');
     }
 
     public function santri()

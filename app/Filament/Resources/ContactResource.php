@@ -3,21 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContactResource\Pages;
-use App\Filament\Resources\ContactResource\RelationManagers;
 use App\Models\Contact;
-use Filament\Forms;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ContactResource extends Resource
 {
@@ -97,7 +92,7 @@ class ContactResource extends Resource
                     ->modalHeading('Hapus Pesan')
                     ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
                     ->modalCancelActionLabel('Batal')
-                    ->modalSubmitActionLabel('Hapus')
+                    ->modalSubmitActionLabel('Hapus'),
             ])
             ->bulkActions([
                 //

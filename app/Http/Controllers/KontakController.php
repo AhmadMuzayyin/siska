@@ -22,6 +22,7 @@ class KontakController extends Controller
         ]);
         try {
             Contact::create($validated);
+
             return response()->json(['message' => 'Pesan berhasil dikirim']);
         } catch (\Throwable $th) {
             return response()->json(['message' => 'Pesan gagal dikirim'], 500);

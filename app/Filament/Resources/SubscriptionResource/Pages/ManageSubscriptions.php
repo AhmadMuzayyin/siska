@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ManageRecords;
 class ManageSubscriptions extends ManageRecords
 {
     protected static string $resource = SubscriptionResource::class;
+
     protected static ?string $title = 'Pengikut';
 
     protected function getHeaderActions(): array

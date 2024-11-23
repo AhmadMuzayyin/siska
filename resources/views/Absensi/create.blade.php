@@ -211,6 +211,7 @@
                         },
                         success: function(response) {
                             alert(response.message);
+                            $('#noinduk').val('');
                         },
                         error: function(xhr, status, error) {
                             alert(xhr.responseJSON.error);
@@ -281,6 +282,7 @@
             $(document).ready(function() {
                 $('#jadwal_pelajaran').change(function() {
                     var jadwal_pelajaran = $(this).val();
+                    $(this).prop('disabled', true);
                     $.ajax({
                         url: "{{ route('absensi.session') }}",
                         method: "POST",

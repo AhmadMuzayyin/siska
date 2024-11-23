@@ -3,20 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TahunAkademikResource\Pages;
+use App\Filament\Resources\TahunAkademikResource\RelationManagers\SemesterRelationManager;
 use App\Models\TahunAkademik;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
-use Filament\Forms\Set;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Guava\FilamentModalRelationManagers\Actions\RelationManagerAction;
 use Illuminate\Support\Facades\Auth;
 
 class TahunAkademikResource extends Resource
@@ -39,35 +35,8 @@ class TahunAkademikResource extends Resource
             ->schema([
                 TextInput::make('nama')
                     ->label('Nama Tahun Akademik')
-                    ->required(),
-                Select::make('semester')
-                    ->label('Semester')
-                    ->options([
-                        'Ganjil' => 'Ganjil',
-                        'Genap' => 'Genap',
-                    ])
-                    ->required(),
-                DatePicker::make('mulai')
-                    ->label('Mulai')
-                    ->required(),
-                DatePicker::make('selesai')
-                    ->label('Selesai')
-                    ->required(),
-                Toggle::make('is_aktif')
-                    ->label('Aktif')
-                    ->default(false)
-                    ->afterStateUpdated(function ($state, $record, Set $set) {
-                        if ($state) {
-                            $existingActive = TahunAkademik::where('is_aktif', true)
-                                ->where('id', '!=', $record?->id)
-                                ->exists();
-                            if ($existingActive) {
-                                TahunAkademik::where('is_aktif', true)
-                                    ->where('id', '!=', $record?->id)
-                                    ->update(['is_aktif' => false]);
-                            }
-                        }
-                    }),
+                    ->required()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -76,23 +45,13 @@ class TahunAkademikResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('nama'),
-                TextColumn::make('mulai')
-                    ->date('d M Y'),
-                TextColumn::make('selesai')
-                    ->date('d M Y'),
-                IconColumn::make('is_aktif')
-                    ->label('Aktif')
-                    ->boolean()
-                    ->icon(fn(bool $state): string => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle'),
-                TextColumn::make('semester'),
+                TextColumn::make('semester.tipe'),
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('updated_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('is_aktif')
@@ -103,6 +62,14 @@ class TahunAkademikResource extends Resource
                     ]),
             ])
             ->actions([
+                RelationManagerAction::make('semester-relation-manager')
+                    ->label('Semester')
+                    ->color('success')
+                    ->icon('phosphor-eye')
+                    ->modalHeading('Data Semester Tahun Akademik')
+                    ->modalSubmitAction(false)
+                    ->modalCancelAction(false)
+                    ->relationManager(SemesterRelationManager::make()),
                 Tables\Actions\EditAction::make()
                     ->label('Edit')
                     ->modalHeading('Edit Data Tahun Akademik')
@@ -128,9 +95,11 @@ class TahunAkademikResource extends Resource
             'index' => Pages\ManageTahunAkademiks::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin';
     }
 }

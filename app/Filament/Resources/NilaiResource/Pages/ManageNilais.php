@@ -5,6 +5,7 @@ namespace App\Filament\Resources\NilaiResource\Pages;
 use App\Filament\Resources\NilaiResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
+use Illuminate\Support\Facades\Auth;
 
 class ManageNilais extends ManageRecords
 {
@@ -20,9 +21,16 @@ class ManageNilais extends ManageRecords
                 ->button()
                 ->color('info')
                 ->icon('phosphor-printer')
-                ->modalContent(fn($record) => view('Nilai.modal'))
+                ->modalContent(fn ($record) => view('Nilai.modal'))
                 ->modalSubmitAction(false)
-                ->modalCancelAction(false),
+                ->modalCancelAction(false)
+                ->hidden(function () {
+                    if (Auth::user()->role != 'admin') {
+                        return true;
+                    }
+
+                    return false;
+                }),
             Actions\CreateAction::make()
                 ->label('Tambah Nilai')
                 ->icon('phosphor-plus')

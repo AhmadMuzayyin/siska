@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AbsensiResource\Pages;
 use App\Models\Absensi;
-use App\Models\Kelas;
 use Filament\Forms\Components\View;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -39,7 +38,7 @@ class AbsensiResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tahunAkademik.nama')
+                Tables\Columns\TextColumn::make('semester.tahunAkademik.nama')
                     ->sortable()
                     ->label('Tahun Akademik'),
                 Tables\Columns\TextColumn::make('santri.nama_lengkap')
@@ -99,9 +98,11 @@ class AbsensiResource extends Resource
             'edit' => Pages\EditAbsensi::route('/{record}/edit'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin' || $user->role == 'guru';
     }
 }

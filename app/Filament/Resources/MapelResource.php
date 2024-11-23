@@ -4,8 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\MapelResource\Pages;
 use App\Models\Mapel;
-use App\Models\TahunAkademik;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -27,22 +25,12 @@ class MapelResource extends Resource
 
     public static ?int $navigationGroupSort = 1;
 
-    public static ?int $navigationSort = 3;
+    public static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('tahun_akademik_id')
-                    ->label('Tahun Akademik')
-                    ->relationship('tahunAkademik', 'nama')
-                    ->default(function () {
-                        $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
-                        if ($tahunAkademik) {
-                            return $tahunAkademik->id;
-                        }
-                    })
-                    ->required()->disabled()->dehydrated(),
                 TextInput::make('nama')
                     ->label('Nama Mapel')
                     ->required(),
@@ -61,7 +49,6 @@ class MapelResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('tahunAkademik.nama'),
                 TextColumn::make('nama'),
                 TextColumn::make('kitab'),
                 TextColumn::make('kkm')->label('KKM'),
@@ -75,10 +62,9 @@ class MapelResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('tahun_akademik_id')
-                    ->label('Tahun Akademik')
-                    ->relationship('tahunAkademik', 'nama')
-                    ->options(fn() => TahunAkademik::where('is_aktif', true)->where('is_locked', false)->pluck('nama', 'id')),
+                SelectFilter::make('nama')
+                    ->label('Nama Mapel')
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
@@ -110,9 +96,11 @@ class MapelResource extends Resource
             'index' => Pages\ManageMapels::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin';
     }
 }

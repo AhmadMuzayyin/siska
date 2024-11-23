@@ -46,10 +46,12 @@ class GuruResource extends Resource
                                 return true;
                             }
                         }
+
                         return false;
                     })
                     ->disableOptionWhen(function ($value, $label) {
                         $user = User::find($value);
+
                         return $user && $user->role === 'admin';
                     })
                     ->disabledOn(['edit'])
@@ -156,9 +158,11 @@ class GuruResource extends Resource
             'edit' => Pages\EditGuru::route('/{record}/edit'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin';
     }
 }

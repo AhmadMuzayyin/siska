@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Mapel;
+use App\Models\Semester;
 use App\Models\TahunAkademik;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -38,10 +39,20 @@ class DatabaseSeeder extends Seeder
         ]);
         $tahunAkademik = TahunAkademik::create([
             'nama' => '2024/2025',
-            'semester' => 'Ganjil',
+        ]);
+        Semester::create([
+            'tahun_akademik_id' => $tahunAkademik->id,
+            'tipe' => 'Genap',
             'mulai' => '2024-01-01',
             'selesai' => '2025-12-31',
-            'is_aktif' => true
+            'is_aktif' => false,
+        ]);
+        Semester::create([
+            'tahun_akademik_id' => $tahunAkademik->id,
+            'tipe' => 'Ganjil',
+            'mulai' => '2024-01-01',
+            'selesai' => '2025-12-31',
+            'is_aktif' => true,
         ]);
         $mapels = [
             'Fashohah' => 'فصاحة',
@@ -60,10 +71,9 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($mapels as $key => $value) {
             Mapel::create([
-                'tahun_akademik_id' => $tahunAkademik->id,
                 'nama' => $key,
                 'kitab' => $value,
-                'kkm' => 60
+                'kkm' => 60,
             ]);
         }
         $user_guru = User::create([
@@ -83,24 +93,17 @@ class DatabaseSeeder extends Seeder
             'status' => 'Aktif',
         ]);
         $kelas = [
-            'Paud',
-            'Jilid I',
-            'Jilid II',
-            'Jilid III',
-            'Jilid IV',
-            'Jilid V',
-            'Jilid VI',
             'Shifir',
-            'MDTA I',
-            'MDTA II',
-            'MDTA III',
-            'MDTA IV',
+            'Kelas 1',
+            'Kelas 2',
+            'Kelas 3',
+            'Kelas 4',
         ];
         foreach ($kelas as $key => $value) {
             Kelas::create([
                 'guru_id' => $guru->id,
                 'nama' => $value,
-                'kapasitas' => 10
+                'kapasitas' => 10,
             ]);
         }
     }

@@ -28,7 +28,7 @@ class UserResource extends Resource
 
     public static ?int $navigationGroupSort = 4;
 
-    public static ?int $navigationSort = 2;
+    public static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -55,6 +55,7 @@ class UserResource extends Resource
                         if ($record && $record->account_type == 'google') {
                             return true;
                         }
+
                         return false;
                     }),
                 TextInput::make('password_confirmation')
@@ -68,6 +69,7 @@ class UserResource extends Resource
                         if ($record && $record->account_type == 'google') {
                             return true;
                         }
+
                         return false;
                     }),
                 Select::make('role')
@@ -90,6 +92,7 @@ class UserResource extends Resource
                         if ($record && $record->email == 'admin@mq-alamin.com') {
                             return true;
                         }
+
                         return false;
                     }),
             ]);
@@ -109,9 +112,9 @@ class UserResource extends Resource
                 TextColumn::make('account_type')
                     ->label('Tipe Akun')
                     ->badge()
-                    ->color(fn($state) => $state == 'google' ? 'success' : 'info')
-                    ->icon(fn($state) => $state == 'google' ? 'heroicon-o-check' : 'heroicon-o-x-mark')
-                    ->formatStateUsing(fn($state) => $state == 'google' ? 'Google' : 'Email'),
+                    ->color(fn ($state) => $state == 'google' ? 'success' : 'info')
+                    ->icon(fn ($state) => $state == 'google' ? 'heroicon-o-check' : 'heroicon-o-x-mark')
+                    ->formatStateUsing(fn ($state) => $state == 'google' ? 'Google' : 'Email'),
                 TextColumn::make('created_at')
                     ->label('Dibuat Pada')
                     ->dateTime()
@@ -129,10 +132,10 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->label('Edit')
-                    ->hidden(fn($record) => $record && ($record->email == 'admin@mq-alamin.com' || $record->email == 'keuangan@mq-alamin.com')),
+                    ->hidden(fn ($record) => $record && ($record->email == 'admin@mq-alamin.com' || $record->email == 'keuangan@mq-alamin.com')),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
-                    ->hidden(fn($record) => $record && ($record->email == 'admin@mq-alamin.com' || $record->email == 'keuangan@mq-alamin.com'))
+                    ->hidden(fn ($record) => $record && ($record->email == 'admin@mq-alamin.com' || $record->email == 'keuangan@mq-alamin.com'))
                     ->modalHeading('Hapus Data Pengguna')
                     ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
                     ->modalCancelActionLabel('Batal')
@@ -160,9 +163,11 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin';
     }
 }

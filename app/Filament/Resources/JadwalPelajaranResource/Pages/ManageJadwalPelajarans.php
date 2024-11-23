@@ -4,8 +4,6 @@ namespace App\Filament\Resources\JadwalPelajaranResource\Pages;
 
 use App\Filament\Resources\JadwalPelajaranResource;
 use Filament\Actions;
-use Filament\Forms\Components\View;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageJadwalPelajarans extends ManageRecords

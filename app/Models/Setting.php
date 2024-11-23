@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 class Setting extends Model
 {
     protected $guarded = ['id'];
+
     protected static function booted()
     {
         static::deleting(function ($setting) {

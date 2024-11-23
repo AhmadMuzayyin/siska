@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\NilaiResource\Pages;
 use App\Models\JadwalPelajaran;
 use App\Models\Nilai;
-use App\Models\TahunAkademik;
+use App\Models\Semester;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -35,14 +35,16 @@ class NilaiResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('tahun_akademik_id')
+                Select::make('semester_id')
                     ->label('Tahun Akademik')
                     ->required()
-                    ->relationship('tahunAkademik', 'nama')
+                    ->options(function () {
+                        return Semester::join('tahun_akademiks', 'tahun_akademiks.id', '=', 'semesters.tahun_akademik_id')->where('semesters.is_aktif', true)->pluck('tahun_akademiks.nama', 'semesters.id');
+                    })
                     ->default(function () {
-                        $tahunAkademik = TahunAkademik::where('is_aktif', true)->first();
-                        if ($tahunAkademik) {
-                            return $tahunAkademik->id;
+                        $semester = Semester::where('is_aktif', true)->first();
+                        if ($semester) {
+                            return $semester->id;
                         }
                     })
                     ->disabled()
@@ -82,8 +84,10 @@ class NilaiResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('tahunAkademik.nama')
+                TextColumn::make('semester.tahunAkademik.nama')
                     ->label('Tahun Akademik'),
+                TextColumn::make('semester.tipe')
+                    ->label('Semester'),
                 TextColumn::make('santri.nama_lengkap')
                     ->label('Santri'),
                 TextColumn::make('jadwalPelajaran.mapel.nama')
@@ -94,9 +98,9 @@ class NilaiResource extends Resource
                     ->label('Predikat'),
             ])
             ->filters([
-                SelectFilter::make('tahun_akademik_id')
-                    ->label('Tahun Akademik')
-                    ->relationship('tahunAkademik', 'nama'),
+                SelectFilter::make('semester_id')
+                    ->label('Semester')
+                    ->relationship('semester', 'tipe'),
                 SelectFilter::make('santri_id')
                     ->label('Santri')
                     ->relationship('santri', 'nama_lengkap'),
@@ -133,9 +137,11 @@ class NilaiResource extends Resource
             'index' => Pages\ManageNilais::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin' || $user->role == 'guru';
     }
 }

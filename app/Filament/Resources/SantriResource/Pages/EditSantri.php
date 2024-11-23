@@ -31,7 +31,7 @@ class EditSantri extends EditRecord
             Action::make('save')->label('Perbarui')->color('success')->action('save'),
             Action::make('cancel')
                 ->label('Batal')
-                ->url(fn() => SantriResource::getUrl('index'))
+                ->url(fn () => SantriResource::getUrl('index'))
                 ->color('gray'),
         ];
     }

@@ -29,7 +29,7 @@ class SantriResource extends Resource
 
     public static ?int $navigationGroupSort = 1;
 
-    public static ?int $navigationSort = 4;
+    public static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
@@ -186,9 +186,11 @@ class SantriResource extends Resource
             'edit' => Pages\EditSantri::route('/{record}/edit'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
+
         return $user->role == 'admin';
     }
 }

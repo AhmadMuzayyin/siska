@@ -3,7 +3,7 @@
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Mapel;
-use App\Models\TahunAkademik;
+use App\Models\Semester;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +17,7 @@ return new class extends Migration
     {
         Schema::create('jadwal_pelajarans', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(TahunAkademik::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Semester::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Kelas::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Mapel::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Guru::class)->constrained()->cascadeOnDelete();
