@@ -25,5 +25,10 @@ class Santri extends Model
                 $santri->kelas->update(['terisi' => $santri->kelas->terisi + 1]);
             }
         });
+        static::deleting(function ($santri) {
+            if ($santri->kelas_id) {
+                $santri->kelas->update(['terisi' => $santri->kelas->terisi - 1]);
+            }
+        });
     }
 }
