@@ -43,6 +43,13 @@ class Kelas extends Model
             }
         });
         static::creating(function ($kelas) {
+            if ($kelas->santri->count() == $kelas->kapasitas) {
+                Notification::make()
+                    ->title('Gagal Menambah Santri')
+                    ->body('Kapasitas kelas sudah penuh')
+                    ->danger()
+                    ->send();
+            }
             $kelas->terisi = $kelas->santri->count();
         });
     }
