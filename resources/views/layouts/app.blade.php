@@ -71,11 +71,10 @@
                     </div>
                     <div class="col-lg-3 col-md-6">
                         <h5 class="text-white mb-4">Tautan Cepat</h5>
-                        <a class="btn btn-link text-white-50" href="">About Us</a>
-                        <a class="btn btn-link text-white-50" href="">Contact Us</a>
-                        <a class="btn btn-link text-white-50" href="">Our Services</a>
-                        <a class="btn btn-link text-white-50" href="">Privacy Policy</a>
-                        <a class="btn btn-link text-white-50" href="">Terms & Condition</a>
+                        <a class="btn btn-link text-white-50" href="{{ route('about') }}">About Us</a>
+                        <a class="btn btn-link text-white-50" href="{{ route('kontak') }}">Contact Us</a>
+                        <a class="btn btn-link text-white-50" href="{{ route('privacy') }}">Privacy Policy</a>
+                        <a class="btn btn-link text-white-50" href="{{ route('terms') }}">Terms & Condition</a>
                     </div>
                     <div class="col-lg-3 col-md-6">
                         <h5 class="text-white mb-4">Ikuti Kami</h5>
@@ -100,12 +99,13 @@
 
                             <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
                             Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+                            & Developed By <a class="border-bottom" href="https://github.com/AhmadMuzayyin">USTDEV</a>
                         </div>
                         <div class="col-md-6 text-center text-md-end">
                             <div class="footer-menu">
-                                <a href="">Home</a>
-                                <a href="">Cookies</a>
-                                <a href="">Help</a>
+                                <a href="{{ route('index') }}">Home</a>
+                                <a href="{{ route('cookies') }}">Cookies</a>
+                                <a href="{{ route('kontak') }}">Help</a>
                                 <a href="">FQAs</a>
                             </div>
                         </div>
@@ -121,6 +121,12 @@
         <button type="button" class="btn btn-lg btn-primary btn-lg-square whatsapp" id="whatsapp-button">
             <i class="bi bi-whatsapp"></i>
         </button>
+        <div class="alert alert-info fixed-bottom text-center mb-0" role="alert">
+            Kami menggunakan cookie untuk meningkatkan pengalaman Anda di website kami. Dengan melanjutkan penggunaan,
+            Anda menyetujui Kebijakan Cookie kami.
+            <a href="{{ route('cookies') }}" class="alert-link">Pelajari lebih lanjut</a>.
+            <button class="btn btn-sm btn-primary ms-2" id="cookie-agree-button">Saya Setuju</button>
+        </div>
     </div>
 
     <!-- JavaScript Libraries -->
@@ -137,6 +143,11 @@
     @stack('scripts')
     <script>
         $(document).ready(function() {
+            if (!document.cookie.includes('cookie-consent=true')) {
+                $('.alert').fadeIn('slow');
+            } else {
+                $('.alert').hide();
+            }
             $('#subscribe-button').click(function() {
                 var email = $('#subscribe-email').val();
                 var _token = "{{ csrf_token() }}";
@@ -167,6 +178,13 @@
                 window.open(
                     'https://wa.me/{{ $telepon ?? '-' }}?text=Assalamualaikum%20Ustadz%2C%20saya%20ingin%20mengetahui%20informasi%20lebih%20lanjut%20tentang%20MQ-Alamin',
                     '_blank');
+            });
+            $('#cookie-agree-button').click(function() {
+                document.cookie = "cookie-consent=true; expires=" + new Date(new Date().getTime() + 365 *
+                    24 * 60 * 60 * 1000).toUTCString() + "; path=/";
+                $('.alert').fadeOut('slow', function() {
+                    $(this).alert('close');
+                });
             });
         });
     </script>

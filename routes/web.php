@@ -16,6 +16,15 @@ Route::get('/', function () {
 Route::get('/about', function () {
     return view('about');
 })->name('about');
+Route::get('/privacy', function () {
+    return view('privacy');
+})->name('privacy');
+Route::get('/terms', function () {
+    return view('terms');
+})->name('terms');
+Route::get('/cookies', function () {
+    return view('cookies');
+})->name('cookies');
 Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
 Route::post('/kontak', [KontakController::class, 'store'])->name('kontak.store');
 Route::post('/subscribe', [SubscriptionController::class, 'store'])->name('subscribe.store');

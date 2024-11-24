@@ -1,36 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Header Start -->
-    <div class="container-fluid header bg-white p-0">
-        <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
-            <div class="col-md-6 p-5 mt-lg-5">
-                <h1 class="display-5 animated fadeIn mb-4">Belajar <span class="text-primary">Mengaji</span> Bersama
-                    MQ-Alamin untuk masa depan anak Qurani</h1>
-                <p class="animated fadeIn mb-4 pb-2">
-                    MQ-Alamin adalah sekolah yang berdedikasi untuk mempersiapkan anak-anak untuk menjadi pemimpin
-                    masa depan yang berkarakter dan berakhlak mulia.
-                </p>
-                <a href="/daftar" class="btn btn-primary py-3 px-5 me-3 animated fadeIn">Daftar Sekarang</a>
-            </div>
-            <div class="col-md-6 animated fadeIn">
-                <div class="owl-carousel header-carousel">
-                    <div class="owl-carousel-item">
-                        <img class="img-fluid" src="https://cdn.pixabay.com/photo/2019/05/16/03/02/ramadan-4206409_1280.jpg"
-                            alt="">
-                    </div>
-                    <div class="owl-carousel-item">
-                        <img class="img-fluid"
-                            src="https://images.pexels.com/photos/20558180/pexels-photo-20558180/free-photo-of-wanita-perempuan-kaum-wanita-memegang.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                            alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Header End -->
-
-
+    <x-hero-section />
     <!-- Search Start -->
     <div class="container-fluid bg-primary mb-5 wow fadeIn" data-wow-delay="0.1s" style="padding: 35px;">
         <div class="container">
@@ -50,43 +21,35 @@
     <div class="container-xxl py-5">
         <div class="container">
             <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-                <h1 class="mb-3">Jenis Program</h1>
+                <h1 class="mb-3">Program dan Kelas</h1>
                 <p>
-                    MQ-Alamin menyediakan berbagai jenis program untuk anak-anak Qurani, mulai dari program dasar
-                    hingga program lanjutan.
+                    Akselerasi baca Al-Quran metode tilawati dengan moto <span class="text-primary fst-italic">Mudah
+                        Menyenangkan</span>.
+                    Pembelajaran Al-Quran metode tilawati yang dimulai dari usia paud sampai santri meghatamkan Al-Quran
+                    dengan tetap menggunakan metode tilawati sampai hatam 30 juz dan dipungkasi dengan penerimaan
+                    ijazah resmi dari pusat tilawati Nurul Falah Surabaya.
                 </p>
             </div>
             <div class="row g-4">
-                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="col-lg-6 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
                     <a class="cat-item d-block bg-light text-center rounded p-3" href="">
                         <div class="rounded p-4">
                             <div class="icon mb-3">
                                 <img class="img-fluid" src="{{ asset('assets/img/icon-apartment.png') }}" alt="Icon">
                             </div>
-                            <h6>PAUD</h6>
-                            <span>Program dasar untuk anak-anak usia dini dari kelas 1 sampai 6</span>
+                            <h6>TPQ</h6>
+                            <span>Taman Pendidikan Al-Quran</span>
                         </div>
                     </a>
                 </div>
-                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="col-lg-6 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
                     <a class="cat-item d-block bg-light text-center rounded p-3" href="">
                         <div class="rounded p-4">
                             <div class="icon mb-3">
                                 <img class="img-fluid" src="{{ asset('assets/img/icon-villa.png') }}" alt="Icon">
                             </div>
-                            <h6>SHIFIR</h6>
-                            <span>Program lanjutan anak-anak usia dini untuk kelas 7</span>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                        <div class="rounded p-4">
-                            <div class="icon mb-3">
-                                <img class="img-fluid" src="{{ asset('assets/img/icon-house.png') }}" alt="Icon">
-                            </div>
                             <h6>MDTA</h6>
-                            <span>Program lanjutan anak-anak usia dini untuk kelas 8 - 10</span>
+                            <span>Madrasah Diniyah Takmiliyah Awwaliyah</span>
                         </div>
                     </a>
                 </div>

@@ -1,37 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Header Start -->
-    <div class="container-fluid header bg-white p-0">
-        <div class="row g-0 align-items-center flex-column-reverse flex-md-row">
-            <div class="col-md-6 p-5 mt-lg-5">
-                <h1 class="display-5 animated fadeIn mb-4">Mari <span class="text-primary">Bersama</span> kita mengenal
-                    tentang MQ Al-Amin</h1>
-                <p class="animated fadeIn mb-4 pb-2">
-                    MQ Al-Amin (Madrasah Qurani Al-Amin) adalah lembaga pendidikan Al-Quran yang berlokasi di Dusun Krajan,
-                    Desa Wongsorejo, Kecamatan Wongsorejo, Kabupaten Banyuwangi. Berdiri sejak tahun 2015, MQ Al-Amin
-                    berkomitmen untuk membentuk generasi Qurani yang berakhlak mulia dan berwawasan luas melalui pendidikan
-                    Al-Quran yang berkualitas.
-                </p>
-            </div>
-            <div class="col-md-6 animated fadeIn">
-                <div class="owl-carousel header-carousel">
-                    <div class="owl-carousel-item">
-                        <img class="img-fluid" src="https://cdn.pixabay.com/photo/2019/05/16/03/02/ramadan-4206409_1280.jpg"
-                            alt="">
-                    </div>
-                    <div class="owl-carousel-item">
-                        <img class="img-fluid"
-                            src="https://images.pexels.com/photos/20558180/pexels-photo-20558180/free-photo-of-wanita-perempuan-kaum-wanita-memegang.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                            alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Header End -->
-
-
+    <x-hero-section />
     <!-- Search Start -->
     <div class="container-fluid bg-primary mb-5 wow fadeIn" data-wow-delay="0.1s" style="padding: 35px;">
         <div class="container">
@@ -80,30 +50,4 @@
         </div>
     </div>
     <!-- About End -->
-    <!-- Category Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center mx-auto mb-5 wow fadeInDown" data-wow-delay="0.1s" style="max-width: 600px;">
-                <h1 class="mb-3">Jenis Program</h1>
-                <p>
-                    MQ-Alamin menyediakan berbagai jenis program untuk anak-anak Qurani, mulai dari program dasar
-                    hingga program lanjutan.
-                </p>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-4 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                        <div class="rounded p-4">
-                            <div class="icon mb-3">
-                                <img class="img-fluid" src="{{ asset('assets/img/icon-apartment.png') }}" alt="Icon">
-                            </div>
-                            <h6>PAUD</h6>
-                            <span>Program dasar untuk anak-anak usia dini dari kelas 1 sampai 6</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Category End -->
 @endsection
