@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /storage
+Disallow: /admin/login
+Disallow: /admin/register
+
+# Lokasi sitemap
+Sitemap: https://www.mqalamin.sch.id/sitemap.xml
