@@ -13,6 +13,7 @@ use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class ContactResource extends Resource
 {
@@ -104,5 +105,11 @@ class ContactResource extends Resource
         return [
             'index' => Pages\ManageContacts::route('/'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user->role == 'admin';
     }
 }

@@ -15,6 +15,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class GalleryResource extends Resource
 {
@@ -125,5 +126,11 @@ class GalleryResource extends Resource
         return [
             'index' => Pages\ManageGalleries::route('/'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user->role == 'admin' || $user->role == 'guru';
     }
 }

@@ -89,10 +89,6 @@ class SantriResource extends Resource
                             ->required()
                             ->maxLength(255)
                             ->label('Pekerjaan Ayah'),
-                        TextInput::make('telepon_ayah')
-                            ->required()
-                            ->maxLength(255)
-                            ->label('Telepon Ayah'),
                         TextInput::make('nama_ibu')
                             ->required()
                             ->maxLength(255)
@@ -105,10 +101,12 @@ class SantriResource extends Resource
                             ->required()
                             ->maxLength(255)
                             ->label('Pekerjaan Ibu'),
-                        TextInput::make('telepon_ibu')
+                        TextInput::make('telepon_wali')
                             ->required()
                             ->maxLength(255)
-                            ->label('Telepon Ibu'),
+                            ->label('Telepon Wali (Bapak/Ibu)')
+                            ->hint('Masukkan nomor telepon wali dengan format 628xxxxxxx')
+                            ->columnSpanFull(),
                     ]),
             ]);
     }

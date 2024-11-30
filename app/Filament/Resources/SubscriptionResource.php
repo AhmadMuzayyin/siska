@@ -10,6 +10,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class SubscriptionResource extends Resource
 {
@@ -79,5 +80,11 @@ class SubscriptionResource extends Resource
         return [
             'index' => Pages\ManageSubscriptions::route('/'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user->role == 'admin';
     }
 }

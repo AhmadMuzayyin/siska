@@ -26,11 +26,10 @@ return new class extends Migration
             $table->string('nama_ayah');
             $table->string('pendidikan_ayah');
             $table->string('pekerjaan_ayah');
-            $table->string('telepon_ayah');
             $table->string('nama_ibu');
             $table->string('pendidikan_ibu');
             $table->string('pekerjaan_ibu');
-            $table->string('telepon_ibu');
+            $table->string('telepon_wali');
             $table->timestamps();
         });
     }
