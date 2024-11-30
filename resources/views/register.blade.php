@@ -88,11 +88,6 @@
                             value="{{ old('pekerjaan_ayah') }}">
                     </div>
                     <div class="mb-3">
-                        <label for="telepon_ayah" class="form-label">Telepon Ayah</label>
-                        <input type="number" class="form-control" id="telepon_ayah" name="telepon_ayah"
-                            value="{{ old('telepon_ayah') ?? 62 }}" min="62">
-                    </div>
-                    <div class="mb-3">
                         <label for="nama_ibu" class="form-label">Nama Ibu</label>
                         <input type="text" class="form-control" id="nama_ibu" name="nama_ibu"
                             value="{{ old('nama_ibu') }}">
@@ -108,9 +103,9 @@
                             value="{{ old('pekerjaan_ibu') }}">
                     </div>
                     <div class="mb-3">
-                        <label for="telepon_ibu" class="form-label">Telepon Ibu</label>
-                        <input type="number" class="form-control" id="telepon_ibu" name="telepon_ibu"
-                            value="{{ old('telepon_ibu') ?? 62 }}" min="62">
+                        <label for="telepon_wali" class="form-label">Telepon Wali</label>
+                        <input type="number" class="form-control" id="telepon_wali" name="telepon_wali"
+                            value="{{ old('telepon_wali') ?? 62 }}" min="62">
                     </div>
                     <div class="mb-3">
                         <label for="kelas" class="form-label">Pilihan Kelas</label>

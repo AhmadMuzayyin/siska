@@ -21,11 +21,10 @@ class RegisterController extends Controller
             'nama_ayah' => 'required|string|max:255',
             'pendidikan_ayah' => 'required|string|max:255',
             'pekerjaan_ayah' => 'required|string|max:255',
-            'telepon_ayah' => 'required|numeric',
             'nama_ibu' => 'required|string|max:255',
             'pendidikan_ibu' => 'required|string|max:255',
             'pekerjaan_ibu' => 'required|string|max:255',
-            'telepon_ibu' => 'required|numeric',
+            'telepon_wali' => 'required|numeric',
             'anak_ke' => 'required|numeric|min:1',
         ], [
             'nama_lengkap.required' => 'Nama Lengkap harus diisi',
@@ -38,13 +37,11 @@ class RegisterController extends Controller
             'nama_ayah.required' => 'Nama Ayah harus diisi',
             'pendidikan_ayah.required' => 'Pendidikan Ayah harus diisi',
             'pekerjaan_ayah.required' => 'Pekerjaan Ayah harus diisi',
-            'telepon_ayah.required' => 'Telepon Ayah harus diisi',
             'nama_ibu.required' => 'Nama Ibu harus diisi',
             'pendidikan_ibu.required' => 'Pendidikan Ibu harus diisi',
             'pekerjaan_ibu.required' => 'Pekerjaan Ibu harus diisi',
-            'telepon_ibu.required' => 'Telepon Ibu harus diisi',
-            'telepon_ayah.numeric' => 'Telepon Ayah harus berupa angka',
-            'telepon_ibu.numeric' => 'Telepon Ibu harus berupa angka',
+            'telepon_wali.required' => 'Telepon wali harus diisi',
+            'telepon_wali.numeric' => 'Telepon wali harus berupa angka',
             'jenis_kelamin.in' => 'Jenis Kelamin harus Laki-laki atau Perempuan',
             'tanggal_lahir.date' => 'Tanggal Lahir harus berupa tanggal',
             'kelas.exists' => 'Kelas tidak ditemukan',
@@ -58,8 +55,7 @@ class RegisterController extends Controller
             'pekerjaan_ayah.string' => 'Pekerjaan Ayah harus berupa string',
             'pendidikan_ibu.string' => 'Pendidikan Ibu harus berupa string',
             'pekerjaan_ibu.string' => 'Pekerjaan Ibu harus berupa string',
-            'telepon_ayah.max' => 'Telepon Ayah maksimal 255 digit',
-            'telepon_ibu.max' => 'Telepon Ibu maksimal 255 digit',
+            'telepon_wali.max' => 'Telepon wali maksimal 255 digit',
             'nama_lengkap.max' => 'Nama Lengkap maksimal 255 karakter',
             'nama_panggilan.max' => 'Nama Panggilan maksimal 255 karakter',
             'alamat.max' => 'Alamat maksimal 255 karakter',
@@ -74,7 +70,7 @@ class RegisterController extends Controller
             'anak_ke.required' => 'Anak ke harus diisi',
         ]);
         try {
-            $validated['noinduk'] = 'S'.date('Y').sprintf('%04d', Santri::count() + 1);
+            $validated['noinduk'] = 'S' . date('Y') . sprintf('%04d', Santri::count() + 1);
             $validated['kelas_id'] = $validated['kelas'];
             unset($validated['kelas']);
             $now = Carbon::now();
@@ -85,8 +81,7 @@ class RegisterController extends Controller
             if ($umur < 4) {
                 return redirect()->back()->with('error', 'Umur minimal 4 tahun')->withInput();
             }
-            $validated['telepon_ayah'] = substr($validated['telepon_ayah'], 0, 1) === '0' ? '62'.substr($validated['telepon_ayah'], 1) : (substr($validated['telepon_ayah'], 0, 1) === '8' ? '62'.$validated['telepon_ayah'] : $validated['telepon_ayah']);
-            $validated['telepon_ibu'] = substr($validated['telepon_ibu'], 0, 1) === '0' ? '62'.substr($validated['telepon_ibu'], 1) : (substr($validated['telepon_ibu'], 0, 1) === '8' ? '62'.$validated['telepon_ibu'] : $validated['telepon_ibu']);
+            $validated['telepon_wali'] = substr($validated['telepon_wali'], 0, 1) === '0' ? '62' . substr($validated['telepon_wali'], 1) : (substr($validated['telepon_wali'], 0, 1) === '8' ? '62' . $validated['telepon_wali'] : $validated['telepon_wali']);
             Santri::create($validated);
 
             return redirect()->back()->with('success', 'Berhasil melakukan pendaftaran, silahkan konfirmasi ke admin');
