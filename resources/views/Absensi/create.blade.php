@@ -47,7 +47,7 @@
                     <select name="noinduk" id="noinduk"
                         class="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         <option value="" selected disabled>Pilih Santri</option>
-                        @foreach ($santris as $santri)
+                        @foreach ($jadwalPelajaran->kelas->santri as $santri)
                             <option value="{{ $santri->noinduk }}">{{ $santri->nama_lengkap }}</option>
                         @endforeach
                     </select>
