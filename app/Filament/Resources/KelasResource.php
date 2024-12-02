@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\KelasResource\Pages;
+use App\Livewire\ListSantri;
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\Santri;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -13,6 +15,8 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class KelasResource extends Resource
@@ -74,21 +78,40 @@ class KelasResource extends Resource
                 SelectFilter::make('terisi')
                     ->options([
                         '10' => '10',
+                        '15' => '15',
                         '20' => '20',
+                        '25' => '25',
                         '30' => '30',
+                        '35' => '35',
                         '40' => '40',
+                        '45' => '45',
                         '50' => '50',
                     ]),
                 SelectFilter::make('kapasitas')
                     ->options([
                         '10' => '10',
+                        '15' => '15',
                         '20' => '20',
+                        '25' => '25',
                         '30' => '30',
+                        '35' => '35',
                         '40' => '40',
+                        '45' => '45',
                         '50' => '50',
                     ]),
             ])
             ->actions([
+                Tables\Actions\Action::make('naik_kelas')
+                    ->label('Kenaikan Kelas')
+                    ->icon('phosphor-arrow-up')
+                    ->color('info')
+                    ->modalHeading('Kenaikan Kelas Santri')
+                    ->modalSubmitActionLabel('Konfirmasi')
+                    ->modalCancelActionLabel('Batal')
+                    ->modalContent()
+                    ->action(function (array $data, Kelas $record, Request $request) {
+                        dd($data, $request->input('selected_santris'));
+                    }),
                 Tables\Actions\ViewAction::make()
                     ->label('Lihat')
                     ->modalHeading('Detail Kelas')

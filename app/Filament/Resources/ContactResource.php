@@ -106,6 +106,7 @@ class ContactResource extends Resource
             'index' => Pages\ManageContacts::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();

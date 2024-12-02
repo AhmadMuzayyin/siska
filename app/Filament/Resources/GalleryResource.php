@@ -127,6 +127,7 @@ class GalleryResource extends Resource
             'index' => Pages\ManageGalleries::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();

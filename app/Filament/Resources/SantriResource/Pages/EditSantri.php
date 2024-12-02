@@ -16,6 +16,10 @@ class EditSantri extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\CreateAction::make()
+                ->label('Buat Baru')
+                ->color('info')
+                ->url(fn () => SantriResource::getUrl(('create'))),
             Actions\DeleteAction::make()
                 ->label('Hapus')
                 ->modalHeading('Hapus Data Santri')

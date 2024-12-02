@@ -37,12 +37,12 @@ class SppResource extends Resource
                 Select::make('semester_id')
                     ->label('Tahun Akademik')
                     ->options(function () {
-                        return Semester::where('is_aktif', true)->first()->tahunAkademik->pluck('nama', 'id');
+                        return Semester::join('tahun_akademiks', 'tahun_akademiks.id', '=', 'semesters.tahun_akademik_id')->where('semesters.is_aktif', true)->pluck('tahun_akademiks.nama', 'semesters.id');
                     })
                     ->default(function () {
                         $semester = Semester::where('is_aktif', true)->first();
                         if ($semester) {
-                            return $semester->tahunAkademik->id;
+                            return $semester->id;
                         }
                     })
                     ->disabled()
@@ -89,6 +89,9 @@ class SppResource extends Resource
                     ->label('Status')
                     ->badge()
                     ->color(fn ($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
+                TextColumn::make('tanggal')
+                    ->label('Tanggal Bayar')
+                    ->dateTime('d F Y'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\JadwalPelajaranController;
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\KontakController;
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\RegisterController;

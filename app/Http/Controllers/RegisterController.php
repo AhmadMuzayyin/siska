@@ -70,7 +70,7 @@ class RegisterController extends Controller
             'anak_ke.required' => 'Anak ke harus diisi',
         ]);
         try {
-            $validated['noinduk'] = 'S' . date('Y') . sprintf('%04d', Santri::count() + 1);
+            $validated['noinduk'] = 'S'.date('Y').sprintf('%04d', Santri::count() + 1);
             $validated['kelas_id'] = $validated['kelas'];
             unset($validated['kelas']);
             $now = Carbon::now();
@@ -81,7 +81,7 @@ class RegisterController extends Controller
             if ($umur < 4) {
                 return redirect()->back()->with('error', 'Umur minimal 4 tahun')->withInput();
             }
-            $validated['telepon_wali'] = substr($validated['telepon_wali'], 0, 1) === '0' ? '62' . substr($validated['telepon_wali'], 1) : (substr($validated['telepon_wali'], 0, 1) === '8' ? '62' . $validated['telepon_wali'] : $validated['telepon_wali']);
+            $validated['telepon_wali'] = substr($validated['telepon_wali'], 0, 1) === '0' ? '62'.substr($validated['telepon_wali'], 1) : (substr($validated['telepon_wali'], 0, 1) === '8' ? '62'.$validated['telepon_wali'] : $validated['telepon_wali']);
             Santri::create($validated);
 
             return redirect()->back()->with('success', 'Berhasil melakukan pendaftaran, silahkan konfirmasi ke admin');

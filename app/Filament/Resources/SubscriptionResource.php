@@ -81,6 +81,7 @@ class SubscriptionResource extends Resource
             'index' => Pages\ManageSubscriptions::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();
