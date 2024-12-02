@@ -6,6 +6,9 @@
 /storage/*.key
 /storage/pail
 /vendor
+/encrypt.php
+/routes/*.enc
+/routes/decrypter.php
 .env
 .env.backup
 .env.production
