@@ -41,13 +41,19 @@
         <div class="w-full max-w-md p-6 bg-white shadow-md rounded-lg">
             <h2 class="text-2xl font-bold mb-4 text-center">Absensi Kehadiran Santri</h2>
             <!-- Absensi Form -->
+            {{-- @dd(session('jadwal_pelajaran')) --}}
             <form class="mb-6">
                 <div class="mb-4">
                     <label for="noinduk" class="block text-gray-700">Pilih Santri</label>
                     <select name="noinduk" id="noinduk"
                         class="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         <option value="" selected disabled>Pilih Santri</option>
-                        @foreach ($jadwalPelajaran->kelas->santri as $santri)
+                        @php
+                            $santris = [];
+                            $santris = App\Models\JadwalPelajaran::where('id', session('jadwal_pelajaran'))->first()
+                                ->kelas->santri;
+                        @endphp
+                        @foreach ($santris as $santri)
                             <option value="{{ $santri->noinduk }}">{{ $santri->nama_lengkap }}</option>
                         @endforeach
                     </select>
@@ -216,7 +222,7 @@
                         },
                         success: function(response) {
                             alert(response.message);
-                            $('#noinduk').val('');
+                            window.location.reload();
                         },
                         error: function(xhr, status, error) {
                             alert(xhr.responseJSON.error);
