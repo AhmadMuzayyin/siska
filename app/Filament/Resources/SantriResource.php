@@ -116,7 +116,8 @@ class SantriResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('noinduk')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('nama_lengkap')
                     ->searchable(),
                 TextColumn::make('nama_panggilan')
