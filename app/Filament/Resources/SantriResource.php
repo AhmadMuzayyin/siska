@@ -122,7 +122,8 @@ class SantriResource extends Resource
                 TextColumn::make('nama_panggilan')
                     ->searchable(),
                 TextColumn::make('kelas.nama')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
