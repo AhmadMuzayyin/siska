@@ -94,14 +94,6 @@ class SppResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query) {
-                if (Auth::user()->role === 'guru') {
-                    return $query->whereHas('santri.kelas.waliKelas', function ($query) {
-                        $query->where('guru_id', Auth::user()->guru->id);
-                    });
-                }
-                return $query;
-            })
             ->columns([
                 TextColumn::make('semester.tahunAkademik.nama')
                     ->label('Tahun Akademik'),
