@@ -84,10 +84,13 @@ class NilaiResource extends Resource
                     }),
                 TextInput::make('nilai_huruf')
                     ->label('Nilai Huruf')
-                    ->required(),
+                    ->required()
+                    ->columnSpanFull(),
                 TextInput::make('predikat')
                     ->label('Predikat')
-                    ->required(),
+                    ->required()
+                    ->hidden()
+                    ->dehydratedWhenHidden(),
                 Textarea::make('keterangan')
                     ->label('Keterangan')
                     ->rows(3)
