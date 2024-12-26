@@ -94,7 +94,14 @@ class SppResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(static::getTableQuery())
+            ->modifyQueryUsing(function (Builder $query) {
+                if (Auth::user()->role === 'guru') {
+                    return $query->whereHas('santri.kelas.waliKelas', function ($query) {
+                        $query->where('guru_id', Auth::user()->guru->id);
+                    });
+                }
+                return $query;
+            })
             ->columns([
                 TextColumn::make('semester.tahunAkademik.nama')
                     ->label('Tahun Akademik'),
@@ -157,18 +164,5 @@ class SppResource extends Resource
         $user = Auth::user();
 
         return $user->role == 'keuangan' || $user->role == 'admin' || $user->role == 'guru';
-    }
-    public static function getTableQuery(): Builder
-    {
-        $query = static::query();
-
-        // Filter data hanya untuk guru login
-        if (Auth::user()->role == 'guru') {
-            $query->whereHas('santri.kelas.waliKelas', function ($subQuery) {
-                $subQuery->where('guru_id', Auth::user()->guru->id);
-            });
-        }
-
-        return $query;
     }
 }
