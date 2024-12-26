@@ -132,7 +132,10 @@ class SppResource extends Resource
                     ->modalHeading('Hapus Data Pembayaran SPP')
                     ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
                     ->modalCancelActionLabel('Batal')
-                    ->modalSubmitActionLabel('Hapus'),
+                    ->modalSubmitActionLabel('Hapus')
+                    ->hidden(function () {
+                        return Auth::user()->role == 'guru';
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

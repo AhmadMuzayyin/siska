@@ -185,22 +185,22 @@
                 <tr>
                     <td class="text-center">1</td>
                     <td class="text-left pl-2">IZIN</td>
-                    <td class="text-center">{{ $absensi->where('status', 'Izin')->count() }}</td>
+                    <td class="text-center">{{ $absensi->where('status', 'Izin')->count() ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="text-center">2</td>
                     <td class="text-left pl-2">SAKIT</td>
-                    <td class="text-center">{{ $absensi->where('status', 'Sakit')->count() }}</td>
+                    <td class="text-center">{{ $absensi->where('status', 'Sakit')->count() ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="text-center">3</td>
                     <td class="text-left pl-2">ALPA</td>
-                    <td class="text-center">{{ $absensi->where('status', 'Alpa')->count() }}</td>
+                    <td class="text-center">{{ $absensi->where('status', 'Alpa')->count() ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="text-center font-bold" colspan="2">JUMLAH</td>
                     <td class="text-center" colspan="2">
-                        {{ $absensi->where('status', 'Izin')->count() + $absensi->where('status', 'Sakit')->count() + $absensi->where('status', 'Alpa')->count() }}
+                        {{ $absensi->where('status', 'Izin')->count() + $absensi->where('status', 'Sakit')->count() + $absensi->where('status', 'Alpa')->count() ?? '' }}
                     </td>
                 </tr>
             </tbody>
