@@ -10,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -66,30 +67,27 @@ class NilaiResource extends Resource
                 TextInput::make('nilai')
                     ->label('Nilai Angka')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (Set $set, ?int $state) {
+                        if ($state >= 99) {
+                            $set('predikat', 'A+');
+                        } elseif ($state >= 82 && $state <= 98) {
+                            $set('predikat', 'A');
+                        } elseif ($state >= 75 && $state <= 81) {
+                            $set('predikat', 'B');
+                        } elseif ($state >= 68 && $state <= 74) {
+                            $set('predikat', 'C');
+                        } else {
+                            $set('predikat', 'D');
+                        }
+                    }),
                 TextInput::make('nilai_huruf')
                     ->label('Nilai Huruf')
                     ->required(),
                 TextInput::make('predikat')
                     ->label('Predikat')
-                    ->default(function ($record) {
-                        dd($record);
-                        $nilai = $record;
-                        if ($nilai >= 99) {
-                            return 'A+';
-                        } elseif ($nilai >= 82 && $nilai <= 98) {
-                            return 'A';
-                        } elseif ($nilai >= 75 && $nilai <= 81) {
-                            return 'B';
-                        } elseif ($nilai >= 68 && $nilai <= 74) {
-                            return 'C';
-                        } else {
-                            return 'D';
-                        }
-                    })
-                    ->required()
-                    ->disabled()
-                    ->dehydrated(),
+                    ->required(),
                 Textarea::make('keterangan')
                     ->label('Keterangan')
                     ->rows(3)
