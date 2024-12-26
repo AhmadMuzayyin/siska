@@ -54,12 +54,11 @@ class SppResource extends Resource
                     ->options(function () {
                         if (Auth::user()->role == 'guru') {
                             $guru_id = Guru::where('user_id', Auth::id())->first()->id;
-                            $santris = $santris = Santri::join('kelas', 'kelas.id', '=', 'santris.kelas_id')
+                            return Santri::join('kelas', 'kelas.id', '=', 'santris.kelas_id')
                                 ->join('wali_kelas', 'wali_kelas.kelas_id', '=', 'kelas.id')
                                 ->where('wali_kelas.guru_id', $guru_id)
                                 ->select('santris.id', 'santris.nama_lengkap')
                                 ->pluck('nama_lengkap', 'santris.id');
-                            return $santris;
                         } else {
                             return Santri::pluck('nama_lengkap', 'id');
                         }
