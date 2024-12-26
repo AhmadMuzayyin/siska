@@ -73,7 +73,8 @@ class NilaiResource extends Resource
                 TextInput::make('predikat')
                     ->label('Predikat')
                     ->default(function ($record) {
-                        $nilai = $record->nilai;
+                        dd($record);
+                        $nilai = $record;
                         if ($nilai >= 99) {
                             return 'A+';
                         } elseif ($nilai >= 82 && $nilai <= 98) {
