@@ -185,22 +185,34 @@
                 <tr>
                     <td class="text-center">1</td>
                     <td class="text-left pl-2">IZIN</td>
-                    <td class="text-center">{{ $absensi->where('status', 'Izin')->count() ?? '' }}</td>
+                    @php
+                        $izin = $absensi->where('status', 'Izin')->count();
+                    @endphp
+                    <td class="text-center">{{ $izin == 0 ? '' : $izin }}</td>
                 </tr>
                 <tr>
                     <td class="text-center">2</td>
                     <td class="text-left pl-2">SAKIT</td>
-                    <td class="text-center">{{ $absensi->where('status', 'Sakit')->count() ?? '' }}</td>
+                    @php
+                        $sakit = $absensi->where('status', 'Sakit')->count();
+                    @endphp
+                    <td class="text-center">{{ $sakit == 0 ? '' : $sakit }}</td>
                 </tr>
                 <tr>
                     <td class="text-center">3</td>
                     <td class="text-left pl-2">ALPA</td>
-                    <td class="text-center">{{ $absensi->where('status', 'Alpa')->count() ?? '' }}</td>
+                    @php
+                        $alpa = $absensi->where('status', 'Alpa')->count();
+                    @endphp
+                    <td class="text-center">{{ $alpa == 0 ? '' : $alpa }}</td>
                 </tr>
                 <tr>
                     <td class="text-center font-bold" colspan="2">JUMLAH</td>
                     <td class="text-center" colspan="2">
-                        {{ $absensi->where('status', 'Izin')->count() + $absensi->where('status', 'Sakit')->count() + $absensi->where('status', 'Alpa')->count() ?? '' }}
+                        @php
+                            $total = $izin + $sakit + $alpa;
+                        @endphp
+                        {{ $total == 0 ? '' : $total }}
                     </td>
                 </tr>
             </tbody>
