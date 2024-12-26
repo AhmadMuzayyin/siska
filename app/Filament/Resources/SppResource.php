@@ -97,7 +97,7 @@ class SppResource extends Resource
 
             // Filter hanya untuk guru berdasarkan kelas yang diwalikan
             if ($user->role == 'guru') {
-                $query->whereHas('santris.kelas', function ($query) use ($user) {
+                $query->whereHas('santri.kelas', function ($query) use ($user) {
                     $query->where('wali_kelas.guru_id', $user->id);
                 });
             }
