@@ -92,7 +92,16 @@ class SppResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return $table->query(function ($query) {
+            $user = Auth::user();
+
+            // Filter hanya untuk guru berdasarkan kelas yang diwalikan
+            if ($user->role == 'guru') {
+                $query->whereHas('santris.kelas', function ($query) use ($user) {
+                    $query->where('wali_kelas.guru_id', $user->id);
+                });
+            }
+        })
             ->columns([
                 TextColumn::make('semester.tahunAkademik.nama')
                     ->label('Tahun Akademik'),
