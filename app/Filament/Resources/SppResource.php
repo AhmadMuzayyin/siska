@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SppResource\Pages;
+use App\Models\Santri;
 use App\Models\Semester;
 use App\Models\Spp;
 use Filament\Forms\Components\DatePicker;
@@ -49,11 +50,20 @@ class SppResource extends Resource
                     ->dehydrated(),
                 Select::make('santri_id')
                     ->label('Santri')
-                    ->relationship('santri', 'nama_lengkap')
+                    ->options(function () {
+                        if (Auth::user()->role == 'guru') {
+                            return Santri::join('kelas', 'kelas.id', '=', 'santris.kelas_id')->where('kelas.guru_id', Auth::user()->id)->pluck('nama_lengkap', 'santris.id');
+                        } else {
+                            return Santri::pluck('nama_lengkap', 'id');
+                        }
+                    })
                     ->searchable()
                     ->preload()
                     ->disableOptionWhen(function ($value, $label) {
-                        $spp = Spp::where('santri_id', $value)->whereIn('status', ['Sudah Lunas', 'Bayar Setengah'])->first();
+                        $spp = Spp::where('santri_id', $value)
+                            ->whereIn('status', ['Sudah Lunas', 'Bayar Cicil'])
+                            ->where('created_at', '>=', now()->startOfMonth())
+                            ->first();
 
                         return $spp;
                     }),
@@ -69,6 +79,7 @@ class SppResource extends Resource
                     ->options([
                         'Belum Lunas' => 'Belum Lunas',
                         'Sudah Lunas' => 'Sudah Lunas',
+                        'Bayar Cicil' => 'Bayar Cicil',
                     ])
                     ->default('Belum Lunas'),
             ]);
