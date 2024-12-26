@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class SppResource extends Resource
@@ -92,16 +93,8 @@ class SppResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->query(function ($query) {
-            $user = Auth::user();
-
-            // Filter hanya untuk guru berdasarkan kelas yang diwalikan
-            if ($user->role == 'guru') {
-                $query->whereHas('santri.kelas', function ($query) use ($user) {
-                    $query->where('wali_kelas.guru_id', $user->id);
-                });
-            }
-        })
+        return $table
+            ->query(static::getTableQuery())
             ->columns([
                 TextColumn::make('semester.tahunAkademik.nama')
                     ->label('Tahun Akademik'),
@@ -164,5 +157,18 @@ class SppResource extends Resource
         $user = Auth::user();
 
         return $user->role == 'keuangan' || $user->role == 'admin' || $user->role == 'guru';
+    }
+    public static function getTableQuery(): Builder
+    {
+        $query = static::query();
+
+        // Filter data hanya untuk guru login
+        if (Auth::user()->role == 'guru') {
+            $query->whereHas('santri.kelas.waliKelas', function ($subQuery) {
+                $subQuery->where('guru_id', Auth::id());
+            });
+        }
+
+        return $query;
     }
 }
