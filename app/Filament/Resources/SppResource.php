@@ -52,7 +52,9 @@ class SppResource extends Resource
                     ->label('Santri')
                     ->options(function () {
                         if (Auth::user()->role == 'guru') {
-                            return Santri::join('kelas', 'kelas.id', '=', 'santris.kelas_id')->where('kelas.guru_id', Auth::user()->id)->pluck('nama_lengkap', 'santris.id');
+                            $santris = Santri::join('kelas', 'kelas.id', '=', 'santris.kelas_id')->where('kelas.guru_id', Auth::user()->id)->pluck('nama_lengkap', 'santris.id');
+                            dd($santris);
+                            return $santris;
                         } else {
                             return Santri::pluck('nama_lengkap', 'id');
                         }
