@@ -16,7 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class SppResource extends Resource
@@ -165,7 +165,7 @@ class SppResource extends Resource
         // Filter data hanya untuk guru login
         if (Auth::user()->role == 'guru') {
             $query->whereHas('santri.kelas.waliKelas', function ($subQuery) {
-                $subQuery->where('guru_id', Auth::id());
+                $subQuery->where('guru_id', Auth::user()->guru->id);
             });
         }
 
