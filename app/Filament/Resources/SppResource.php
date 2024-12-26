@@ -77,7 +77,6 @@ class SppResource extends Resource
                     ->label('Status')
                     ->inline()
                     ->options([
-                        'Belum Lunas' => 'Belum Lunas',
                         'Sudah Lunas' => 'Sudah Lunas',
                         'Bayar Cicil' => 'Bayar Cicil',
                     ])
