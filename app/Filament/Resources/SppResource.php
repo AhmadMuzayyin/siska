@@ -88,7 +88,7 @@ class SppResource extends Resource
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn ($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
+                    ->color(fn($state) => $state == 'Belum Lunas' ? 'danger' : 'success'),
                 TextColumn::make('tanggal')
                     ->label('Tanggal Bayar')
                     ->dateTime('d F Y'),
@@ -135,6 +135,6 @@ class SppResource extends Resource
     {
         $user = Auth::user();
 
-        return $user->role == 'keuangan' || $user->role == 'admin';
+        return $user->role == 'keuangan' || $user->role == 'admin' || $user->role == 'guru';
     }
 }
