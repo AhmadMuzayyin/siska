@@ -87,9 +87,7 @@ class NilaiResource extends Resource
                     ->required(),
                 TextInput::make('predikat')
                     ->label('Predikat')
-                    ->required()
-                    ->hidden()
-                    ->dehydrated(),
+                    ->required(),
                 Textarea::make('keterangan')
                     ->label('Keterangan')
                     ->rows(3)
