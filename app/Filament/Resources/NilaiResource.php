@@ -72,7 +72,23 @@ class NilaiResource extends Resource
                     ->required(),
                 TextInput::make('predikat')
                     ->label('Predikat')
-                    ->required(),
+                    ->default(function ($record) {
+                        $nilai = $record->nilai;
+                        if ($nilai >= 99) {
+                            return 'A+';
+                        } elseif ($nilai >= 82 && $nilai <= 98) {
+                            return 'A';
+                        } elseif ($nilai >= 75 && $nilai <= 81) {
+                            return 'B';
+                        } elseif ($nilai >= 68 && $nilai <= 74) {
+                            return 'C';
+                        } else {
+                            return 'D';
+                        }
+                    })
+                    ->required()
+                    ->disabled()
+                    ->dehydrated(),
                 Textarea::make('keterangan')
                     ->label('Keterangan')
                     ->rows(3)
