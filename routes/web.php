@@ -6,6 +6,7 @@ use App\Http\Controllers\KontakController;
 use App\Http\Controllers\NilaiController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SocialiteController;
+use App\Http\Controllers\SppController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\TahunAkademikController;
 use Illuminate\Support\Facades\Route;
@@ -52,5 +53,8 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(TahunAkademikController::class)->group(function () {
         Route::patch('/tahun-akademik/semester', 'semester')->name('semester.update');
         Route::delete('/tahun-akademik/semester/{id}', 'destroy')->name('semester.destroy');
+    });
+    Route::controller(SppController::class)->as('spp.')->group(function () {
+        Route::get('/spp/print/{kelas}', 'print')->name('print');
     });
 });

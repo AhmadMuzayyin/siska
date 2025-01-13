@@ -17,6 +17,10 @@ class Santri extends Model
     {
         return $this->hasMany(Nilai::class);
     }
+    public function spp()
+    {
+        return $this->hasMany(Spp::class);
+    }
 
     protected static function booted()
     {

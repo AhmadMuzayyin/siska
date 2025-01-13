@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SppResource\Pages;
 use App\Models\Guru;
+use App\Models\Kelas;
 use App\Models\Santri;
 use App\Models\Semester;
 use App\Models\Spp;
@@ -15,6 +16,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +55,7 @@ class SppResource extends Resource
                 Select::make('santri_id')
                     ->label('Santri')
                     ->options(function () {
-                        if (Auth::user()->role == 'guru') {
+                        if (Auth::user()->role === 'guru') {
                             $guru_id = Guru::where('user_id', Auth::id())->first()->id;
                             return Santri::join('kelas', 'kelas.id', '=', 'santris.kelas_id')
                                 ->join('wali_kelas', 'wali_kelas.kelas_id', '=', 'kelas.id')
@@ -68,7 +70,7 @@ class SppResource extends Resource
                     ->preload()
                     ->disableOptionWhen(function ($value, $label) {
                         $spp = Spp::where('santri_id', $value)
-                            ->whereIn('status', ['Sudah Lunas', 'Bayar Cicil'])
+                            ->whereIn('status', ['Sudah Lunas'])
                             ->where('created_at', '>=', now()->startOfMonth())
                             ->first();
 
@@ -98,7 +100,10 @@ class SppResource extends Resource
                 TextColumn::make('semester.tahunAkademik.nama')
                     ->label('Tahun Akademik'),
                 TextColumn::make('santri.nama_lengkap')
-                    ->label('Santri'),
+                    ->label('Santri')
+                    ->searchable(),
+                TextColumn::make('santri.kelas.nama')
+                    ->label('Kelas'),
                 TextColumn::make('nominal')
                     ->label('Nominal')
                     ->money('IDR'),

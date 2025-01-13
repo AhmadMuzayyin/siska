@@ -17,7 +17,6 @@
 
         @page {
             size: legal landscape;
-            /* F4 is close to US Legal size */
             margin: 1cm;
         }
 
@@ -26,85 +25,124 @@
             height: 100%;
         }
 
+        .table> :not(caption)>*>* {
+            padding: 0.3rem;
+        }
+
+        .waktu-cell {
+            width: 8%;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        .kelas-cell {
+            width: 8%;
+            vertical-align: middle;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .jadwal-cell {
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
         @media print {
             body {
                 width: 330.2mm;
-                /* F4 height becomes width in landscape */
                 height: 215.9mm;
-                /* F4 width becomes height in landscape */
             }
         }
     </style>
-    <title>Print Jadwal Pelajaran</title>
+    <title>Jadwal Kegiatan Santri</title>
 </head>
 
-
 <body class="p-2">
-    <div class="d-flex align-items-center mb-4 position-relative">
-        <img src="{{ asset($logo) }}" alt="Logo Sekolah"
-            style="height: 120px; width: auto; position: absolute; left: 50px;">
-        <div class="text-center flex-grow-1 mx-auto" style="max-width: 800px;">
-            <h5 class="m-0  text-center" style="font-size: 1.1rem;">
-                JADWAL PELAJARAN
-            </h5>
-            <h5 class="m-0 text-center" style="font-size: 1rem;">MADRASAH DINIYAH TAKMILIYAH AWWALIYAH (MDTA)</h5>
-            <h6 class="m-0 fw-bold text-center" style="font-size: 1rem;">
-                {{ $title ?? '' }} {{ $tahunAkademik?->nama }}
-            </h6>
-        </div>
+    <div class="text-center mb-4">
+        <h5 class="m-0" style="font-size: 1.1rem;">JADWAL KEGIATAN SANTRI</h5>
+        <h5 class="m-0" style="font-size: 1rem;">MADRASAH DINIYAH TAKMILIYA AWWALIYAH</h5>
+        <h6 class="m-0 fw-bold" style="font-size: 1rem;">MADRASATUL QUR'AN AL-AMIN</h6>
     </div>
-    @php
-        $kelas_id = [];
-    @endphp
+
     <table class="table table-bordered table-sm">
         <thead>
             <tr>
-                <th rowspan="2" class="text-center align-middle" style="font-size: 0.9rem; width: 8%;">No</th>
-                <th rowspan="2" class="text-center align-middle" style="font-size: 0.9rem; width: 8%;">Hari</th>
-                <th colspan="12" class="text-center text-uppercase" style="font-size: 0.9rem;">Kelas & Wali Kelas
-                </th>
-            </tr>
-            <tr>
-                @foreach ($kelas as $kelas)
-                    @php
-                        $kelas_id[] = $kelas->id;
-                    @endphp
-                    <td class="text-center text-uppercase" style="font-size: 0.85rem; width: 7%;">
-                        <span class="d-block fw-bold">{{ $kelas->nama }}</span>
-                        <span class="d-block text-muted">
-                            {{ $kelas->waliKelas?->guru->gender == 'Laki-laki' ? 'Ustadz' : 'Ustadzah' }}
-                            {{ $kelas->waliKelas?->guru->user->name }}
-                        </span>
-                    </td>
+                <th class="text-center waktu-cell">Waktu</th>
+                <th class="text-center kelas-cell">Kelas</th>
+                @foreach (['Sabtu', 'Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis'] as $hari)
+                    <th class="text-center" style="font-size: 0.9rem;">{{ $hari }}</th>
                 @endforeach
             </tr>
         </thead>
         <tbody>
-            @php
-                $hari = ['Sabtu', 'Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis'];
-            @endphp
-            @foreach ($hari as $index => $h)
+            <!-- Blok Waktu 14.54 - 15.40 -->
+            <tr>
+                <td rowspan="1" class="waktu-cell text-center">14.54 - 15.40</td>
+                <td rowspan="1" class="kelas-cell">Semua Santri</td>
+                @for ($i = 0; $i < 6; $i++)
+                    <td class="jadwal-cell">
+                        <div>Rotibul Haddad</div>
+                        <div>Fashohah</div>
+                        <div>Gharib</div>
+                    </td>
+                @endfor
+            </tr>
+
+            <!-- Blok Waktu 15.40 - 16.40 -->
+            <tr>
+                <td rowspan="1" class="waktu-cell text-center">15.40 - 16.40</td>
+                <td rowspan="1" class="kelas-cell">Semua Santri</td>
+                @for ($i = 0; $i < 6; $i++)
+                    <td class="jadwal-cell">
+                        <div>Suara & Lagu</div>
+                        <div>Teori Ilmu Tajwid</div>
+                        <div>Khotthul Jamil</div>
+                    </td>
+                @endfor
+            </tr>
+
+            <!-- Blok Waktu 17.10 - 18.10 -->
+            <tr>
+                <td rowspan="6" class="waktu-cell text-center">17.10 - 18.10</td>
+                {{-- <td class="kelas-cell">TPQ</td>
+                @foreach ($jadwalPelajaran as $jadwal)
+                    @if ($jadwal->kelas_id === 'TPQ')
+                        <td class="jadwal-cell">
+                            <div>{{ $jadwal->mapel->nama }}</div>
+                            <div class="text-muted">{{ $jadwal->guru->user->name }}</div>
+                        </td>
+                    @endif
+                @endforeach --}}
+            </tr>
+            @foreach (['Shifir', '1 MDTA', '2 MDTA', '3 MDTA', '4 MDTA'] as $kelasNama)
                 <tr>
-                    <td class="text-center" style="font-size: 0.85rem;">{{ $index + 1 }}</td>
-                    <td style="font-size: 0.85rem;">{{ $h }}</td>
-                    @foreach ($jadwalPelajaran as $item)
-                        @if (in_array($item->kelas_id, $kelas_id) && $item->hari == $h)
-                            <th class="text-center text-uppercase" style="font-size: 0.85rem;">
-                                <span class="d-block">{{ $item->mapel->nama }}</span>
-                                <span class="d-block text-muted fw-normal">{{ $item->guru->user->name }}</span>
-                            </th>
+                    <td class="kelas-cell">{{ $kelasNama }}</td>
+                    @foreach ($jadwalPelajaran as $jadwal)
+                        @if ($jadwal->kelas->nama == $kelasNama)
+                            <td class="jadwal-cell">
+                                <div>{{ $jadwal->mapel->nama }}</div>
+                                {{-- <div class="text-muted">{{ $jadwal->guru->user->name }}</div> --}}
+                            </td>
                         @endif
                     @endforeach
                 </tr>
             @endforeach
+
+            <!-- Blok Waktu 18.10 - 19.00 -->
+            <tr>
+                <td rowspan="1" class="waktu-cell text-center">18.10 - 19.00</td>
+                <td rowspan="1" class="kelas-cell">Semua Santri</td>
+                @for ($i = 0; $i < 6; $i++)
+                    <td class="jadwal-cell">
+                        <div>Praktek Sholat</div>
+                        <div>Juz 30</div>
+                        <div>Juz 29</div>
+                        <div>Juz 1</div>
+                    </td>
+                @endfor
+            </tr>
         </tbody>
     </table>
-    {{-- <script>
-        window.print();
-        setTimeout(() => {
-            window.close();
-        }, 1000);
-    </script> --}}
 </body>
 
 </html>
