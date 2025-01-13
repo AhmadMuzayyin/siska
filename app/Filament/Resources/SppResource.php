@@ -67,15 +67,7 @@ class SppResource extends Resource
                         }
                     })
                     ->searchable()
-                    ->preload()
-                    ->disableOptionWhen(function ($value, $label) {
-                        $spp = Spp::where('santri_id', $value)
-                            ->whereIn('status', ['Sudah Lunas'])
-                            ->where('created_at', '>=', now()->startOfMonth())
-                            ->first();
-
-                        return $spp;
-                    }),
+                    ->preload(),
                 DatePicker::make('tanggal')
                     ->label('Tanggal')
                     ->required(),
