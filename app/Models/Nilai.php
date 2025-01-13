@@ -18,8 +18,8 @@ class Nilai extends Model
         return $this->belongsTo(Santri::class);
     }
 
-    public function jadwalPelajaran()
+    public function mapel()
     {
-        return $this->belongsTo(JadwalPelajaran::class);
+        return $this->belongsTo(Mapel::class);
     }
 }

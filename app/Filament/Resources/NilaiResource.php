@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\NilaiResource\Pages;
 use App\Models\JadwalPelajaran;
+use App\Models\Mapel;
 use App\Models\Nilai;
 use App\Models\Semester;
 use Filament\Forms\Components\Select;
@@ -56,11 +57,13 @@ class NilaiResource extends Resource
                     ->relationship('santri', 'nama_lengkap')
                     ->searchable()
                     ->preload(),
-                Select::make('jadwal_pelajaran_id')
+                Select::make('mapel_id')
                     ->label('Mata Pelajaran')
                     ->required()
                     ->options(function () {
-                        return JadwalPelajaran::all()->pluck('mapel.nama', 'id');
+                        return Mapel::distinct()
+                            ->get()
+                            ->pluck('nama', 'id');
                     })
                     ->preload()
                     ->searchable(),
@@ -108,7 +111,7 @@ class NilaiResource extends Resource
                     ->label('Semester'),
                 TextColumn::make('santri.nama_lengkap')
                     ->label('Santri'),
-                TextColumn::make('jadwalPelajaran.mapel.nama')
+                TextColumn::make('mapel.nama')
                     ->label('Mata Pelajaran'),
                 TextColumn::make('nilai')
                     ->label('Nilai Angka'),
