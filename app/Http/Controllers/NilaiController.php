@@ -12,7 +12,7 @@ class NilaiController extends Controller
     {
         $nilai = Nilai::join('semesters', 'nilais.semester_id', '=', 'semesters.id')
             ->join('tahun_akademiks', 'semesters.tahun_akademik_id', '=', 'tahun_akademiks.id')
-            ->join('jadwal_pelajarans', 'nilais.jadwal_pelajaran_id', '=', 'jadwal_pelajarans.id')
+            ->join('mapels', 'nilais.mapel_id', '=', 'mapels.id')
             ->join('santris', 'nilais.santri_id', '=', 'santris.id')
             ->where('semesters.is_aktif', true)
             ->where('santri_id', $santri->id)

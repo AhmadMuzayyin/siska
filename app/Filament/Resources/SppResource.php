@@ -81,15 +81,15 @@ class SppResource extends Resource
                     ->required(),
                 TextInput::make('nominal')
                     ->label('Nominal')
-                    ->required(),
+                    ->required()
+                    ->numeric(),
                 ToggleButtons::make('status')
                     ->label('Status')
                     ->inline()
                     ->options([
                         'Sudah Lunas' => 'Sudah Lunas',
-                        'Bayar Cicil' => 'Bayar Cicil',
                     ])
-                    ->default('Belum Lunas'),
+                    ->default('Sudah Lunas'),
             ]);
     }
 

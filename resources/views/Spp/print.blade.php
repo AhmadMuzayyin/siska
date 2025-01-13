@@ -72,12 +72,6 @@
                                     foreach ($spp as $data) {
                                         if ($data->status == 'Sudah Lunas') {
                                             $status = 'Lunas';
-                                            $tanggal = $data->tanggal
-                                                ? date('d-m', strtotime($data->tanggal))
-                                                : date('d-m');
-                                            $nominal = $data->nominal / 12;
-                                        } else {
-                                            $status = 'Belum Lunas';
                                             $tanggal = date('d-m', strtotime($data->tanggal));
                                             $nominal = $data->nominal;
                                         }

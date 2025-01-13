@@ -105,9 +105,9 @@
             @foreach ($nilai as $item)
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
-                    <td>{{ $item->jadwalPelajaran->mapel->nama ?? '' }}</td>
-                    <td class="text-right">{{ $item->jadwalPelajaran->mapel->kitab ?? '' }}</td>
-                    <td class="text-center">{{ $item->jadwalPelajaran->mapel->kkm ?? '' }}</td>
+                    <td>{{ $item->mapel->nama ?? '' }}</td>
+                    <td class="text-right">{{ $item->mapel->kitab ?? '' }}</td>
+                    <td class="text-center">{{ $item->mapel->kkm ?? '' }}</td>
                     <td class="text-center font-bold">{{ $item->nilai ?? '' }}</td>
                     <td colspan="2" class="text-center">{{ $item->nilai_huruf ?? '' }}</td>
                     <td class="text-center font-bold">{{ $item->predikat ?? '' }}</td>
