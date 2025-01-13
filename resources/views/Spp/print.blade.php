@@ -49,6 +49,9 @@
                     @endforeach
                 </tr>
             </thead>
+            @php
+                $total_per_bulan = array_fill(1, 12, 0); // Inisialisasi array total per bulan
+            @endphp
             <tbody>
                 @foreach ($santris as $item)
                     <tr>
@@ -62,21 +65,24 @@
                                     ->whereYear('created_at', date('Y'))
                                     ->get();
                                 $status = '';
-                                $tanggal = 0;
+                                $tanggal = '';
                                 $nominal = 0;
+
                                 if ($spp->count() > 0) {
-                                    foreach ($spp as $key => $data) {
+                                    foreach ($spp as $data) {
                                         if ($data->status == 'Sudah Lunas') {
                                             $status = 'Lunas';
                                             $tanggal = $data->tanggal
                                                 ? date('d-m', strtotime($data->tanggal))
                                                 : date('d-m');
-                                            $nominal = number_format($data->nominal / 12, 0, ',', '.');
+                                            $nominal = $data->nominal / 12;
                                         } else {
                                             $status = 'Belum Lunas';
                                             $tanggal = date('d-m', strtotime($data->tanggal));
-                                            $nominal = number_format($data->nominal, 0, ',', '.');
+                                            $nominal = $data->nominal;
                                         }
+                                        // Menambahkan ke total per bulan
+                                        $total_per_bulan[$key] += $nominal;
                                     }
                                 }
                             @endphp
@@ -86,16 +92,18 @@
                                 </span>
                                 <hr class="border-dashed border-gray-800">
                                 <span>
-                                    {{ $nominal }}
+                                    {{ number_format($nominal, 0, ',', '.') }}
                                 </span>
                             </td>
                         @endforeach
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="2" class="text-center">Jumlah</td>
+                    <td colspan="2" class="text-center font-bold">Jumlah</td>
                     @foreach ($bulan as $key => $bln)
-                        <td class="border border-gray-800 p-2 text-center">1</td>
+                        <td class="border border-gray-800 p-2 text-center font-bold">
+                            {{ number_format($total_per_bulan[$key], 0, ',', '.') }}
+                        </td>
                     @endforeach
                 </tr>
             </tbody>
