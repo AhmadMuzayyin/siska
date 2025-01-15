@@ -24,6 +24,10 @@ class Guru extends Model
     {
         return $this->hasOne(Kelas::class);
     }
+    public function waliKelas()
+    {
+        return $this->hasOne(waliKelas::class);
+    }
 
     protected static function booted()
     {

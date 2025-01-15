@@ -14,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class SemesterResource extends Resource
 {
@@ -79,7 +80,7 @@ class SemesterResource extends Resource
                     ->label('Status')
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->color(fn ($state) => $state ? 'success' : 'danger')
+                    ->color(fn($state) => $state ? 'success' : 'danger')
                     ->action(function (Semester $record) {
                         $record->tahunAkademik->semester()
                             ->where('id', '!=', $record->id)
@@ -128,5 +129,9 @@ class SemesterResource extends Resource
             'create' => Pages\CreateSemester::route('/create'),
             'edit' => Pages\EditSemester::route('/{record}/edit'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        return Auth::user()->role == 'admin';
     }
 }

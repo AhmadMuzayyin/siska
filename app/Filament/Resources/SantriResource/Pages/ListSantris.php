@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SantriResource\Pages;
 use App\Filament\Resources\SantriResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 
 class ListSantris extends ListRecords
 {
@@ -18,7 +19,8 @@ class ListSantris extends ListRecords
             Actions\CreateAction::make()
                 ->label('Tambah Santri')
                 ->icon('phosphor-plus')
-                ->color('success'),
+                ->color('success')
+                ->hidden(fn($record) => Auth::user()->role == 'guru'),
         ];
     }
 }

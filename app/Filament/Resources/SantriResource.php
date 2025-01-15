@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SantriResource\Pages;
+use App\Models\Kelas;
 use App\Models\Santri;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Section;
@@ -138,7 +139,15 @@ class SantriResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('kelas_id')
-                    ->relationship('kelas', 'nama')
+                    ->options(function () {
+                        if (Auth::user()->role === 'guru') {
+                            return Kelas::whereHas('waliKelas', function ($queryWaliKelas) {
+                                $queryWaliKelas->where('guru_id', Auth::user()->guru->id);
+                            })->get()->pluck('nama', 'id');
+                        } else {
+                            return Kelas::all()->pluck('nama', 'id');
+                        }
+                    })
                     ->label('Kelas'),
                 SelectFilter::make('jenis_kelamin')
                     ->options([
@@ -156,13 +165,15 @@ class SantriResource extends Resource
                     ->label('Edit')
                     ->modalHeading('Edit Data Santri')
                     ->modalSubmitActionLabel('Perbarui')
-                    ->modalCancelActionLabel('Batal'),
+                    ->modalCancelActionLabel('Batal')
+                    ->hidden(fn($record) => Auth::user()->role == 'guru'),
                 Tables\Actions\DeleteAction::make()
                     ->label('Hapus')
                     ->modalHeading('Hapus Data Santri')
                     ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
                     ->modalCancelActionLabel('Batal')
-                    ->modalSubmitActionLabel('Hapus'),
+                    ->modalSubmitActionLabel('Hapus')
+                    ->hidden(fn($record) => Auth::user()->role == 'guru'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -191,6 +202,23 @@ class SantriResource extends Resource
     {
         $user = Auth::user();
 
-        return $user->role == 'admin';
+        return $user->role == 'admin' || $user->role == 'guru';
+    }
+
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery(); // Ambil query default
+        $user = Auth::user();
+        if ($user->role === 'guru') {
+            $guruId = $user->guru->id;
+            $query->with('kelas')->whereHas('kelas', function ($queryKelas) use ($guruId) {
+                $queryKelas->whereHas('waliKelas', function ($queryWaliKelas) use ($guruId) {
+                    $queryWaliKelas->where('guru_id', $guruId);
+                });
+            });
+            return $query;
+        } else {
+            return $query;
+        }
     }
 }
