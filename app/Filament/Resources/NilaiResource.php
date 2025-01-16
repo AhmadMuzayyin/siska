@@ -56,18 +56,7 @@ class NilaiResource extends Resource
                     ->label('Santri')
                     ->required()
                     ->options(function () {
-                        if (Auth::user()->role == 'admin') {
-                            return Santri::all()->pluck('nama_lengkap', 'id');
-                        } else {
-                            $guruId = Auth::user()->guru->id;
-                            return Santri::with('kelas')
-                                ->whereHas('kelas', function ($queryKelas) use ($guruId) {
-                                    $queryKelas->whereHas('waliKelas', function ($queryWaliKelas) use ($guruId) {
-                                        $queryWaliKelas->where('guru_id', $guruId);
-                                    });
-                                })
-                                ->get()->pluck('nama_lengkap', 'id');
-                        }
+                        return Santri::all()->pluck('nama_lengkap', 'id');
                     })
                     ->searchable()
                     ->preload(),
@@ -178,21 +167,5 @@ class NilaiResource extends Resource
         $user = Auth::user();
 
         return $user->role == 'admin' || $user->role == 'guru';
-    }
-    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
-    {
-        $query = parent::getEloquentQuery();
-        $user = Auth::user();
-        if ($user->role === 'guru') {
-            $guruId = $user->guru->id;
-            $query->with('santri')->whereHas('santri.kelas', function ($queryKelas) use ($guruId) {
-                $queryKelas->whereHas('waliKelas', function ($queryWaliKelas) use ($guruId) {
-                    $queryWaliKelas->where('guru_id', $guruId);
-                });
-            });
-            return $query;
-        } else {
-            return $query;
-        }
     }
 }
