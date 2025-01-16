@@ -237,12 +237,19 @@
         </thead>
         <tbody>
             <tr>
-                <td class="text-center note">
-                    اَلّٰلهُمَّ امْلَاءْ قُلُوْبَ تَلَامِيْذِنَا وَتَلَامِيْذَاتِنَا نُوْرًا وَحِكْمَةً وَاَهْلِهِمْ
-                    لِقَبُوْلِ نِعْمَةٍ وَاَصْلِحْهُمْ وَاَصْلِحْ بِهِمُ الْأُمَّةُ
-                    Artinya : "Ya Allah, penuhilah hati santri-santri kami dengan cahaya dan hikmah, dan jadikan mereka
-                    hamba-hamba-Mu yang pantas menerima nikmat, dan perbaikilah diri mereka dan perbaiki pula umat ini
-                    melalui mereka."
+                <td class="text-center">
+                    <span class="note text-md mt-2">
+                        اَلّٰلهُمَّ امْلَاءْ قُلُوْبَ تَلَامِيْذِنَا وَتَلَامِيْذَاتِنَا نُوْرًا وَحِكْمَةً وَاَهْلِهِمْ
+                        لِقَبُوْلِ نِعْمَةٍ وَاَصْلِحْهُمْ وَاَصْلِحْ بِهِمُ الْأُمَّةُ
+                    </span>
+                    <span class="block text-md note mt-2">
+                        Artinya : "Ya Allah, penuhilah hati santri-santri kami dengan cahaya dan
+                        hikmah, dan jadikan
+                        mereka
+                        hamba-hamba-Mu yang pantas menerima nikmat, dan perbaikilah diri mereka dan perbaiki pula umat
+                        ini
+                        melalui mereka."
+                    </span>
                 </td>
             </tr>
         </tbody>

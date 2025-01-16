@@ -41,7 +41,12 @@ class ManageNilais extends ManageRecords
                 ->color('warning')
                 ->modalContent(fn($record) => view('Nilai.rekap'))
                 ->modalSubmitAction(false)
-                ->modalCancelAction(false),
+                ->modalCancelAction(false)->hidden(function () {
+                    if (Auth::user()->role == 'admin' || Auth::user()->role == 'guru') {
+                        return false;
+                    }
+                    return true;
+                }),
             Actions\CreateAction::make()
                 ->label('Tambah Nilai')
                 ->icon('phosphor-plus')
