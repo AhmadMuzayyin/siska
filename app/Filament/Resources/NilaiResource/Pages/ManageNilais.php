@@ -17,20 +17,31 @@ class ManageNilais extends ManageRecords
     {
         return [
             Actions\Action::make('print')
-                ->label('Print')
+                ->label(function () {
+                    if (Auth::user()->role == 'admin') {
+                        return 'Print';
+                    }
+                    return 'Rekap Nilai';
+                })
                 ->button()
                 ->color('info')
                 ->icon('phosphor-printer')
-                ->modalContent(fn ($record) => view('Nilai.modal'))
+                ->modalContent(fn($record) => view('Nilai.modal'))
                 ->modalSubmitAction(false)
                 ->modalCancelAction(false)
                 ->hidden(function () {
-                    if (Auth::user()->role != 'admin') {
-                        return true;
+                    if (Auth::user()->role == 'admin') {
+                        return false;
                     }
-
-                    return false;
+                    return true;
                 }),
+            Actions\Action::make('rekap')
+                ->label('Rekap')
+                ->icon('phosphor-file-text')
+                ->color('warning')
+                ->modalContent(fn($record) => view('Nilai.rekap'))
+                ->modalSubmitAction(false)
+                ->modalCancelAction(false),
             Actions\CreateAction::make()
                 ->label('Tambah Nilai')
                 ->icon('phosphor-plus')

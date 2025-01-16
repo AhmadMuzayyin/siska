@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
     <style>
         * {
             font-family: 'Poppins', sans-serif;
@@ -33,6 +34,15 @@
                 height: 330.2mm;
                 /* F4 height in portrait */
             }
+        }
+
+        .note {
+            font-family: Calibri;
+            font-size: 15px;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: 100;
+            line-height: 16.5px;
         }
     </style>
     <title>Print Laporan Hasil Belajar</title>
@@ -106,7 +116,7 @@
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $item->mapel->nama ?? '' }}</td>
-                    <td class="text-right">{{ $item->mapel->kitab ?? '' }}</td>
+                    <td class="text-right note">{{ $item->mapel->kitab ?? '' }}</td>
                     <td class="text-center">{{ $item->mapel->kkm ?? '' }}</td>
                     <td class="text-center font-bold">{{ $item->nilai ?? '' }}</td>
                     <td colspan="2" class="text-center">{{ $item->nilai_huruf ?? '' }}</td>
@@ -227,7 +237,13 @@
         </thead>
         <tbody>
             <tr>
-                <td class="text-center">Pertahankan Prestasimu Dan Selalu Bersikap Baik Kepada Teman</td>
+                <td class="text-center note">
+                    اَلّٰلهُمَّ امْلَاءْ قُلُوْبَ تَلَامِيْذِنَا وَتَلَامِيْذَاتِنَا نُوْرًا وَحِكْمَةً وَاَهْلِهِمْ
+                    لِقَبُوْلِ نِعْمَةٍ وَاَصْلِحْهُمْ وَاَصْلِحْ بِهِمُ الْأُمَّةُ
+                    Artinya : "Ya Allah, penuhilah hati santri-santri kami dengan cahaya dan hikmah, dan jadikan mereka
+                    hamba-hamba-Mu yang pantas menerima nikmat, dan perbaikilah diri mereka dan perbaiki pula umat ini
+                    melalui mereka."
+                </td>
             </tr>
         </tbody>
     </table>
@@ -245,7 +261,7 @@
                 <div>NIP. - </div>
             </td>
             <td class="w-1/3 text-center">
-                Banyuangi, {{ date('d F Y') }}
+                Banyuwangi, {{ date('d F Y') }}
                 <div class="mt-4">Kepala Madrasah</div>
                 <div class="mt-16 font-bold underline">
                     {{ strtoupper(\App\Models\User::where('role', 'kepala')->first()->name ?? '') }}

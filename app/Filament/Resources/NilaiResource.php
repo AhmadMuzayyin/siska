@@ -6,6 +6,7 @@ use App\Filament\Resources\NilaiResource\Pages;
 use App\Models\JadwalPelajaran;
 use App\Models\Mapel;
 use App\Models\Nilai;
+use App\Models\Santri;
 use App\Models\Semester;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -54,7 +55,20 @@ class NilaiResource extends Resource
                 Select::make('santri_id')
                     ->label('Santri')
                     ->required()
-                    ->relationship('santri', 'nama_lengkap')
+                    ->options(function () {
+                        if (Auth::user()->role == 'admin') {
+                            return Santri::all()->pluck('nama_lengkap', 'id');
+                        } else {
+                            $guruId = Auth::user()->guru->id;
+                            return Santri::with('kelas')
+                                ->whereHas('kelas', function ($queryKelas) use ($guruId) {
+                                    $queryKelas->whereHas('waliKelas', function ($queryWaliKelas) use ($guruId) {
+                                        $queryWaliKelas->where('guru_id', $guruId);
+                                    });
+                                })
+                                ->get()->pluck('nama_lengkap', 'id');
+                        }
+                    })
                     ->searchable()
                     ->preload(),
                 Select::make('mapel_id')
@@ -164,5 +178,21 @@ class NilaiResource extends Resource
         $user = Auth::user();
 
         return $user->role == 'admin' || $user->role == 'guru';
+    }
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = Auth::user();
+        if ($user->role === 'guru') {
+            $guruId = $user->guru->id;
+            $query->with('santri')->whereHas('santri.kelas', function ($queryKelas) use ($guruId) {
+                $queryKelas->whereHas('waliKelas', function ($queryWaliKelas) use ($guruId) {
+                    $queryWaliKelas->where('guru_id', $guruId);
+                });
+            });
+            return $query;
+        } else {
+            return $query;
+        }
     }
 }
