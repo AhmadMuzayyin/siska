@@ -76,16 +76,16 @@ class NilaiResource extends Resource
                     ->numeric()
                     ->live(onBlur: true)
                     ->afterStateUpdated(function (Set $set, ?int $state) {
-                        if ($state >= 99) {
-                            $set('predikat', 'A+');
-                        } elseif ($state >= 82 && $state <= 98) {
+                        if ($state >= 91 && $state <= 100) {
                             $set('predikat', 'A');
-                        } elseif ($state >= 75 && $state <= 81) {
+                        } elseif ($state >= 81 && $state <= 90) {
                             $set('predikat', 'B');
-                        } elseif ($state >= 68 && $state <= 74) {
+                        } elseif ($state >= 71 && $state <= 80) {
                             $set('predikat', 'C');
-                        } else {
+                        } elseif ($state >= 61 && $state <= 70) {
                             $set('predikat', 'D');
+                        } else {
+                            $set('predikat', 'E');
                         }
                     }),
                 TextInput::make('nilai_huruf')
