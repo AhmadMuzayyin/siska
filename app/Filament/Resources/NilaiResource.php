@@ -84,8 +84,10 @@ class NilaiResource extends Resource
                             $set('predikat', 'C');
                         } elseif ($state >= 61 && $state <= 70) {
                             $set('predikat', 'D');
-                        } else {
+                        } elseif ($state > 0 && $state <= 60) {
                             $set('predikat', 'E');
+                        } else {
+                            $set('predikat', '-');
                         }
                     }),
                 TextInput::make('nilai_huruf')
@@ -113,7 +115,10 @@ class NilaiResource extends Resource
                 TextColumn::make('semester.tipe')
                     ->label('Semester'),
                 TextColumn::make('santri.nama_lengkap')
-                    ->label('Santri'),
+                    ->label('Santri')
+                    ->searchable(),
+                TextColumn::make('santri.kelas.nama')
+                    ->label('Kelas'),
                 TextColumn::make('mapel.nama')
                     ->label('Mata Pelajaran'),
                 TextColumn::make('nilai')
