@@ -46,6 +46,11 @@ class ManageNilais extends ManageRecords
                         return false;
                     }
                     return true;
+                })->hidden(function () {
+                    if (Auth::user()->role == 'admin') {
+                        return true;
+                    }
+                    return false;
                 }),
             Actions\CreateAction::make()
                 ->label('Tambah Nilai')
