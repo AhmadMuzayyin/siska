@@ -72,15 +72,16 @@
             LAPORAN HASIL BELAJAR
         </h1>
     </div>
-    <div class="grid grid-cols-4 gap-4 w-full mt-4">
+    <div class="grid grid-cols-[auto,1fr,auto,auto] gap-4 w-full mt-4">
         <div>
             <p class="m-0">NAMA SANTRI</p>
             <p class="m-0">NOMOR INDUK</p>
             <p class="m-0">ALAMAT</p>
         </div>
         <div>
-            <p class="m-0 font-bold text-sm whitespace-nowrap">:
-                {{ strtoupper($nilai[0]->santri->nama_lengkap ?? '') }}</p>
+            <p class="m-0 font-bold text-sm whitespace-nowrap">
+                : {{ strtoupper($nilai[0]->santri->nama_lengkap ?? '') }}
+            </p>
             <p class="m-0">: {{ $nilai[0]->santri->noinduk ?? '' }}</p>
             <p class="m-0">: {{ Str::words($nilai[0]->santri->alamat ?? '', 2, '') }}</p>
         </div>
@@ -89,12 +90,13 @@
             <p class="m-0">SEMESTER</p>
             <p class="m-0">TAHUN PELAJARAN</p>
         </div>
-        <div>
+        <div class="pl-8">
             <p class="m-0">: {{ strtoupper($nilai[0]->santri->kelas->nama ?? '') }}</p>
             <p class="m-0">: {{ $nilai[0]->semester->tipe ?? '' }}</p>
             <p class="m-0">: {{ $nilai[0]->semester->tahunAkademik->nama ?? '' }}</p>
         </div>
     </div>
+
     <table
         class="w-full border-collapse border border-gray-300 text-md p-2 [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-4">
         <thead>
