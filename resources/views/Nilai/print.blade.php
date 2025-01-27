@@ -79,11 +79,12 @@
             <p class="m-0">ALAMAT</p>
         </div>
         <div>
-            <p class="m-0 font-bold">: {{ strtoupper($nilai[0]->santri->nama_lengkap ?? '') }}</p>
+            <p class="m-0 font-bold text-sm whitespace-nowrap">:
+                {{ strtoupper($nilai[0]->santri->nama_lengkap ?? '') }}</p>
             <p class="m-0">: {{ $nilai[0]->santri->noinduk ?? '' }}</p>
             <p class="m-0">: {{ Str::words($nilai[0]->santri->alamat ?? '', 2, '') }}</p>
         </div>
-        <div>
+        <div class="pl-8">
             <p class="m-0">KELAS</p>
             <p class="m-0">SEMESTER</p>
             <p class="m-0">TAHUN PELAJARAN</p>
@@ -95,16 +96,16 @@
         </div>
     </div>
     <table
-        class="w-full border-collapse border border-gray-300 text-sm [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-2">
+        class="w-full border-collapse border border-gray-300 text-md p-2 [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-4">
         <thead>
             <tr>
-                <th rowspan="2">NO</th>
-                <th rowspan="2">MATA PELAJARAN</th>
-                <th rowspan="2">KITAB</th>
-                <th rowspan="2">KKM</th>
-                <th colspan="3">NILAI</th>
-                <th rowspan="2">PREDIKAT</th>
-                <th rowspan="2">KET.</th>
+                <th class="" rowspan="2">NO</th>
+                <th class="" rowspan="2">MATA PELAJARAN</th>
+                <th class="" rowspan="2">KITAB</th>
+                <th class="" rowspan="2">KKM</th>
+                <th class="" colspan="3">NILAI</th>
+                <th class="" rowspan="2">PREDIKAT</th>
+                <th class="" rowspan="2">KET.</th>
             </tr>
             <tr>
                 <td class="font-bold text-center">ANGKA</td>
@@ -229,7 +230,7 @@
         </table>
     </div>
     <table
-        class="w-full border-collapse border border-gray-300 text-sm [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-2">
+        class="w-full border-collapse border border-gray-300 text-md [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-2">
         <thead>
             <tr>
                 <th>CATATAN / SARAN WALI KELAS</th>
@@ -238,7 +239,7 @@
         <tbody>
             <tr>
                 <td class="text-center">
-                    <span class="note text-md mt-2">
+                    <span class="note text-md font-bold mt-2">
                         اَلّٰلهُمَّ امْلَاءْ قُلُوْبَ تَلَامِيْذِنَا وَتَلَامِيْذَاتِنَا نُوْرًا وَحِكْمَةً وَاَهْلِهِمْ
                         لِقَبُوْلِ نِعْمَةٍ وَاَصْلِحْهُمْ وَاَصْلِحْ بِهِمُ الْأُمَّةُ
                     </span>
@@ -254,7 +255,7 @@
             </tr>
         </tbody>
     </table>
-    <table class="w-full mt-8 text-sm">
+    <table class="w-full mt-8 text-md">
         <tr>
             <td class="w-1/3 text-center">
                 Orang Tua / Wali
