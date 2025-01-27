@@ -257,26 +257,57 @@
             </tr>
         </tbody>
     </table>
-    <table class="w-full mt-8 text-md">
+    <table class="w-full mt-20 text-md border-collapse">
         <tr>
-            <td class="w-1/3 text-center">
-                Orang Tua / Wali
-                <div class="mt-20 font-bold underline">{{ strtoupper($nilai[0]->santri->nama_ayah ?? '') }}</div>
+            <!-- Kolom Orang Tua / Wali -->
+            <td class="w-1/3 text-center align-top">
+                <table class="w-full">
+                    <tr>
+                        <td class="pb-16">Orang Tua / Wali</td>
+                    </tr>
+                    <tr>
+                        <td class="pt-16 font-bold underline">
+                            {{ strtoupper($nilai[0]->santri->nama_ayah ?? '') }}
+                        </td>
+                    </tr>
+                </table>
             </td>
-            <td class="w-1/3 text-center">
-                Wali Kelas
-                <div class="mt-20 font-bold underline">
-                    {{ strtoupper($nilai[0]->santri->kelas->guru->user->name ?? '') }}
-                </div>
-                <div>NIP. - </div>
+
+            <!-- Kolom Wali Kelas -->
+            <td class="w-1/3 text-center align-top">
+                <table class="w-full">
+                    <tr>
+                        <td class="pb-16">Wali Kelas</td>
+                    </tr>
+                    <tr>
+                        <td class="pt-16 font-bold underline">
+                            {{ strtoupper($nilai[0]->santri->kelas->guru->user->name ?? '') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pt-2">NIP. -</td>
+                    </tr>
+                </table>
             </td>
-            <td class="w-1/3 text-center">
-                Banyuwangi, {{ date('d F Y') }}
-                <div class="mt-4">Kepala Madrasah</div>
-                <div class="mt-16 font-bold underline">
-                    {{ strtoupper(\App\Models\User::where('role', 'kepala')->first()->name ?? '') }}
-                </div>
-                <div>NIP. </div>
+
+            <!-- Kolom Kepala Madrasah -->
+            <td class="w-1/3 text-center align-top">
+                <table class="w-full">
+                    <tr>
+                        <td class="pb-1">Banyuwangi, {{ date('d F Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Kepala Madrasah</td>
+                    </tr>
+                    <tr>
+                        <td class="pt-24 font-bold underline">
+                            {{ strtoupper(\App\Models\User::where('role', 'kepala')->first()->name ?? '') }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pt-2">NIP.</td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>
