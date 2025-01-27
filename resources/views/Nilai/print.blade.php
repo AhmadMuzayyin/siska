@@ -257,7 +257,7 @@
             </tr>
         </tbody>
     </table>
-    <table class="w-full mt-20 text-md border-collapse">
+    <table class="w-full mt-8 text-md border-collapse">
         <tr>
             <!-- Kolom Orang Tua / Wali -->
             <td class="w-1/3 text-center align-top">
