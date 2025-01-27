@@ -149,7 +149,7 @@
     <div class="flex gap-2">
         {{-- table nilai akhlak --}}
         <table
-            class="w-1/2 border-collapse border border-gray-300 text-sm [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-2">
+            class="w-1/2 border-collapse border border-gray-300 text-sm [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-4">
             <thead>
                 <tr>
                     <th>NO</th>
