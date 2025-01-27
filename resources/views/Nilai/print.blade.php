@@ -187,7 +187,7 @@
         </table>
         {{-- table absensi --}}
         <table
-            class="w-1/2 border-collapse border border-gray-300 text-sm [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-2">
+            class="w-1/2 border-collapse border border-gray-300 text-sm [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-4">
             <thead>
                 <tr>
                     <th>NO</th>
@@ -232,7 +232,7 @@
         </table>
     </div>
     <table
-        class="w-full border-collapse border border-gray-300 text-md [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-2">
+        class="w-full border-collapse border border-gray-300 text-md [&_th]:border [&_th]:border-gray-300 [&_td]:border [&_td]:border-gray-300 [&_th]:border-t-[3px] [&_th]:border-t-black mt-4">
         <thead>
             <tr>
                 <th>CATATAN / SARAN WALI KELAS</th>
@@ -261,53 +261,29 @@
         <tr>
             <!-- Kolom Orang Tua / Wali -->
             <td class="w-1/3 text-center align-top">
-                <table class="w-full">
-                    <tr>
-                        <td class="pb-16">Orang Tua / Wali</td>
-                    </tr>
-                    <tr>
-                        <td class="pt-16 font-bold underline">
-                            {{ strtoupper($nilai[0]->santri->nama_ayah ?? '') }}
-                        </td>
-                    </tr>
-                </table>
+                <div class="mt-9">Orang Tua / Wali</div>
+                <div class="mt-24 font-bold underline">
+                    {{ strtoupper($nilai[0]->santri->nama_ayah ?? '') }}
+                </div>
             </td>
 
             <!-- Kolom Wali Kelas -->
             <td class="w-1/3 text-center align-top">
-                <table class="w-full">
-                    <tr>
-                        <td class="pb-16">Wali Kelas</td>
-                    </tr>
-                    <tr>
-                        <td class="pt-16 font-bold underline">
-                            {{ strtoupper($nilai[0]->santri->kelas->guru->user->name ?? '') }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="pt-2">NIP. -</td>
-                    </tr>
-                </table>
+                <div class="mt-9">Wali Kelas</div>
+                <div class="mt-24 font-bold underline">
+                    {{ strtoupper($nilai[0]->santri->kelas->guru->user->name ?? '') }}
+                </div>
+                <div class="mt-2">NIP. -</div>
             </td>
 
             <!-- Kolom Kepala Madrasah -->
             <td class="w-1/3 text-center align-top">
-                <table class="w-full">
-                    <tr>
-                        <td class="pb-1">Banyuwangi, {{ date('d F Y') }}</td>
-                    </tr>
-                    <tr>
-                        <td>Kepala Madrasah</td>
-                    </tr>
-                    <tr>
-                        <td class="pt-24 font-bold underline">
-                            {{ strtoupper(\App\Models\User::where('role', 'kepala')->first()->name ?? '') }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="pt-2">NIP.</td>
-                    </tr>
-                </table>
+                <div>Banyuwangi, {{ date('d F Y') }}</div>
+                <div class="mt-2">Kepala Madrasah</div>
+                <div class="mt-24 font-bold underline">
+                    {{ strtoupper(\App\Models\User::where('role', 'kepala')->first()->name ?? '') }}
+                </div>
+                <div class="mt-2">NIP.</div>
             </td>
         </tr>
     </table>
