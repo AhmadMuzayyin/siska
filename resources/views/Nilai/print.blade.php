@@ -263,7 +263,7 @@
             <td class="w-1/3 text-center align-top">
                 <div class="mt-9">Orang Tua / Wali</div>
                 <div class="mt-24 font-bold underline">
-                    {{ strtoupper($nilai[0]->santri->nama_ayah ?? '') }}
+                    {{ $nilai[0]->santri->nama_ayah ?? '' }}
                 </div>
             </td>
 
@@ -271,7 +271,7 @@
             <td class="w-1/3 text-center align-top">
                 <div class="mt-9">Wali Kelas</div>
                 <div class="mt-24 font-bold underline">
-                    {{ strtoupper($nilai[0]->santri->kelas->guru->user->name ?? '') }}
+                    {{ $nilai[0]->santri->kelas->guru->user->name ?? '' }}
                 </div>
                 <div class="mt-2">NIP. -</div>
             </td>
@@ -281,7 +281,7 @@
                 <div>Banyuwangi, {{ date('d F Y') }}</div>
                 <div class="mt-2">Kepala Madrasah</div>
                 <div class="mt-24 font-bold underline">
-                    {{ strtoupper(\App\Models\User::where('role', 'kepala')->first()->name ?? '') }}
+                    {{ \App\Models\User::where('role', 'kepala')->first()->name ?? '' }}
                 </div>
                 <div class="mt-2">NIP.</div>
             </td>
