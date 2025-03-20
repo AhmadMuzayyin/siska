@@ -14,7 +14,7 @@
         "codeat3/blade-humbleicons": "^1.0",
         "codeat3/blade-phosphor-icons": "^2.2",
         "filament/filament": "^3.2",
-        "guava/filament-modal-relation-managers": "^1.0",
+        "guava/filament-modal-relation-managers": "^1.2",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",

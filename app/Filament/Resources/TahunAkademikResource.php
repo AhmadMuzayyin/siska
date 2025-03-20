@@ -12,7 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Guava\FilamentModalRelationManagers\Actions\RelationManagerAction;
+use Guava\FilamentModalRelationManagers\Actions\Table\RelationManagerAction;
 use Illuminate\Support\Facades\Auth;
 
 class TahunAkademikResource extends Resource
