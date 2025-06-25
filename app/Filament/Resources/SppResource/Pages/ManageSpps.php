@@ -39,7 +39,53 @@ class ManageSpps extends ManageRecords
                 ->modalHeading('Tambah Pembayaran')
                 ->modalSubmitActionLabel('Tambah Pembayaran')
                 ->modalCancelActionLabel('Batal')
-                ->createAnother(false),
+                ->createAnother(false)
+                ->mutateFormDataUsing(function (array $data) {
+                    // Cek jika duplicate_detected diset
+                    if (isset($data['duplicate_detected']) && $data['duplicate_detected']) {
+                        return [];
+                    }
+
+                    return $data;
+                })
+                ->before(function (array $data) {
+                    // Jika duplicate_detected ada dan bernilai true, batalkan
+                    if (isset($data['duplicate_detected']) && $data['duplicate_detected']) {
+                        $this->halt();
+                        return;
+                    }
+
+                    // Validasi sekali lagi untuk memastikan tidak ada duplikasi data
+                    $santriId = $data['santri_id'] ?? null;
+                    $semesterId = $data['semester_id'] ?? null;
+                    $tanggal = $data['tanggal'] ?? null;
+
+                    if ($santriId && $semesterId && $tanggal) {
+                        // Mendapatkan bulan dari tanggal yang dipilih
+                        $bulanPembayaran = date('m', strtotime($tanggal));
+                        $tahunPembayaran = date('Y', strtotime($tanggal));
+
+                        // Cek apakah santri sudah melakukan pembayaran pada bulan yang sama
+                        $existingPayment = \App\Models\Spp::where('santri_id', $santriId)
+                            ->where('semester_id', $semesterId)
+                            ->whereMonth('tanggal', $bulanPembayaran)
+                            ->whereYear('tanggal', $tahunPembayaran)
+                            ->first();
+
+                        if ($existingPayment) {
+                            // Jika pembayaran sudah ada, hentikan proses create
+                            \Filament\Notifications\Notification::make()
+                                ->title('Pembayaran Sudah Ada')
+                                ->body('Santri ini sudah melakukan pembayaran SPP pada bulan ' . date('F Y', strtotime($tanggal)) . '. Silakan tutup form ini dan edit data yang sudah ada.')
+                                ->danger()
+                                ->persistent()
+                                ->send();
+
+                            // Hentikan proses create
+                            $this->halt();
+                        }
+                    }
+                }),
         ];
     }
 }

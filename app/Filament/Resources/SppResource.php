@@ -39,6 +39,10 @@ class SppResource extends Resource
     {
         return $form
             ->schema([
+                \Filament\Forms\Components\Hidden::make('duplicate_detected')
+                    ->dehydrated(false)
+                    ->default(false)
+                    ->reactive(),
                 Select::make('semester_id')
                     ->label('Tahun Akademik')
                     ->options(function () {
@@ -67,10 +71,85 @@ class SppResource extends Resource
                         }
                     })
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->live()
+                    ->required()
+                    ->rules([
+                        function () {
+                            return function (string $attribute, $value, \Closure $fail) {
+                                // Cek jika duplicate_detected bernilai true
+                                if (request()->has('data.duplicate_detected') && request()->input('data.duplicate_detected') === 'true') {
+                                    $fail('Pembayaran SPP untuk santri ini sudah ada pada bulan yang sama.');
+                                }
+                            };
+                        },
+                    ])
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        if (!$state) return;
+
+                        $santriId = $state;
+                        $semesterId = $get('semester_id');
+                        $tanggal = $get('tanggal');
+
+                        if ($santriId && $semesterId && $tanggal) {
+                            $bulanPembayaran = date('m', strtotime($tanggal));
+                            $tahunPembayaran = date('Y', strtotime($tanggal));
+                            $existingPayment = Spp::where('santri_id', $santriId)
+                                ->where('semester_id', $semesterId)
+                                ->whereMonth('tanggal', $bulanPembayaran)
+                                ->whereYear('tanggal', $tahunPembayaran)
+                                ->first();
+
+                            if ($existingPayment) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title('Pembayaran Sudah Ada')
+                                    ->body('Santri ini sudah melakukan pembayaran SPP pada bulan ' . date('F Y', strtotime($tanggal)) . '. Silakan tutup form ini dan edit data yang sudah ada.')
+                                    ->danger()
+                                    ->persistent()
+                                    ->send();
+
+                                // Mengatur flag duplicate_detected menjadi true
+                                $set('duplicate_detected', true);
+
+                                // Reset santri field untuk mencegah penyimpanan
+                                $set('santri_id', null);
+                            }
+                        }
+                    }),
                 DatePicker::make('tanggal')
                     ->label('Tanggal')
-                    ->required(),
+                    ->required()
+                    ->live()
+                    ->afterStateUpdated(function ($state, $set, $get) {
+                        if (!$state) return;
+
+                        $santriId = $get('santri_id');
+                        $semesterId = $get('semester_id');
+                        $tanggal = $state;
+
+                        if ($santriId && $semesterId && $tanggal) {
+                            $bulanPembayaran = date('m', strtotime($tanggal));
+                            $tahunPembayaran = date('Y', strtotime($tanggal));
+                            $existingPayment = Spp::where('santri_id', $santriId)
+                                ->where('semester_id', $semesterId)
+                                ->whereMonth('tanggal', $bulanPembayaran)
+                                ->whereYear('tanggal', $tahunPembayaran)
+                                ->first();
+
+                            if ($existingPayment) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title('Pembayaran Sudah Ada')
+                                    ->body('Santri ini sudah melakukan pembayaran SPP pada bulan ' . date('F Y', strtotime($tanggal)) . '. Silakan edit data yang sudah ada.')
+                                    ->danger()
+                                    ->persistent()
+                                    ->send();
+
+                                // Reset tanggal untuk mencegah penyimpanan
+                                $set('tanggal', null);
+                                $set('duplicate_detected', true);
+                            }
+                        }
+                    }),
                 TextInput::make('nominal')
                     ->label('Nominal')
                     ->required()
