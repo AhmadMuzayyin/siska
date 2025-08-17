@@ -174,6 +174,17 @@ class SantriResource extends Resource
                     ->modalCancelActionLabel('Batal')
                     ->modalSubmitActionLabel('Hapus')
                     ->hidden(fn($record) => Auth::user()->role == 'guru'),
+                Tables\Actions\Action::make('daftarkanKartu')
+                    ->label('Daftarkan Kartu RFID')
+                    ->icon('heroicon-o-rss')
+                    ->requiresConfirmation()
+                    ->action(function (Santri $record) {
+                        // Tandai santri yang sedang menunggu scan kartu
+                        cache()->put('register_rfid_santri_id', $record->id, now()->addMinutes(2));
+                    })
+                    ->modalHeading('Scan Kartu RFID')
+                    ->modalDescription('Silahkan scan kartu RFID ke perangkat dalam waktu 2 menit.')
+                    ->modalSubmitActionLabel('Tutup'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

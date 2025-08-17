@@ -64,7 +64,18 @@
 </style>
 
 <body class="min-h-screen">
-    @if (session('has_ready'))
+    @php
+        $jadwalId = cache('jadwal_pelajaran_aktif');
+        $santris = collect();
+
+        if ($jadwalId) {
+            $jadwal = App\Models\JadwalPelajaran::with('kelas.santri')->find($jadwalId);
+            if ($jadwal && $jadwal->kelas) {
+                $santris = $jadwal->kelas->santri;
+            }
+        }
+    @endphp
+    @if ($jadwalId && $santris->isNotEmpty())
         <div class="container mx-auto px-4 py-4 md:py-8">
             <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 max-w-4xl mx-auto">
                 <!-- Header Section -->
@@ -130,10 +141,6 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @php
-                                $santris = App\Models\JadwalPelajaran::where('id', session('jadwal_pelajaran'))->first()
-                                    ->kelas->santri;
-                            @endphp
                             @foreach ($santris as $santri)
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">

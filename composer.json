@@ -16,6 +16,7 @@
         "filament/filament": "^3.2",
         "guava/filament-modal-relation-managers": "^1.2",
         "laravel/framework": "^11.9",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",
         "ryangjchandler/blade-tabler-icons": "^2.3",
