@@ -76,15 +76,15 @@ class NilaiResource extends Resource
                     ->numeric()
                     ->live(onBlur: true)
                     ->afterStateUpdated(function (Set $set, ?int $state) {
-                        if ($state >= 91 && $state <= 100) {
+                        if ($state >= 90 && $state <= 100) {
                             $set('predikat', 'A');
-                        } elseif ($state >= 81 && $state <= 90) {
+                        } elseif ($state >= 80 && $state <= 89) {
                             $set('predikat', 'B');
-                        } elseif ($state >= 71 && $state <= 80) {
+                        } elseif ($state >= 70 && $state <= 79) {
                             $set('predikat', 'C');
-                        } elseif ($state >= 61 && $state <= 70) {
+                        } elseif ($state >= 60 && $state <= 69) {
                             $set('predikat', 'D');
-                        } elseif ($state > 0 && $state <= 60) {
+                        } elseif ($state > 0 && $state <= 58) {
                             $set('predikat', 'E');
                         } else {
                             $set('predikat', '-');

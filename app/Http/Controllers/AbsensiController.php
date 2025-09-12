@@ -129,7 +129,7 @@ class AbsensiController extends Controller
                     $existingAbsensi = Absensi::where([
                         'semester_id' => $semester->id,
                         'santri_id' => $santri->id,
-                        'jadwal_pelajaran_id' => session('jadwal_pelajaran'),
+                        'jadwal_pelajaran_id' => $jadwalPelajaran->id,
                         'tanggal' => $today
                     ])->first();
 
@@ -143,7 +143,7 @@ class AbsensiController extends Controller
                         Absensi::create([
                             'semester_id' => $semester->id,
                             'santri_id' => $santri->id,
-                            'jadwal_pelajaran_id' => session('jadwal_pelajaran'),
+                            'jadwal_pelajaran_id' => $jadwalPelajaran->id,
                             'tanggal' => $today,
                             'status' => ucfirst($data['status'])
                         ]);
@@ -156,6 +156,7 @@ class AbsensiController extends Controller
                     'message' => 'Berhasil menyimpan data absensi'
                 ]);
             } catch (\Exception $e) {
+                dd($e->getMessage());
                 DB::rollBack();
                 throw $e;
             }

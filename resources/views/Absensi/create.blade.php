@@ -67,15 +67,23 @@
     @php
         $jadwalId = cache('jadwal_pelajaran_aktif');
         $santris = collect();
+        $absensi = collect();
 
         if ($jadwalId) {
             $jadwal = App\Models\JadwalPelajaran::with('kelas.santri')->find($jadwalId);
             if ($jadwal && $jadwal->kelas) {
                 $santris = $jadwal->kelas->santri;
+                $absensi = App\Models\Absensi::where('jadwal_pelajaran_id', $jadwalId)
+                    ->whereDate('created_at', \Carbon\Carbon::today())
+                    ->get();
             }
         }
+        if ($absensi->isNotEmpty()) {
+            $absensi->load('santri');
+        }
+        // dd($santris, $absensi);
     @endphp
-    @if ($jadwalId && $santris->isNotEmpty())
+    @if (($jadwalId && $santris->isNotEmpty()) || $absensi->isNotEmpty())
         <div class="container mx-auto px-4 py-4 md:py-8">
             <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 max-w-4xl mx-auto">
                 <!-- Header Section -->
@@ -141,40 +149,84 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach ($santris as $santri)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {{ $loop->iteration }}
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">{{ $santri->nama_lengkap }}</div>
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <div class="flex justify-center space-x-4">
-                                            <label class="inline-flex items-center">
-                                                <input type="radio" name="status_{{ $santri->noinduk }}"
-                                                    value="hadir" class="custom-radio radio-hadir" checked>
-                                                <span class="ml-1 text-sm text-gray-600">H</span>
-                                            </label>
-                                            <label class="inline-flex items-center">
-                                                <input type="radio" name="status_{{ $santri->noinduk }}"
-                                                    value="sakit" class="custom-radio radio-sakit">
-                                                <span class="ml-1 text-sm text-gray-600">S</span>
-                                            </label>
-                                            <label class="inline-flex items-center">
-                                                <input type="radio" name="status_{{ $santri->noinduk }}"
-                                                    value="izin" class="custom-radio radio-izin">
-                                                <span class="ml-1 text-sm text-gray-600">I</span>
-                                            </label>
-                                            <label class="inline-flex items-center">
-                                                <input type="radio" name="status_{{ $santri->noinduk }}"
-                                                    value="alpha" class="custom-radio radio-alpha">
-                                                <span class="ml-1 text-sm text-gray-600">A</span>
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
+                            @if ($absensi->isNotEmpty())
+                                @foreach ($absensi as $item)
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $loop->iteration }}
+                                        </td>
+                                        <td class="px-3 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $item->santri->nama_lengkap }}
+                                            </div>
+                                        </td>
+                                        <td class="px-3 py-4 whitespace-nowrap">
+                                            <div class="flex justify-center space-x-4">
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" name="status_{{ $item->santri->noinduk }}"
+                                                        value="hadir" class="custom-radio radio-hadir"
+                                                        {{ $item->status == 'Hadir' ? 'checked' : '' }}>
+                                                    <span class="ml-1 text-sm text-gray-600">H</span>
+                                                </label>
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" name="status_{{ $item->santri->noinduk }}"
+                                                        value="sakit" class="custom-radio radio-sakit"
+                                                        {{ $item->status == 'Sakit' ? 'checked' : '' }}>
+                                                    <span class="ml-1 text-sm text-gray-600">S</span>
+                                                </label>
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" name="status_{{ $item->santri->noinduk }}"
+                                                        value="izin" class="custom-radio radio-izin"
+                                                        {{ $item->status == 'Izin' ? 'checked' : '' }}>
+                                                    <span class="ml-1 text-sm text-gray-600">I</span>
+                                                </label>
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" name="status_{{ $item->santri->noinduk }}"
+                                                        value="alpha" class="custom-radio radio-alpha"
+                                                        {{ $item->status == 'Alpha' ? 'checked' : '' }}>
+                                                    <span class="ml-1 text-sm text-gray-600">A</span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                @foreach ($santris as $santri)
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $loop->iteration }}
+                                        </td>
+                                        <td class="px-3 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900">{{ $santri->nama_lengkap }}
+                                            </div>
+                                        </td>
+                                        <td class="px-3 py-4 whitespace-nowrap">
+                                            <div class="flex justify-center space-x-4">
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" name="status_{{ $santri->noinduk }}"
+                                                        value="hadir" class="custom-radio radio-hadir" checked>
+                                                    <span class="ml-1 text-sm text-gray-600">H</span>
+                                                </label>
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" name="status_{{ $santri->noinduk }}"
+                                                        value="sakit" class="custom-radio radio-sakit">
+                                                    <span class="ml-1 text-sm text-gray-600">S</span>
+                                                </label>
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" name="status_{{ $santri->noinduk }}"
+                                                        value="izin" class="custom-radio radio-izin">
+                                                    <span class="ml-1 text-sm text-gray-600">I</span>
+                                                </label>
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" name="status_{{ $santri->noinduk }}"
+                                                        value="alpha" class="custom-radio radio-alpha">
+                                                    <span class="ml-1 text-sm text-gray-600">A</span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
