@@ -150,7 +150,7 @@ class AbsensiController extends Controller
                 }
 
                 DB::commit();
-
+                session()->forget('jadwal_pelajaran_aktif');
                 return response()->json([
                     'success' => true,
                     'message' => 'Berhasil menyimpan data absensi',
