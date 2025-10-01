@@ -65,7 +65,7 @@
 
 <body class="min-h-screen">
     @php
-        $jadwalId = cache('jadwal_pelajaran_aktif');
+        $jadwalId = session('jadwal_pelajaran_aktif');
         $santris = collect();
         $absensi = collect();
 
@@ -121,13 +121,13 @@
                             </svg>
                             Izin Semua
                         </button>
-                        <button type="button" onclick="setAllStatus('alpha')"
+                        <button type="button" onclick="setAllStatus('alpa')"
                             class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center justify-center gap-2 text-sm md:text-base">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
-                            Alpha Semua
+                            Alpa Semua
                         </button>
                     </div>
                 </div>
@@ -164,26 +164,26 @@
                                             <div class="flex justify-center space-x-4">
                                                 <label class="inline-flex items-center">
                                                     <input type="radio" name="status_{{ $item->santri->noinduk }}"
-                                                        value="hadir" class="custom-radio radio-hadir"
+                                                        value="Hadir" class="custom-radio radio-hadir"
                                                         {{ $item->status == 'Hadir' ? 'checked' : '' }}>
                                                     <span class="ml-1 text-sm text-gray-600">H</span>
                                                 </label>
                                                 <label class="inline-flex items-center">
                                                     <input type="radio" name="status_{{ $item->santri->noinduk }}"
-                                                        value="sakit" class="custom-radio radio-sakit"
+                                                        value="Sakit" class="custom-radio radio-sakit"
                                                         {{ $item->status == 'Sakit' ? 'checked' : '' }}>
                                                     <span class="ml-1 text-sm text-gray-600">S</span>
                                                 </label>
                                                 <label class="inline-flex items-center">
                                                     <input type="radio" name="status_{{ $item->santri->noinduk }}"
-                                                        value="izin" class="custom-radio radio-izin"
+                                                        value="Izin" class="custom-radio radio-izin"
                                                         {{ $item->status == 'Izin' ? 'checked' : '' }}>
                                                     <span class="ml-1 text-sm text-gray-600">I</span>
                                                 </label>
                                                 <label class="inline-flex items-center">
                                                     <input type="radio" name="status_{{ $item->santri->noinduk }}"
-                                                        value="alpha" class="custom-radio radio-alpha"
-                                                        {{ $item->status == 'Alpha' ? 'checked' : '' }}>
+                                                        value="Alpa" class="custom-radio radio-alpha"
+                                                        {{ $item->status == 'Alpa' ? 'checked' : '' }}>
                                                     <span class="ml-1 text-sm text-gray-600">A</span>
                                                 </label>
                                             </div>
@@ -219,7 +219,7 @@
                                                 </label>
                                                 <label class="inline-flex items-center">
                                                     <input type="radio" name="status_{{ $santri->noinduk }}"
-                                                        value="alpha" class="custom-radio radio-alpha">
+                                                        value="alpa" class="custom-radio radio-alpha">
                                                     <span class="ml-1 text-sm text-gray-600">A</span>
                                                 </label>
                                             </div>
@@ -322,7 +322,7 @@
                     },
                     success: function(response) {
                         alert(response.message);
-                        window.location.reload();
+                        window.location.href = "{{ url('/admin/absensis') }}";
                     },
                     error: function(xhr) {
                         alert(xhr.responseJSON.error ||
@@ -357,12 +357,13 @@
                         _token: "{{ csrf_token() }}",
                         jadwal_pelajaran: jadwal_id
                     },
-                    success: function() {
+                    success: function(res) {
                         setTimeout(() => {
                             window.location.reload();
                         }, 500);
                     },
                     error: function(xhr) {
+                        console.log(xhr);
                         alert('Terjadi kesalahan saat memilih jadwal');
                         $(this).prop('disabled', false);
                     }

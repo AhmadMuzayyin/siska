@@ -23,11 +23,10 @@ class AbsensiController extends Controller
                 return response()->json(['error' => $validator->errors()], 400);
             }
             $jadwal = JadwalPelajaran::find($request->jadwal_pelajaran);
-            if (!$jadwal) {
+            if (! $jadwal) {
                 return response()->json(['error' => 'Jadwal pelajaran tidak ditemukan'], 400);
             }
-            $expireAt = now()->setTimeFromTimeString($jadwal->jam_selesai);
-            cache()->put('jadwal_pelajaran_aktif', $jadwal->id, $expireAt);
+            session(['jadwal_pelajaran_aktif' => $jadwal->id]);
 
             return response()->json([
                 'success' => true,
@@ -35,15 +34,16 @@ class AbsensiController extends Controller
             ]);
         } catch (\Throwable $th) {
             dd($th->getMessage());
+
             return response()->json([
-                'error' => 'Terjadi kesalahan: ' . $th->getMessage()
+                'error' => 'Terjadi kesalahan: '.$th->getMessage(),
             ], 500);
         }
     }
 
     public function forget()
     {
-        cache()->forget('jadwal_pelajaran_aktif');
+        session()->forget('jadwal_pelajaran_aktif');
 
         return response()->json([
             'success' => true,
@@ -80,7 +80,7 @@ class AbsensiController extends Controller
         $validator = Validator::make($request->all(), [
             'absensi' => 'required|array',
             'absensi.*.noinduk' => 'required|exists:santris,noinduk',
-            'absensi.*.status' => 'required|in:hadir,sakit,izin,alpha',
+            'absensi.*.status' => 'required|in:hadir,sakit,izin,alpa',
         ]);
 
         if ($validator->fails()) {
@@ -90,28 +90,31 @@ class AbsensiController extends Controller
         try {
             date_default_timezone_set('Asia/Jakarta');
             Carbon::setLocale('id');
-            // Validasi waktu absensi
-            $jadwalPelajaran = JadwalPelajaran::find(cache('jadwal_pelajaran_aktif'));
-            if (!$jadwalPelajaran) {
+            $jadwalPelajaran = JadwalPelajaran::find(session('jadwal_pelajaran_aktif'));
+            if (! $jadwalPelajaran) {
                 return response()->json(['error' => 'Jadwal pelajaran tidak ditemukan'], 400);
             }
 
-            $currentTime = now()->format('H:i:s');
-            if ($currentTime < $jadwalPelajaran->jam_mulai) {
+            $currentTime = now();
+            $startTime = Carbon::createFromTimeString($jadwalPelajaran->jam_mulai);
+            $endTime = Carbon::createFromTimeString($jadwalPelajaran->jam_selesai);
+            if ($endTime->hour === 0 && $endTime->minute === 0 && $endTime->second === 0) {
+                $endTime->addDay();
+            }
+            if ($currentTime->lt($startTime)) {
                 return response()->json([
-                    'error' => 'Tidak bisa melakukan absen, karena jam pelajaran belum dimulai.'
+                    'error' => 'Tidak bisa melakukan absen, karena jam pelajaran belum dimulai.',
                 ], 400);
             }
-
-            if ($currentTime > $jadwalPelajaran->jam_selesai) {
+            if ($currentTime->gt($endTime)) {
                 return response()->json([
-                    'error' => 'Tidak bisa melakukan absen, karena jam pelajaran sudah selesai.'
+                    'error' => 'Tidak bisa melakukan absen, karena jam pelajaran sudah selesai.',
                 ], 400);
             }
 
             // Get active semester
             $semester = Semester::where('is_aktif', true)->first();
-            if (!$semester) {
+            if (! $semester) {
                 return response()->json(['error' => 'Semester aktif tidak ditemukan'], 400);
             }
 
@@ -124,36 +127,33 @@ class AbsensiController extends Controller
             try {
                 foreach ($request->absensi as $data) {
                     $santri = Santri::where('noinduk', $data['noinduk'])->first();
-
-                    // Check if attendance already exists
                     $existingAbsensi = Absensi::where([
                         'semester_id' => $semester->id,
                         'santri_id' => $santri->id,
                         'jadwal_pelajaran_id' => $jadwalPelajaran->id,
-                        'tanggal' => $today
+                        'tanggal' => $today,
                     ])->first();
 
                     if ($existingAbsensi) {
-                        // Update existing attendance
                         $existingAbsensi->update([
-                            'status' => ucfirst($data['status'])
+                            'status' => ucfirst($data['status']),
                         ]);
                     } else {
-                        // Create new attendance
                         Absensi::create([
                             'semester_id' => $semester->id,
                             'santri_id' => $santri->id,
                             'jadwal_pelajaran_id' => $jadwalPelajaran->id,
                             'tanggal' => $today,
-                            'status' => ucfirst($data['status'])
+                            'status' => ucfirst($data['status']),
                         ]);
                     }
                 }
 
                 DB::commit();
+
                 return response()->json([
                     'success' => true,
-                    'message' => 'Berhasil menyimpan data absensi'
+                    'message' => 'Berhasil menyimpan data absensi',
                 ]);
             } catch (\Exception $e) {
                 dd($e->getMessage());
@@ -162,7 +162,7 @@ class AbsensiController extends Controller
             }
         } catch (\Throwable $th) {
             return response()->json([
-                'error' => 'Terjadi kesalahan: ' . $th->getMessage()
+                'error' => 'Terjadi kesalahan: '.$th->getMessage(),
             ], 500);
         }
     }
