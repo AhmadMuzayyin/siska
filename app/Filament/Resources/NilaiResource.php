@@ -70,7 +70,7 @@ class NilaiResource extends Resource
                         if ($kelasId) {
                             return Santri::where('kelas_id', $kelasId)->pluck('nama_lengkap', 'id');
                         }
-                        return Santri::all()->pluck('nama_lengkap', 'id');
+                        return;
                     })
                     ->searchable()
                     ->preload(),
