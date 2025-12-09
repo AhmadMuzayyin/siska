@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\NilaiResource\Pages;
 use App\Models\JadwalPelajaran;
+use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Nilai;
 use App\Models\Santri;
@@ -52,10 +53,23 @@ class NilaiResource extends Resource
                     })
                     ->disabled()
                     ->dehydrated(),
+                Select::make('kelas_id')
+                    ->label('Pilih Kelas')
+                    ->options(function () {
+                        return Kelas::all()->pluck('nama', 'id');
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->live()
+                    ->dehydrated(false),
                 Select::make('santri_id')
                     ->label('Santri')
                     ->required()
-                    ->options(function () {
+                    ->options(function (callable $get) {
+                        $kelasId = $get('kelas_id');
+                        if ($kelasId) {
+                            return Santri::where('kelas_id', $kelasId)->pluck('nama_lengkap', 'id');
+                        }
                         return Santri::all()->pluck('nama_lengkap', 'id');
                     })
                     ->searchable()
@@ -92,8 +106,7 @@ class NilaiResource extends Resource
                     }),
                 TextInput::make('nilai_huruf')
                     ->label('Nilai Huruf')
-                    ->required()
-                    ->columnSpanFull(),
+                    ->required(),
                 TextInput::make('predikat')
                     ->label('Predikat')
                     ->required()
