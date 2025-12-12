@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class AbsensiGuruResource extends Resource
 {
@@ -91,5 +92,11 @@ class AbsensiGuruResource extends Resource
         return [
             'index' => Pages\ManageAbsensiGurus::route('/'),
         ];
+    }
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user->role == 'admin';
     }
 }
