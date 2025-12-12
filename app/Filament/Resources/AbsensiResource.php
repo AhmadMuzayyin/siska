@@ -20,7 +20,7 @@ class AbsensiResource extends Resource
 
     protected static ?string $navigationGroup = 'Akademik';
 
-    protected static ?string $navigationLabel = 'Absensi';
+    protected static ?string $navigationLabel = 'Absensi Santri';
 
     public static ?int $navigationGroupSort = 2;
 

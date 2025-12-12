@@ -33,7 +33,7 @@ class NilaiResource extends Resource
 
     public static ?int $navigationGroupSort = 2;
 
-    public static ?int $navigationSort = 3;
+    public static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
