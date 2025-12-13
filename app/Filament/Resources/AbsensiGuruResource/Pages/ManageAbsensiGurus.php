@@ -16,7 +16,15 @@ class ManageAbsensiGurus extends ManageRecords
             Actions\CreateAction::make()
                 ->label('Tambah')
                 ->color('success')
-                ->icon('phosphor-plus-bold'),
+                ->icon('phosphor-plus-bold')
+                ->url(fn () => route('absensiguru.create'))
+                ->createAnother(false),
+            Actions\CreateAction::make()
+                ->label('Report Absensi Guru')
+                ->color('primary')
+                ->icon('phosphor-microsoft-excel-logo-light')
+                ->url(fn () => route('absensiguru.report'))
+                ->createAnother(false),
         ];
     }
 }

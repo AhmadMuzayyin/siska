@@ -13,12 +13,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('absensi_gurus', function (Blueprint $table) {
+        Schema::create('gaji_gurus', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Semester::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Guru::class)->constrained()->cascadeOnDelete();
-            $table->enum('status', ['Hadir', 'Izin'])->default('Hadir');
-            $table->date('tanggal')->default(now());
+            $table->bigInteger('bisyaroh')->default(0);
+            $table->integer('jumlah_hadir')->default(0);
+            $table->bigInteger('total_gaji')->default(0);
+            $table->date('tanggal');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('absensi_gurus');
+        Schema::dropIfExists('gaji_gurus');
     }
 };

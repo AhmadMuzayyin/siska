@@ -4,8 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AbsensiGuruResource\Pages;
 use App\Models\AbsensiGuru;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\View;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -31,24 +30,7 @@ class AbsensiGuruResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('guru_id')
-                    ->label('Guru')
-                    ->options(function () {
-                        return \App\Models\Guru::all()->pluck('user.name', 'id');
-                    })
-                    ->required()
-                    ->columnSpanFull(),
-                TextInput::make('bisyaroh')
-                    ->label('Bisyaroh')
-                    ->required()
-                    ->numeric()
-                    ->minValue(0),
-                Select::make('status')
-                    ->options([
-                        'Hadir' => 'Hadir',
-                        'Izin' => 'Izin',
-                    ])
-                    ->required(),
+                View::make('Absensi_Guru.create'),
             ]);
     }
 
@@ -59,10 +41,10 @@ class AbsensiGuruResource extends Resource
                 TextColumn::make('guru.user.name')
                     ->label('Guru')
                     ->sortable(),
-                TextColumn::make('bisyaroh')
-                    ->label('Bisyaroh')
-                    ->sortable(),
                 TextColumn::make('status')
+                    ->sortable(),
+                TextColumn::make('tanggal')
+                    ->date('d F Y')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -93,6 +75,7 @@ class AbsensiGuruResource extends Resource
             'index' => Pages\ManageAbsensiGurus::route('/'),
         ];
     }
+
     public static function canAccess(): bool
     {
         $user = Auth::user();

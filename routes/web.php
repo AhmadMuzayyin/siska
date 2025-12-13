@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AbsenGuruController;
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\GajiGuruController;
 use App\Http\Controllers\JadwalPelajaranController;
 use App\Http\Controllers\KontakController;
 use App\Http\Controllers\NilaiController;
@@ -46,6 +48,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/absensi/forget', 'forget')->name('absensi.forget');
         Route::get('/absensi/create', 'create')->name('absensi.create');
         Route::post('/absensi', 'store')->name('absensi.store');
+    });
+    Route::controller(AbsenGuruController::class)->group(function () {
+        Route::get('/absenguru/create', 'create')->name('absensiguru.create');
+        Route::post('/absenguru/store', 'store')->name('absensiguru.store');
+        Route::get('/absenguru/report', 'report')->name('absensiguru.report');
+    });
+    Route::controller(GajiGuruController::class)->group(function () {
+        Route::post('/gajiguru/store', 'store')->name('gajiguru.store');
+        Route::get('/gajiguru/export', 'export')->name('gajiguru.export');
     });
     Route::controller(NilaiController::class)->group(function () {
         Route::get('/nilai/print/{santri}', 'print')->name('nilai.print');

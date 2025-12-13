@@ -33,8 +33,6 @@ class AbsensiController extends Controller
                 'message' => 'Session created successfully',
             ]);
         } catch (\Throwable $th) {
-            dd($th->getMessage());
-
             return response()->json([
                 'error' => 'Terjadi kesalahan: '.$th->getMessage(),
             ], 500);
