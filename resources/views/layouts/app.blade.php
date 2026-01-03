@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="{{ $meta_keyword ?? '-' }}" name="keywords">
     <meta content="{{ $meta_deskripsi ?? '-' }}" name="description">
+    <meta name="google-adsense-account" content="ca-pub-3998682868826922">
 
     <!-- Favicon -->
     <link href="{{ asset($favicon ?? '-') }}" rel="icon">
