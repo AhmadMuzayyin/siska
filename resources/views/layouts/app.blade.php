@@ -27,8 +27,8 @@
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
     {{-- adsense --}}
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8407972809852383"
-        crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3998682868826922"
+     crossorigin="anonymous"></script>
 </head>
 
 <body>
