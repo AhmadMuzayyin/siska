@@ -93,9 +93,16 @@ class GuruResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('user.name')
-                    ->label('Nama Lengkap'),
+                    ->label('Nama Lengkap')
+                    ->searchable(),
                 TextColumn::make('alamat')
-                    ->label('Alamat Lengkap'),
+                    ->label('Alamat Lengkap')
+                    ->limit(30),
+                TextColumn::make('rfid_uid')
+                    ->label('Kartu RFID')
+                    ->badge()
+                    ->color(fn ($state) => $state ? 'success' : 'danger')
+                    ->formatStateUsing(fn ($state) => $state ? 'Terdaftar' : 'Belum'),
                 ImageColumn::make('foto')
                     ->label('Foto Guru'),
                 TextColumn::make('created_at')
@@ -135,6 +142,43 @@ class GuruResource extends Resource
                     ->modalDescription('Apakah anda yakin ingin menghapus data ini?')
                     ->modalCancelActionLabel('Batal')
                     ->modalSubmitActionLabel('Hapus'),
+                Tables\Actions\Action::make('daftarkanKartu')
+                    ->label('Daftarkan Kartu RFID')
+                    ->icon('heroicon-o-rss')
+                    ->color(fn (Guru $record) => $record->rfid_uid ? 'success' : 'warning')
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (Guru $record) => $record->rfid_uid ? 'Ganti Kartu RFID' : 'Daftarkan Kartu RFID')
+                    ->modalDescription(fn (Guru $record) => $record->rfid_uid
+                        ? 'Guru ini sudah memiliki kartu RFID. Scan kartu baru untuk mengganti.'
+                        : 'Silahkan scan kartu RFID ke perangkat dalam waktu 2 menit.')
+                    ->modalSubmitActionLabel('Siap Scan')
+                    ->modalCancelActionLabel('Batal')
+                    ->action(function (Guru $record) {
+                        cache()->put('register_rfid_guru_id', $record->id, now()->addMinutes(2));
+                        \Filament\Notifications\Notification::make()
+                            ->title('Mode Pendaftaran Aktif')
+                            ->body('Silahkan scan kartu RFID untuk guru ' . $record->user->name)
+                            ->info()
+                            ->send();
+                    }),
+                Tables\Actions\Action::make('hapusKartu')
+                    ->label('Hapus Kartu RFID')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Hapus Kartu RFID')
+                    ->modalDescription('Apakah anda yakin ingin menghapus kartu RFID dari guru ini?')
+                    ->modalSubmitActionLabel('Ya, Hapus')
+                    ->modalCancelActionLabel('Batal')
+                    ->visible(fn (Guru $record) => $record->rfid_uid !== null)
+                    ->action(function (Guru $record) {
+                        $record->update(['rfid_uid' => null]);
+                        \Filament\Notifications\Notification::make()
+                            ->title('Kartu RFID Dihapus')
+                            ->body('Kartu RFID guru ' . $record->user->name . ' berhasil dihapus.')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

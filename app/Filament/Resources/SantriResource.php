@@ -126,6 +126,11 @@ class SantriResource extends Resource
                 TextColumn::make('kelas.nama')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('rfid_uid')
+                    ->label('Kartu RFID')
+                    ->badge()
+                    ->color(fn ($state) => $state ? 'success' : 'danger')
+                    ->formatStateUsing(fn ($state) => $state ? 'Terdaftar' : 'Belum'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -177,14 +182,40 @@ class SantriResource extends Resource
                 Tables\Actions\Action::make('daftarkanKartu')
                     ->label('Daftarkan Kartu RFID')
                     ->icon('heroicon-o-rss')
+                    ->color(fn (Santri $record) => $record->rfid_uid ? 'success' : 'warning')
                     ->requiresConfirmation()
+                    ->modalHeading(fn (Santri $record) => $record->rfid_uid ? 'Ganti Kartu RFID' : 'Daftarkan Kartu RFID')
+                    ->modalDescription(fn (Santri $record) => $record->rfid_uid
+                        ? 'Santri ini sudah memiliki kartu RFID. Scan kartu baru untuk mengganti.'
+                        : 'Silahkan scan kartu RFID ke perangkat dalam waktu 2 menit.')
+                    ->modalSubmitActionLabel('Siap Scan')
+                    ->modalCancelActionLabel('Batal')
                     ->action(function (Santri $record) {
-                        // Tandai santri yang sedang menunggu scan kartu
                         cache()->put('register_rfid_santri_id', $record->id, now()->addMinutes(2));
-                    })
-                    ->modalHeading('Scan Kartu RFID')
-                    ->modalDescription('Silahkan scan kartu RFID ke perangkat dalam waktu 2 menit.')
-                    ->modalSubmitActionLabel('Tutup'),
+                        \Filament\Notifications\Notification::make()
+                            ->title('Mode Pendaftaran Aktif')
+                            ->body('Silahkan scan kartu RFID untuk santri ' . $record->nama_lengkap)
+                            ->info()
+                            ->send();
+                    }),
+                Tables\Actions\Action::make('hapusKartu')
+                    ->label('Hapus Kartu RFID')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Hapus Kartu RFID')
+                    ->modalDescription('Apakah anda yakin ingin menghapus kartu RFID dari santri ini?')
+                    ->modalSubmitActionLabel('Ya, Hapus')
+                    ->modalCancelActionLabel('Batal')
+                    ->visible(fn (Santri $record) => $record->rfid_uid !== null)
+                    ->action(function (Santri $record) {
+                        $record->update(['rfid_uid' => null]);
+                        \Filament\Notifications\Notification::make()
+                            ->title('Kartu RFID Dihapus')
+                            ->body('Kartu RFID santri ' . $record->nama_lengkap . ' berhasil dihapus.')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
