@@ -119,12 +119,12 @@
                                     <div class="flex justify-center space-x-4">
                                         <label class="inline-flex items-center">
                                             <input type="radio" name="status_{{ $teacher->id }}" value="hadir"
-                                                class="custom-radio radio-hadir" checked>
+                                                class="custom-radio radio-hadir">
                                             <span class="ml-1 text-sm text-gray-600">H</span>
                                         </label>
                                         <label class="inline-flex items-center">
                                             <input type="radio" name="status_{{ $teacher->id }}" value="izin"
-                                                class="custom-radio radio-izin">
+                                                class="custom-radio radio-izin" checked>
                                             <span class="ml-1 text-sm text-gray-600">I</span>
                                         </label>
                                     </div>
