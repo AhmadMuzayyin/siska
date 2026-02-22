@@ -89,7 +89,7 @@
 
             <!-- Filter Section -->
             <form method="GET" action="{{ route('absensiguru.report') }}" class="mb-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div>
                         <label for="bulan" class="block text-sm font-medium text-gray-700 mb-2">Bulan</label>
                         <select name="bulan" id="bulan"
@@ -106,6 +106,20 @@
                             <option value="10" {{ $bulan == 10 ? 'selected' : '' }}>Oktober</option>
                             <option value="11" {{ $bulan == 11 ? 'selected' : '' }}>November</option>
                             <option value="12" {{ $bulan == 12 ? 'selected' : '' }}>Desember</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tanggal" class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
+                        @php
+                        $tanggal = request('tanggal', 'all');
+                        @endphp
+                        <select name="tanggal" id="tanggal"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="all" {{ $tanggal == 'all' ? 'selected' : '' }}>Semua Tanggal</option>
+                            @for ($i = 1; $i <= 31; $i++)
+                                <option value="{{ $i }}" {{ $tanggal == $i ? 'selected' : '' }}>
+                                    {{ $i }}</option>
+                            @endfor
                         </select>
                     </div>
                     <div>

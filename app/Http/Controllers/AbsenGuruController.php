@@ -87,23 +87,29 @@ class AbsenGuruController extends Controller
     {
 
         $bulan = (int) ($request->bulan ?? now()->month);
+        $tanggal = $request->tanggal ?? 'all';
         $tahun = (int) ($request->tahun ?? now()->year);
 
-        $tanggal_awal = \Carbon\Carbon::create($tahun, $bulan, 1)->startOfMonth()->toDateString();
-        $tanggal_akhir = \Carbon\Carbon::create($tahun, $bulan, 1)->endOfMonth()->toDateString();
+        if ($tanggal === 'all') {
+            $tanggal_awal = \Carbon\Carbon::create($tahun, $bulan, 1)->startOfMonth();
+            $tanggal_akhir = \Carbon\Carbon::create($tahun, $bulan, 1)->endOfMonth();
+        } else {
+            $tanggal_awal = \Carbon\Carbon::create($tahun, $bulan, 1)->startOfMonth();
+            $tanggal_akhir = \Carbon\Carbon::create($tahun, $bulan, (int) $tanggal);
+        }
 
         $absensiGurus = AbsensiGuru::with('guru.user')
             ->select('guru_id', DB::raw('COUNT(*) as total_absensi'),
                 DB::raw("SUM(CASE WHEN status = 'Hadir' THEN 1 ELSE 0 END) as jumlah_hadir"),
                 DB::raw("SUM(CASE WHEN status = 'Izin' THEN 1 ELSE 0 END) as jumlah_izin"))
-            ->whereBetween('tanggal', [$tanggal_awal, $tanggal_akhir])
+            ->whereBetween('tanggal', [$tanggal_awal->toDateString(), $tanggal_akhir->toDateString()])
             ->groupBy('guru_id')
             ->get();
-        $gajiGuru = GajiGuru::whereBetween('tanggal', [$tanggal_awal, $tanggal_akhir])
+        $gajiGuru = GajiGuru::whereBetween('tanggal', [$tanggal_awal->toDateString(), $tanggal_akhir->toDateString()])
             ->whereIn('guru_id', $absensiGurus->pluck('guru_id'))
             ->get()
             ->keyBy('guru_id');
 
-        return view('Absensi_Guru.report', compact('absensiGurus', 'bulan', 'tahun', 'gajiGuru'));
+        return view('Absensi_Guru.report', compact('absensiGurus', 'bulan', 'tahun', 'tanggal', 'gajiGuru'));
     }
 }
