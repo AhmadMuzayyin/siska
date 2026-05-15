@@ -126,6 +126,12 @@ class SantriResource extends Resource
                 TextColumn::make('kelas.nama')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('nama_ayah')
+                    ->searchable()
+                    ->label('Nama Ayah'),
+                TextColumn::make('nama_ibu')
+                    ->searchable()
+                    ->label('Nama Ibu'),
                 TextColumn::make('rfid_uid')
                     ->label('Kartu RFID')
                     ->badge()
