@@ -10,16 +10,19 @@ use App\Services\SettingService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 #[Title('Pengaturan')]
 class Index extends Component
 {
     use PasswordValidationRules;
     use ProfileValidationRules;
+    use WithFileUploads;
 
     #[Url(as: 'tab')]
     public string $tab = 'general';
@@ -46,6 +49,10 @@ class Index extends Component
     public string $pesan_whatsapp = '';
 
     public string $google_maps_url = '';
+
+    public mixed $logo_upload = null;
+
+    public mixed $favicon_upload = null;
 
     // 2. Appearance Settings
     public string $landing_theme = 'default';
@@ -108,7 +115,29 @@ class Index extends Component
             'fitur_pesan_whatsapp' => 'boolean',
             'pesan_whatsapp' => 'nullable|string',
             'google_maps_url' => 'nullable|url|max:1000',
+            'logo_upload' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
+            'favicon_upload' => 'nullable|file|mimes:png,jpg,jpeg,svg,ico|max:1024',
         ]);
+
+        $setting = $settingService->get();
+        $logoPath = $setting->logo;
+        $faviconPath = $setting->favicon;
+
+        if ($this->logo_upload) {
+            if ($logoPath && Storage::disk('public')->exists($logoPath)) {
+                Storage::disk('public')->delete($logoPath);
+            }
+            $logoPath = $this->logo_upload->store('logos', 'public');
+            $this->logo_upload = null;
+        }
+
+        if ($this->favicon_upload) {
+            if ($faviconPath && Storage::disk('public')->exists($faviconPath)) {
+                Storage::disk('public')->delete($faviconPath);
+            }
+            $faviconPath = $this->favicon_upload->store('favicons', 'public');
+            $this->favicon_upload = null;
+        }
 
         $settingService->update([
             'lembaga' => $validated['lembaga'],
@@ -122,9 +151,45 @@ class Index extends Component
             'fitur_pesan_whatsapp' => $validated['fitur_pesan_whatsapp'],
             'pesan_whatsapp' => $validated['pesan_whatsapp'],
             'google_maps_url' => $validated['google_maps_url'],
+            'logo' => $logoPath,
+            'favicon' => $faviconPath,
         ]);
 
         Flux::toast(variant: 'success', text: __('Pengaturan lembaga & aplikasi berhasil disimpan.'));
+    }
+
+    public function removeLogo(SettingService $settingService): void
+    {
+        if (Auth::user()?->role !== UserRole::Admin) {
+            abort(403);
+        }
+
+        $setting = $settingService->get();
+        if ($setting->logo && Storage::disk('public')->exists($setting->logo)) {
+            Storage::disk('public')->delete($setting->logo);
+        }
+
+        $settingService->update(['logo' => null]);
+        $this->logo_upload = null;
+
+        Flux::toast(variant: 'success', text: __('Logo lembaga berhasil dihapus.'));
+    }
+
+    public function removeFavicon(SettingService $settingService): void
+    {
+        if (Auth::user()?->role !== UserRole::Admin) {
+            abort(403);
+        }
+
+        $setting = $settingService->get();
+        if ($setting->favicon && Storage::disk('public')->exists($setting->favicon)) {
+            Storage::disk('public')->delete($setting->favicon);
+        }
+
+        $settingService->update(['favicon' => null]);
+        $this->favicon_upload = null;
+
+        Flux::toast(variant: 'success', text: __('Favicon lembaga berhasil dihapus.'));
     }
 
     public function updatedLandingTheme(string $value, SettingService $settingService): void

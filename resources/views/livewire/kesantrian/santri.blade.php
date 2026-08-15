@@ -5,9 +5,25 @@
             <flux:subheading>{{ __('Kelola data santri, persetujuan pendaftaran, dan kenaikan kelas per unit lembaga.') }}</flux:subheading>
         </div>
 
-        <flux:button variant="primary" icon="plus" wire:click="create" class="bg-emerald-600! hover:bg-emerald-700! text-white! font-bold">
-            {{ __('Tambah Santri') }}
-        </flux:button>
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('export.excel', 'santri') }}" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
+                <flux:icon name="arrow-down-tray" class="size-4" /> {{ __('Export Excel') }}
+            </a>
+            <a href="{{ route('export.pdf', 'santri') }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700">
+                <flux:icon name="printer" class="size-4" /> {{ __('Export PDF') }}
+            </a>
+            <flux:modal.trigger name="import-santri-modal">
+                <flux:button variant="filled" icon="arrow-up-tray" class="bg-blue-600! hover:bg-blue-700! text-white! font-bold">
+                    {{ __('Import Excel') }}
+                </flux:button>
+            </flux:modal.trigger>
+            <flux:button variant="filled" icon="sparkles" wire:click="processAutomaticKenaikanKelas" wire:confirm="{{ __('Proses kenaikan kelas otomatis berdasarkan rata-rata akumulasi nilai vs KKM?') }}" class="bg-amber-600! hover:bg-amber-700! text-white! font-bold">
+                {{ __('Kenaikan Kelas Otomatis (KKM)') }}
+            </flux:button>
+            <flux:button variant="primary" icon="plus" wire:click="create" class="bg-emerald-600! hover:bg-emerald-700! text-white! font-bold">
+                {{ __('Tambah Santri') }}
+            </flux:button>
+        </div>
     </div>
 
     <div class="flex flex-wrap items-center gap-3">
@@ -18,13 +34,15 @@
             class="max-w-xs"
         />
 
-        <flux:select wire:model.live="kelasFilter" class="max-w-44" placeholder="{{ __('Semua kelas') }}">
+        <flux:select wire:model.live="kelasFilter" class="max-w-44" placeholder="{{ __('Pilih Kelas') }}">
+            <flux:select.option value="">{{ __('Semua Kelas') }}</flux:select.option>
             @foreach ($this->kelasOptions as $kelas)
                 <flux:select.option value="{{ $kelas->id }}">{{ $kelas->nama }}</flux:select.option>
             @endforeach
         </flux:select>
 
-        <flux:select wire:model.live="statusFilter" class="max-w-44" placeholder="{{ __('Semua status') }}">
+        <flux:select wire:model.live="statusFilter" class="max-w-44" placeholder="{{ __('Pilih Status') }}">
+            <flux:select.option value="">{{ __('Semua Status') }}</flux:select.option>
             @foreach ($this->statuses as $statusOption)
                 <flux:select.option value="{{ $statusOption->value }}">{{ ucfirst(str_replace('_', ' ', $statusOption->value)) }}</flux:select.option>
             @endforeach
@@ -34,7 +52,7 @@
     @if (count($selected) > 0)
         <div class="flex flex-wrap items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-950">
             <flux:text>{{ __(':count santri dipilih', ['count' => count($selected)]) }}</flux:text>
-            <flux:select wire:model="promoteKelasId" class="max-w-48" placeholder="{{ __('Pilih kelas tujuan') }}">
+            <flux:select wire:model="promoteKelasId" class="max-w-48" placeholder="{{ __('Pilih Kelas Tujuan') }}">
                 @foreach ($this->kelasOptions as $kelas)
                     <flux:select.option value="{{ $kelas->id }}">{{ $kelas->nama }}</flux:select.option>
                 @endforeach
@@ -82,6 +100,9 @@
                         </flux:table.cell>
                         <flux:table.cell align="end">
                             <div class="flex justify-end gap-1">
+                                <a href="{{ route('akademik.rapor.print', $santri->id) }}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800 px-2 py-1 rounded bg-blue-50 border border-blue-200">
+                                    <flux:icon name="printer" class="size-3.5" /> {{ __('Cetak Rapor') }}
+                                </a>
                                 @if ($santri->status->value === 'pending_approval')
                                     <flux:button size="sm" variant="ghost" icon="check" class="text-green-600 hover:text-green-700 font-bold" wire:click="approve({{ $santri->id }})">
                                         {{ __('Setujui') }}
@@ -119,13 +140,13 @@
 
             <flux:heading size="sm">{{ __('Data Pokok') }}</flux:heading>
 
-            <flux:select wire:model.live="lembaga_id" :label="__('Unit Lembaga')">
+            <flux:select wire:model.live="lembaga_id" :label="__('Unit Lembaga')" placeholder="{{ __('Pilih Unit Lembaga') }}">
                 @foreach ($this->lembagaOptions as $l)
                     <flux:select.option value="{{ $l->id }}">{{ $l->nama }} ({{ $l->jenjang }})</flux:select.option>
                 @endforeach
             </flux:select>
 
-            <flux:select wire:model="kelas_id" :label="__('Kelas')">
+            <flux:select wire:model="kelas_id" :label="__('Kelas')" placeholder="{{ __('Pilih Kelas') }}">
                 @foreach ($this->kelasOptions as $kelas)
                     <flux:select.option value="{{ $kelas->id }}">{{ $kelas->nama }}</flux:select.option>
                 @endforeach
@@ -143,7 +164,7 @@
                 <flux:input wire:model="tanggal_lahir" type="date" :label="__('Tanggal Lahir')" />
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <flux:select wire:model="jenis_kelamin" :label="__('Jenis Kelamin')">
+                <flux:select wire:model="jenis_kelamin" :label="__('Jenis Kelamin')" placeholder="{{ __('Pilih Jenis Kelamin') }}">
                     @foreach ($this->genders as $gender)
                         <flux:select.option value="{{ $gender->value }}">
                             {{ $gender->value === 'laki_laki' ? __('Laki-laki') : __('Perempuan') }}
@@ -171,7 +192,7 @@
 
             <flux:separator />
 
-            <flux:select wire:model="status" :label="__('Status')">
+            <flux:select wire:model="status" :label="__('Status')" placeholder="{{ __('Pilih Status') }}">
                 @foreach ($this->statuses as $statusOption)
                     <flux:select.option value="{{ $statusOption->value }}">{{ ucfirst(str_replace('_', ' ', $statusOption->value)) }}</flux:select.option>
                 @endforeach
@@ -182,6 +203,37 @@
                     <flux:button variant="ghost">{{ __('Batal') }}</flux:button>
                 </flux:modal.close>
                 <flux:button type="submit" variant="primary" class="bg-emerald-600! hover:bg-emerald-700! text-white! font-bold">{{ __('Simpan') }}</flux:button>
+            </div>
+        </form>
+    </flux:modal>
+
+    <flux:modal name="import-santri-modal" flyout class="md:w-96">
+        <form action="{{ route('import.excel', 'santri') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-6">
+            @csrf
+            <div>
+                <flux:heading size="lg">{{ __('Import Data Santri') }}</flux:heading>
+                <flux:subheading>{{ __('Unduh template spreadsheet dan unggah berkas .xlsx / .csv yang telah diisi.') }}</flux:subheading>
+            </div>
+
+            <div class="rounded-xl border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50 flex flex-col gap-2">
+                <flux:text class="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
+                    {{ __('Unduh format berkas template:') }}
+                </flux:text>
+                <a href="{{ route('import.template', 'santri') }}" class="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-600 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-700">
+                    <flux:icon name="arrow-down-tray" class="size-4" />
+                    {{ __('Download Template Excel') }}
+                </a>
+            </div>
+
+            <flux:input type="file" name="file" accept=".xlsx,.xls,.csv" required :label="__('Pilih Berkas Excel (.xlsx / .csv)')" />
+
+            <div class="flex justify-end gap-2">
+                <flux:modal.close>
+                    <flux:button variant="ghost">{{ __('Batal') }}</flux:button>
+                </flux:modal.close>
+                <flux:button type="submit" variant="primary" class="bg-emerald-600! hover:bg-emerald-700! text-white! font-bold">
+                    {{ __('Import Data') }}
+                </flux:button>
             </div>
         </form>
     </flux:modal>

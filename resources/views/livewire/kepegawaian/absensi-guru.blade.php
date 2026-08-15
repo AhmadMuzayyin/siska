@@ -14,7 +14,7 @@
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex flex-wrap items-center gap-3">
-            <flux:select wire:model.live="semesterId" class="max-w-sm">
+            <flux:select wire:model.live="semesterId" class="max-w-sm" placeholder="{{ __('Pilih Semester') }}">
                 @foreach ($this->semesterOptions as $semester)
                     <flux:select.option value="{{ $semester->id }}" :selected="$semesterId == $semester->id">
                         {{ $semester->tahunAkademik->nama }} &mdash; {{ ucfirst($semester->tipe->value) }}
@@ -50,7 +50,7 @@
                                 <flux:select
                                     size="sm"
                                     class="max-w-36"
-                                    placeholder="{{ __('Pilih status') }}"
+                                    placeholder="{{ __('Pilih Status') }}"
                                     wire:change="setStatus({{ $guru->id }}, $event.target.value)"
                                 >
                                     @foreach ($this->statuses as $status)

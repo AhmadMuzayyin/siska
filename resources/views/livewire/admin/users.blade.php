@@ -74,7 +74,7 @@
                 :label="$editingId ? __('Password (kosongkan jika tidak ganti)') : __('Password')"
             />
 
-            <flux:select wire:model="role" :label="__('Peran')">
+            <flux:select wire:model="role" :label="__('Peran')" placeholder="{{ __('Pilih Peran') }}">
                 @foreach ($this->roles as $roleOption)
                     <flux:select.option value="{{ $roleOption->value }}">{{ ucfirst(str_replace('_', ' ', $roleOption->value)) }}</flux:select.option>
                 @endforeach

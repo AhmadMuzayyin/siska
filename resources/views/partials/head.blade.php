@@ -1,7 +1,14 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-@php $resolvedTitle = filled($title ?? null) ? $title.' - '.config('app.name', 'Laravel') : config('app.name', 'Laravel'); @endphp
+@php 
+    $setting = \App\Models\Setting::query()->first();
+    $appName = $setting?->lembaga ?? config('app.name', 'SISKA');
+    $resolvedTitle = filled($title ?? null) ? $title.' - '.$appName : $appName;
+    $faviconUrl = ($setting?->favicon && \Illuminate\Support\Facades\Storage::disk('public')->exists($setting->favicon))
+        ? \Illuminate\Support\Facades\Storage::url($setting->favicon)
+        : null;
+@endphp
 
 <title>{{ $resolvedTitle }}</title>
 
@@ -18,9 +25,14 @@
     <meta property="og:description" content="{{ $metaDescription }}">
 @endisset
 
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+@if ($faviconUrl)
+    <link rel="icon" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+@else
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+@endif
 
 @fonts
 

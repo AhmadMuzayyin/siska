@@ -54,7 +54,72 @@
             <form wire:submit="saveGeneral" class="flex flex-col gap-6 max-w-3xl">
                 <div>
                     <flux:heading size="lg">{{ __('Informasi Pokok Lembaga') }}</flux:heading>
-                    <flux:subheading>{{ __('Data identitas lembaga dan kontak operasional.') }}</flux:subheading>
+                    <flux:subheading>{{ __('Data identitas lembaga, logo/favicon, dan kontak operasional.') }}</flux:subheading>
+                </div>
+
+                {{-- Upload Logo & Favicon Section --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50/50 dark:bg-zinc-800/40">
+                    {{-- 1. Logo Lembaga --}}
+                    <div class="space-y-3">
+                        <flux:heading size="sm" level="3">{{ __('Logo Lembaga') }}</flux:heading>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                            {{ __('Format: PNG, JPG, JPEG, SVG, WebP. Maksimal 2MB. Logo akan ditampilkan pada header, sidebar, dan cetakan dokumen.') }}
+                        </p>
+
+                        <div class="flex items-center gap-4">
+                            <div class="size-16 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-2 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                                @if ($logo_upload)
+                                    <img src="{{ $logo_upload->temporaryUrl() }}" alt="Preview Logo" class="max-h-full max-w-full object-contain" />
+                                @elseif ($setting?->logo && \Illuminate\Support\Facades\Storage::disk('public')->exists($setting->logo))
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($setting->logo) }}" alt="Logo Lembaga" class="max-h-full max-w-full object-contain" />
+                                @else
+                                    <x-app-logo-icon class="size-8 text-emerald-600 dark:text-emerald-400 fill-current" />
+                                @endif
+                            </div>
+
+                            <div class="flex-1 space-y-2">
+                                <flux:input type="file" wire:model="logo_upload" accept="image/png,image/jpeg,image/jpg,image/svg+xml,image/webp" size="sm" />
+                                @error('logo_upload') <span class="text-xs text-rose-500">{{ $message }}</span> @enderror
+
+                                @if ($setting?->logo)
+                                    <flux:button type="button" wire:click="removeLogo" variant="danger" size="xs" icon="trash">
+                                        {{ __('Hapus Logo') }}
+                                    </flux:button>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- 2. Favicon Lembaga --}}
+                    <div class="space-y-3">
+                        <flux:heading size="sm" level="3">{{ __('Favicon Browser') }}</flux:heading>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">
+                            {{ __('Format: ICO, PNG, SVG. Maksimal 1MB. Icon yang muncul pada tab browser.') }}
+                        </p>
+
+                        <div class="flex items-center gap-4">
+                            <div class="size-16 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-2 flex items-center justify-center shrink-0 overflow-hidden shadow-2xs">
+                                @if ($favicon_upload)
+                                    <img src="{{ $favicon_upload->temporaryUrl() }}" alt="Preview Favicon" class="size-8 object-contain" />
+                                @elseif ($setting?->favicon && \Illuminate\Support\Facades\Storage::disk('public')->exists($setting->favicon))
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($setting->favicon) }}" alt="Favicon Lembaga" class="size-8 object-contain" />
+                                @else
+                                    <img src="/favicon.ico" alt="Default Favicon" class="size-8 object-contain" />
+                                @endif
+                            </div>
+
+                            <div class="flex-1 space-y-2">
+                                <flux:input type="file" wire:model="favicon_upload" accept=".ico,image/png,image/jpeg,image/svg+xml" size="sm" />
+                                @error('favicon_upload') <span class="text-xs text-rose-500">{{ $message }}</span> @enderror
+
+                                @if ($setting?->favicon)
+                                    <flux:button type="button" wire:click="removeFavicon" variant="danger" size="xs" icon="trash">
+                                        {{ __('Hapus Favicon') }}
+                                    </flux:button>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <flux:input wire:model="lembaga" :label="__('Nama Lembaga')" required />

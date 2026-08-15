@@ -3,6 +3,7 @@
 namespace App\Livewire\Kesantrian;
 
 use App\Actions\ApproveSantriRegistrationAction;
+use App\Actions\AutomaticClassPromotionAction;
 use App\Actions\EnrollSantriAction;
 use App\Actions\PromoteSantriAction;
 use App\Enums\Gender;
@@ -231,6 +232,22 @@ class Santri extends Component
         $this->promoteKelasId = null;
 
         Flux::toast(variant: 'success', text: __(':count santri berhasil dipromosikan ke kelas :kelas.', ['count' => $santris->count(), 'kelas' => $kelasTujuan->nama]));
+    }
+
+    public function processAutomaticKenaikanKelas(AutomaticClassPromotionAction $action): void
+    {
+        $this->authorize('create', SantriModel::class);
+
+        $res = $action->handle();
+
+        Flux::toast(
+            variant: 'success',
+            text: __('Proses kenaikan kelas selesai: :promoted santri naik kelas, :graduated santri lulus/alumni, :retained santri tinggal kelas.', [
+                'promoted' => $res['promoted'],
+                'graduated' => $res['graduated'],
+                'retained' => $res['retained'],
+            ])
+        );
     }
 
     /**

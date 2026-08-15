@@ -14,7 +14,7 @@
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex flex-wrap items-center gap-3">
-            <flux:select wire:model.live="jadwalId" class="max-w-sm" placeholder="{{ __('Pilih jadwal pelajaran') }}">
+            <flux:select wire:model.live="jadwalId" class="max-w-sm" placeholder="{{ __('Pilih Jadwal Pelajaran') }}">
                 @foreach ($this->jadwalOptions as $jadwal)
                     <flux:select.option value="{{ $jadwal->id }}" :selected="$jadwalId == $jadwal->id">
                         {{ $jadwal->kelas->nama }} &middot; {{ $jadwal->mapel->nama }} &middot; {{ ucfirst($jadwal->hari->value) }} {{ substr($jadwal->jam_mulai, 0, 5) }}
@@ -30,9 +30,9 @@
         </div>
     </div>
 
-    @if (! $jadwalId)
+    @if (!$jadwalId)
         <div class="rounded-xl border border-dashed border-zinc-300 p-10 text-center text-zinc-400 dark:border-zinc-700">
-            {{ __('Belum ada jadwal pelajaran terpilih.') }}
+            {{ __('Pilih jadwal pelajaran terlebih dahulu untuk mengisi absensi.') }}
         </div>
     @else
         <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
@@ -52,6 +52,7 @@
                                 <flux:select
                                     size="sm"
                                     class="max-w-36"
+                                    placeholder="{{ __('Pilih Status') }}"
                                     wire:change="setStatus({{ $santri->id }}, $event.target.value)"
                                 >
                                     @foreach ($this->statuses as $status)

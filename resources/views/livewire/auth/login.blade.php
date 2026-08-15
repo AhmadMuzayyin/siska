@@ -148,6 +148,13 @@
                                 </div>
                             @endif
 
+                            @if (session('error'))
+                                <div class="rounded-2xl bg-rose-50 border border-rose-300 p-4 text-xs font-bold text-rose-800 flex items-center gap-2.5 shadow-2xs">
+                                    <flux:icon name="exclamation-circle" class="size-5 text-rose-600 shrink-0" />
+                                    <span>{{ session('error') }}</span>
+                                </div>
+                            @endif
+
                             <!-- General Errors Alert -->
                             @if ($errors->any())
                                 <div class="rounded-2xl bg-rose-50 border border-rose-300 p-4 text-xs text-rose-800 space-y-1.5 shadow-2xs">
@@ -254,6 +261,29 @@
                                     </button>
                                 </div>
                             </form>
+
+                            {{-- Google OAuth Login (Khusus Guru) --}}
+                            <div class="space-y-3 pt-2">
+                                <div class="relative flex items-center justify-center">
+                                    <div class="w-full border-t border-[#d6eda6]"></div>
+                                    <span class="bg-white px-3 text-[11px] font-extrabold text-[#2e5b18] uppercase tracking-wider whitespace-nowrap">
+                                        {{ __('Akses Khusus Guru') }}
+                                    </span>
+                                </div>
+
+                                <a
+                                    href="{{ route('auth.google') }}"
+                                    class="w-full inline-flex items-center justify-center gap-2.5 rounded-full border border-[#d6eda6] bg-[#f0f8ec] hover:bg-[#e4f5d8] text-[#2e5b18] font-extrabold text-xs py-3 px-6 shadow-2xs transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+                                >
+                                    <svg class="size-4 shrink-0" viewBox="0 0 24 24">
+                                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                                    </svg>
+                                    <span>{{ __('Login Dengan Google') }}</span>
+                                </a>
+                            </div>
 
                             {{-- Quick Switch Footer --}}
                             <div class="text-center pt-2 border-t border-zinc-100">
@@ -452,127 +482,154 @@
                                 ✦ {{ __('Autentikasi Akun') }}
                             </span>
                             <h2 class="text-2xl sm:text-3xl font-extrabold text-emerald-950 tracking-tight">
-                                {{ __('Masuk ke Portal Akademik') }}
-                            </h2>
-                            <p class="text-xs sm:text-sm text-zinc-600 mt-1">
-                                {{ __('Silakan masukkan email dan kata sandi akun Anda untuk melanjutkan.') }}
-                            </p>
-                        </div>
-
-                        <!-- Session Status -->
-                        @if (session('status'))
-                            <div class="rounded-2xl bg-emerald-50 border border-emerald-500 p-4 text-xs font-bold text-emerald-900 flex items-center gap-3 shadow-xs">
-                                <flux:icon name="check-circle" class="size-5 text-emerald-600 shrink-0" />
-                                <span>{{ session('status') }}</span>
-                            </div>
-                        @endif
-
-                        <!-- General Errors Alert -->
-                        @if ($errors->any())
-                            <div class="rounded-2xl bg-rose-50 border border-rose-300 p-4 text-xs text-rose-800 space-y-1.5 shadow-2xs">
-                                <div class="flex items-center gap-2 font-bold text-rose-700">
-                                    <flux:icon name="exclamation-circle" class="size-4 text-rose-600 shrink-0" />
-                                    <span>{{ __('Gagal Masuk Akun') }}</span>
-                                </div>
-                                <p class="text-[11px] leading-relaxed ps-6">
-                                    {{ $errors->first('email') ?: ($errors->first('password') ?: $errors->first()) }}
+                                    {{ __('Silakan masukkan email dan kata sandi akun Anda untuk melanjutkan.') }}
                                 </p>
                             </div>
-                        @endif
 
-                        <form wire:submit="login" class="space-y-5">
-                            {{-- Email Input --}}
-                            <div class="space-y-2">
-                                <label for="default_email" class="text-xs font-bold text-emerald-950 uppercase tracking-wider">
-                                    {{ __('Alamat Email') }} <span class="text-rose-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <input 
-                                        id="default_email" 
-                                        wire:model="email" 
-                                        type="email" 
-                                        required 
-                                        autocomplete="email" 
-                                        placeholder="nama@email.com"
-                                        class="w-full rounded-2xl bg-white border-2 {{ $errors->has('email') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 placeholder-zinc-400 shadow-2xs outline-none transition-all"
-                                    />
+                            <!-- Session Status -->
+                            @if (session('status'))
+                                <div class="rounded-2xl bg-emerald-50 border border-emerald-500 p-4 text-xs font-bold text-emerald-900 flex items-center gap-3 shadow-xs">
+                                    <flux:icon name="check-circle" class="size-5 text-emerald-600 shrink-0" />
+                                    <span>{{ session('status') }}</span>
                                 </div>
-                                @error('email')
-                                    <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-rose-600">
-                                        <flux:icon name="exclamation-circle" class="size-3.5 shrink-0 text-rose-500" />
-                                        <span>{{ $message }}</span>
+                            @endif
+
+                            @if (session('error'))
+                                <div class="rounded-2xl bg-rose-50 border border-rose-300 p-4 text-xs font-bold text-rose-800 flex items-center gap-2.5 shadow-2xs">
+                                    <flux:icon name="exclamation-circle" class="size-5 text-rose-600 shrink-0" />
+                                    <span>{{ session('error') }}</span>
+                                </div>
+                            @endif
+
+                            <!-- General Errors Alert -->
+                            @if ($errors->any())
+                                <div class="rounded-2xl bg-rose-50 border border-rose-300 p-4 text-xs text-rose-800 space-y-1.5 shadow-2xs">
+                                    <div class="flex items-center gap-2 font-bold text-rose-700">
+                                        <flux:icon name="exclamation-circle" class="size-4 text-rose-600 shrink-0" />
+                                        <span>{{ __('Gagal Masuk Akun') }}</span>
                                     </div>
-                                @enderror
-                            </div>
-
-                            {{-- Password Input --}}
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <label for="default_password" class="text-xs font-bold text-emerald-950 uppercase tracking-wider">
-                                        {{ __('Kata Sandi') }} <span class="text-rose-500">*</span>
-                                    </label>
-                                    @if (Route::has('password.request'))
-                                        <a href="{{ route('password.request') }}" wire:navigate class="text-xs font-bold text-emerald-700 hover:text-emerald-900 hover:underline">
-                                            {{ __('Lupa password?') }}
-                                        </a>
-                                    @endif
+                                    <p class="text-[11px] leading-relaxed ps-6">
+                                        {{ $errors->first('email') ?: ($errors->first('password') ?: $errors->first()) }}
+                                    </p>
                                 </div>
-                                <div class="relative">
-                                    <input 
-                                        id="default_password" 
-                                        wire:model="password" 
-                                        :type="showPassword ? 'text' : 'password'" 
-                                        required 
-                                        autocomplete="current-password" 
-                                        placeholder="••••••••"
-                                        class="w-full rounded-2xl bg-white border-2 {{ $errors->has('password') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 placeholder-zinc-400 shadow-2xs outline-none transition-all pr-12"
-                                    />
+                            @endif
+
+                            <form wire:submit="login" class="space-y-5">
+                                {{-- Email Input --}}
+                                <div class="space-y-2">
+                                    <label for="default_email" class="text-xs font-bold text-emerald-950 uppercase tracking-wider">
+                                        {{ __('Alamat Email') }} <span class="text-rose-500">*</span>
+                                    </label>
+                                    <div class="relative">
+                                        <input 
+                                            id="default_email" 
+                                            wire:model="email" 
+                                            type="email" 
+                                            required 
+                                            autocomplete="email" 
+                                            placeholder="nama@email.com"
+                                            class="w-full rounded-2xl bg-white border-2 {{ $errors->has('email') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 placeholder-zinc-400 shadow-2xs outline-none transition-all"
+                                        />
+                                    </div>
+                                    @error('email')
+                                        <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-rose-600">
+                                            <flux:icon name="exclamation-circle" class="size-3.5 shrink-0 text-rose-500" />
+                                            <span>{{ $message }}</span>
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                {{-- Password Input --}}
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <label for="default_password" class="text-xs font-bold text-emerald-950 uppercase tracking-wider">
+                                            {{ __('Kata Sandi') }} <span class="text-rose-500">*</span>
+                                        </label>
+                                        @if (Route::has('password.request'))
+                                            <a href="{{ route('password.request') }}" wire:navigate class="text-xs font-bold text-emerald-700 hover:text-emerald-900 hover:underline">
+                                                {{ __('Lupa password?') }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                    <div class="relative">
+                                        <input 
+                                            id="default_password" 
+                                            wire:model="password" 
+                                            :type="showPassword ? 'text' : 'password'" 
+                                            required 
+                                            autocomplete="current-password" 
+                                            placeholder="••••••••"
+                                            class="w-full rounded-2xl bg-white border-2 {{ $errors->has('password') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 placeholder-zinc-400 shadow-2xs outline-none transition-all pr-12"
+                                        />
+                                        <button 
+                                            type="button" 
+                                            @click="showPassword = !showPassword"
+                                            class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 focus:outline-none"
+                                            aria-label="{{ __('Tampilkan kata sandi') }}"
+                                        >
+                                            <flux:icon name="eye" class="size-4" x-show="!showPassword" />
+                                            <flux:icon name="eye-slash" class="size-4" x-show="showPassword" style="display: none;" />
+                                        </button>
+                                    </div>
+                                    @error('password')
+                                        <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-rose-600">
+                                            <flux:icon name="exclamation-circle" class="size-3.5 shrink-0 text-rose-500" />
+                                            <span>{{ $message }}</span>
+                                        </div>
+                                    @enderror
+                                </div>
+
+                                {{-- Remember Me --}}
+                                <div class="flex items-center justify-between pt-1">
+                                    <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-zinc-700">
+                                        <input 
+                                            type="checkbox" 
+                                            wire:model="remember" 
+                                            class="rounded border-emerald-300 text-emerald-700 focus:ring-emerald-600 size-4"
+                                        />
+                                        <span>{{ __('Ingat saya di perangkat ini') }}</span>
+                                    </label>
+                                </div>
+
+                                {{-- Submit Button --}}
+                                <div class="pt-2">
                                     <button 
-                                        type="button" 
-                                        @click="showPassword = !showPassword"
-                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 focus:outline-none"
-                                        aria-label="{{ __('Tampilkan kata sandi') }}"
+                                        type="submit" 
+                                        wire:loading.attr="disabled"
+                                        class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-sm py-4 px-8 shadow-xl shadow-emerald-900/25 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer disabled:opacity-60"
                                     >
-                                        <flux:icon name="eye" class="size-4" x-show="!showPassword" />
-                                        <flux:icon name="eye-slash" class="size-4" x-show="showPassword" style="display: none;" />
+                                        <span wire:loading.remove wire:target="login">{{ __('Masuk ke Portal Akademik') }}</span>
+                                        <span wire:loading wire:target="login" class="flex items-center gap-2">
+                                            <flux:icon name="arrow-path" class="size-4 animate-spin" />
+                                            <span>{{ __('Memproses...') }}</span>
+                                        </span>
+                                        <flux:icon name="arrow-right" class="size-4" wire:loading.remove wire:target="login" />
                                     </button>
                                 </div>
-                                @error('password')
-                                    <div class="flex items-center gap-1.5 mt-1 text-xs font-bold text-rose-600">
-                                        <flux:icon name="exclamation-circle" class="size-3.5 shrink-0 text-rose-500" />
-                                        <span>{{ $message }}</span>
+
+                                {{-- Google OAuth Login (Khusus Guru) --}}
+                                <div class="space-y-3 pt-2">
+                                    <div class="relative flex items-center justify-center">
+                                        <div class="w-full border-t border-emerald-200"></div>
+                                        <span class="bg-white px-3 text-[11px] font-extrabold text-emerald-950 uppercase tracking-wider whitespace-nowrap">
+                                            {{ __('Akses Khusus Guru') }}
+                                        </span>
                                     </div>
-                                @enderror
-                            </div>
 
-                            {{-- Remember Me --}}
-                            <div class="flex items-center justify-between pt-1">
-                                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-zinc-700">
-                                    <input 
-                                        type="checkbox" 
-                                        wire:model="remember" 
-                                        class="rounded border-emerald-300 text-emerald-700 focus:ring-emerald-600 size-4"
-                                    />
-                                    <span>{{ __('Ingat saya di perangkat ini') }}</span>
-                                </label>
-                            </div>
-
-                            {{-- Submit Button --}}
-                            <div class="pt-2">
-                                <button 
-                                    type="submit" 
-                                    wire:loading.attr="disabled"
-                                    class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-sm py-4 px-8 shadow-xl shadow-emerald-900/25 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer disabled:opacity-60"
-                                >
-                                    <span wire:loading.remove wire:target="login">{{ __('Masuk ke Portal Akademik') }}</span>
-                                    <span wire:loading wire:target="login" class="flex items-center gap-2">
-                                        <flux:icon name="arrow-path" class="size-4 animate-spin" />
-                                        <span>{{ __('Memproses...') }}</span>
-                                    </span>
-                                    <flux:icon name="arrow-right" class="size-4" wire:loading.remove wire:target="login" />
-                                </button>
-                            </div>
-                        </form>
+                                    <a
+                                        href="{{ route('auth.google') }}"
+                                        class="w-full inline-flex items-center justify-center gap-2.5 rounded-2xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-950 font-extrabold text-xs py-3.5 px-6 shadow-2xs transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+                                    >
+                                        <svg class="size-4 shrink-0" viewBox="0 0 24 24">
+                                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                                        </svg>
+                                        <span>{{ __('Login Dengan Google') }}</span>
+                                    </a>
+                                </div>
+                            </form>
 
                         {{-- Registration Link --}}
                         <div class="text-center pt-4 border-t border-zinc-100">

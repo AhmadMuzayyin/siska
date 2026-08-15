@@ -29,6 +29,10 @@ class SemesterActivationAction
             // can't be mass-assigned outside this Action; forceFill is the sanctioned
             // way for this Action itself to flip it.
             $semester->forceFill(['is_aktif' => true])->save();
+
+            if ($semester->tipe->value === 'genap') {
+                app(AutomaticClassPromotionAction::class)->handle($semester);
+            }
         });
 
         return $semester->fresh();

@@ -92,7 +92,7 @@
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <flux:select wire:model="jenjang" :label="__('Jenjang Pendidikan')">
+                <flux:select wire:model="jenjang" :label="__('Jenjang Pendidikan')" placeholder="{{ __('Pilih Jenjang Pendidikan') }}">
                     @foreach ($this->defaultJenjangs as $j)
                         <flux:select.option value="{{ $j }}">{{ $j }}</flux:select.option>
                     @endforeach

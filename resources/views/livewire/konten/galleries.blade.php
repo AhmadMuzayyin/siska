@@ -11,7 +11,8 @@
     </div>
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <flux:select wire:model.live="typeFilter" class="max-w-48" placeholder="{{ __('Semua kategori') }}">
+        <flux:select wire:model.live="typeFilter" class="max-w-48" placeholder="{{ __('Pilih Kategori') }}">
+            <flux:select.option value="">{{ __('Semua Kategori') }}</flux:select.option>
             @foreach ($this->types as $type)
                 <flux:select.option value="{{ $type->value }}">{{ ucfirst($type->value) }}</flux:select.option>
             @endforeach
@@ -22,29 +23,36 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         @forelse ($this->rows as $gallery)
             <div wire:key="gallery-{{ $gallery->id }}" class="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xs dark:border-zinc-800 dark:bg-zinc-900">
-                <div class="aspect-video w-full bg-zinc-100 bg-cover bg-center dark:bg-zinc-800" style="background-image: url('{{ $gallery->image }}')"></div>
-                <div class="flex flex-col gap-2 p-3">
-                    <flux:badge size="sm" color="zinc" class="w-fit">{{ ucfirst($gallery->type->value) }}</flux:badge>
-                    <flux:text class="truncate font-medium">{{ $gallery->title }}</flux:text>
-                    <div class="flex justify-end gap-1">
-                        <flux:button size="sm" variant="ghost" icon="pencil-square" wire:click="edit({{ $gallery->id }})" />
-                        <flux:button
-                            size="sm"
-                            variant="ghost"
-                            icon="trash"
-                            class="text-red-600 hover:text-red-700"
-                            wire:click="delete({{ $gallery->id }})"
-                            wire:confirm="{{ __('Yakin ingin menghapus foto ini?') }}"
-                        />
+                <div class="aspect-video w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                    <img src="{{ $gallery->image }}" alt="{{ $gallery->title }}" class="h-full w-full object-cover" />
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between gap-2">
+                        <flux:badge size="sm" color="zinc">{{ ucfirst($gallery->type->value) }}</flux:badge>
+                        <div class="flex gap-1">
+                            <flux:button size="sm" variant="ghost" icon="pencil-square" wire:click="edit({{ $gallery->id }})" />
+                            <flux:button
+                                size="sm"
+                                variant="ghost"
+                                icon="trash"
+                                class="text-red-600 hover:text-red-700"
+                                wire:click="delete({{ $gallery->id }})"
+                                wire:confirm="{{ __('Yakin ingin menghapus foto ini?') }}"
+                            />
+                        </div>
                     </div>
+                    <flux:heading size="sm" class="mt-2">{{ $gallery->title }}</flux:heading>
+                    @if ($gallery->description)
+                        <flux:subheading size="sm" class="line-clamp-2 mt-1">{{ $gallery->description }}</flux:subheading>
+                    @endif
                 </div>
             </div>
         @empty
-            <div class="col-span-full rounded-xl border border-dashed border-zinc-300 p-10 text-center text-zinc-400 dark:border-zinc-700">
-                {{ __('Belum ada foto ditemukan.') }}
+            <div class="col-span-full py-10 text-center text-zinc-400">
+                {{ __('Belum ada foto di galeri.') }}
             </div>
         @endforelse
     </div>
@@ -57,7 +65,7 @@
                 <flux:heading size="lg">{{ $editingId ? __('Edit Foto') : __('Tambah Foto') }}</flux:heading>
             </div>
 
-            <flux:select wire:model="type" :label="__('Kategori')">
+            <flux:select wire:model="type" :label="__('Kategori')" placeholder="{{ __('Pilih Kategori') }}">
                 @foreach ($this->types as $type)
                     <flux:select.option value="{{ $type->value }}">{{ ucfirst($type->value) }}</flux:select.option>
                 @endforeach

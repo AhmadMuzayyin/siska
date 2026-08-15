@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['lembaga_id', 'nama', 'kapasitas'])]
+#[Fillable(['kode', 'lembaga_id', 'nama', 'kapasitas'])]
 class Kelas extends Model
 {
     use HasFactory;
@@ -19,6 +19,16 @@ class Kelas extends Model
         return [
             'kapasitas' => 'integer',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Kelas $kelas): void {
+            if (empty($kelas->kode)) {
+                $maxId = (int) (static::max('id') ?? 0) + 1;
+                $kelas->kode = 'KLS-'.str_pad((string) $maxId, 3, '0', STR_PAD_LEFT);
+            }
+        });
     }
 
     public function lembaga(): BelongsTo

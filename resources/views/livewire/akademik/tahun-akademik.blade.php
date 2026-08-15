@@ -99,7 +99,7 @@
                 <flux:subheading>{{ __('Format penamaan: 2025/2026 atau 1447 H') }}</flux:subheading>
             </div>
 
-            <flux:select wire:model="lembaga_id" :label="__('Unit Lembaga (Kosongkan jika Berlaku Semua)')">
+            <flux:select wire:model="lembaga_id" :label="__('Unit Lembaga (Kosongkan jika Berlaku Semua)')" placeholder="{{ __('Pilih Unit Lembaga') }}">
                 <flux:select.option value="">{{ __('Semua Lembaga (Global)') }}</flux:select.option>
                 @foreach ($this->lembagaOptions as $l)
                     <flux:select.option value="{{ $l->id }}">{{ $l->nama }} ({{ $l->jenjang }})</flux:select.option>
@@ -124,7 +124,7 @@
                 <flux:subheading>{{ __('Maksimal 2 semester per tahun akademik.') }}</flux:subheading>
             </div>
 
-            <flux:select wire:model="tipe" :label="__('Tipe Semester')">
+            <flux:select wire:model="tipe" :label="__('Tipe Semester')" placeholder="{{ __('Pilih Tipe Semester') }}">
                 @foreach ($this->semesterTypes as $type)
                     <flux:select.option value="{{ $type->value }}">{{ ucfirst($type->value) }}</flux:select.option>
                 @endforeach

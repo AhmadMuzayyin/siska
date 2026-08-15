@@ -1,7 +1,18 @@
 <div class="flex flex-col gap-6">
-    <div>
-        <flux:heading size="xl">{{ __('Nilai Santri') }}</flux:heading>
-        <flux:subheading>{{ __('Input nilai per mata pelajaran, predikat dihitung otomatis.') }}</flux:subheading>
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <flux:heading size="xl">{{ __('Nilai Santri') }}</flux:heading>
+            <flux:subheading>{{ __('Input nilai per mata pelajaran, predikat dihitung otomatis.') }}</flux:subheading>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <a href="{{ route('export.excel', 'nilai') }}" class="inline-flex items-center gap-1 text-xs font-bold px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
+                <flux:icon name="arrow-down-tray" class="size-4" /> {{ __('Export Excel') }}
+            </a>
+            <a href="{{ route('export.pdf', 'nilai') }}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold px-3 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700">
+                <flux:icon name="printer" class="size-4" /> {{ __('Export PDF') }}
+            </a>
+        </div>
     </div>
 
     @if (!$this->activeSemester)
@@ -14,7 +25,7 @@
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex flex-wrap items-center gap-3">
-            <flux:select wire:model.live="semesterId" class="max-w-sm">
+            <flux:select wire:model.live="semesterId" class="max-w-sm" placeholder="{{ __('Pilih Semester') }}">
                 @foreach ($this->semesterOptions as $semester)
                     <flux:select.option value="{{ $semester->id }}" :selected="$semesterId == $semester->id">
                         {{ $semester->tahunAkademik->nama }} &mdash; {{ ucfirst($semester->tipe->value) }}
@@ -22,13 +33,13 @@
                 @endforeach
             </flux:select>
 
-            <flux:select wire:model.live="kelasId" class="max-w-44" placeholder="{{ __('Pilih kelas') }}">
+            <flux:select wire:model.live="kelasId" class="max-w-44" placeholder="{{ __('Pilih Kelas') }}">
                 @foreach ($this->kelasOptions as $kelas)
                     <flux:select.option value="{{ $kelas->id }}" :selected="$kelasId == $kelas->id">{{ $kelas->nama }}</flux:select.option>
                 @endforeach
             </flux:select>
 
-            <flux:select wire:model.live="mapelId" class="max-w-44" placeholder="{{ __('Pilih mapel') }}">
+            <flux:select wire:model.live="mapelId" class="max-w-44" placeholder="{{ __('Pilih Mata Pelajaran') }}">
                 @foreach ($this->mapelOptions as $mapel)
                     <flux:select.option value="{{ $mapel->id }}" :selected="$mapelId == $mapel->id">{{ $mapel->nama }}</flux:select.option>
                 @endforeach

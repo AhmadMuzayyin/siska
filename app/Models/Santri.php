@@ -19,7 +19,7 @@ use Illuminate\Validation\Rule;
     'tempat_lahir', 'tanggal_lahir', 'anak_ke', 'alamat', 'jenis_kelamin',
     'nama_ayah', 'pendidikan_ayah', 'pekerjaan_ayah',
     'nama_ibu', 'pendidikan_ibu', 'pekerjaan_ibu',
-    'telepon_wali', 'status',
+    'telepon_wali', 'status', 'notification_read_at',
 ])]
 class Santri extends Model
 {
@@ -32,6 +32,7 @@ class Santri extends Model
             'anak_ke' => 'integer',
             'jenis_kelamin' => Gender::class,
             'status' => SantriStatus::class,
+            'notification_read_at' => 'datetime',
         ];
     }
 

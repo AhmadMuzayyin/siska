@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SantriRegistrationController;
 use App\Livewire\Dashboard;
@@ -8,6 +9,9 @@ use App\Livewire\Public\Galeri;
 use App\Livewire\Public\Home;
 use App\Livewire\Public\Program;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 Route::livewire('/', Home::class)->name('home');
 Route::livewire('/program', Program::class)->name('program');

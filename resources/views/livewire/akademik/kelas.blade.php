@@ -23,6 +23,7 @@
         <flux:table :paginate="$this->rows">
             <flux:table.columns>
                 <flux:table.column>{{ __('Lembaga') }}</flux:table.column>
+                <flux:table.column>{{ __('Kode') }}</flux:table.column>
                 <flux:table.column>{{ __('Nama Kelas') }}</flux:table.column>
                 <flux:table.column>{{ __('Wali Kelas') }}</flux:table.column>
                 <flux:table.column align="center">{{ __('Santri') }}</flux:table.column>
@@ -36,6 +37,11 @@
                         <flux:table.cell>
                             <flux:badge size="sm" color="emerald" class="font-bold">
                                 {{ $kelas->lembaga?->jenjang ?? 'GLOBAL' }}
+                            </flux:badge>
+                        </flux:table.cell>
+                        <flux:table.cell>
+                            <flux:badge size="sm" color="zinc" class="font-mono font-bold">
+                                {{ $kelas->kode ?? 'KLS-'.$kelas->id }}
                             </flux:badge>
                         </flux:table.cell>
                         <flux:table.cell variant="strong">{{ $kelas->nama }}</flux:table.cell>
@@ -84,7 +90,7 @@
                 <flux:subheading>{{ __('Pilih unit lembaga, nama kelas, dan kapasitas.') }}</flux:subheading>
             </div>
 
-            <flux:select wire:model="lembaga_id" :label="__('Unit Lembaga')">
+            <flux:select wire:model="lembaga_id" :label="__('Unit Lembaga')" placeholder="{{ __('Pilih Unit Lembaga') }}">
                 @foreach ($this->lembagaOptions as $lembaga)
                     <flux:select.option value="{{ $lembaga->id }}">{{ $lembaga->nama }} ({{ $lembaga->jenjang }})</flux:select.option>
                 @endforeach
@@ -93,8 +99,7 @@
             <flux:input wire:model="nama" :label="__('Nama Kelas')" placeholder="mis. 1A" />
             <flux:input wire:model="kapasitas" type="number" min="1" :label="__('Kapasitas')" />
 
-            <flux:select wire:model="waliKelasGuruId" :label="__('Wali Kelas')">
-                <flux:select.option value="">{{ __('Belum ditentukan') }}</flux:select.option>
+            <flux:select wire:model="waliKelasGuruId" :label="__('Wali Kelas')" placeholder="{{ __('Pilih Wali Kelas') }}">
                 @foreach ($this->availableGurus as $guru)
                     <flux:select.option value="{{ $guru->id }}">{{ $guru->user->name }}</flux:select.option>
                 @endforeach

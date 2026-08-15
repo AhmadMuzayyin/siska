@@ -123,6 +123,11 @@
                     <flux:subheading>{{ __('Pemberitahuan aktivitas sistem & permohonan.') }}</flux:subheading>
                 </div>
             </div>
+            @if ($unreadCount > 0)
+                <button type="button" wire:click="markAllAsRead" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:underline cursor-pointer shrink-0">
+                    {{ __('Tandai Semua Dibaca') }}
+                </button>
+            @endif
         </div>
 
         {{-- Filter Pills --}}
@@ -164,9 +169,14 @@
                                     {{ $santri->nama_lengkap }}
                                 </span>
                             </div>
-                            <span class="text-[10px] text-zinc-500 dark:text-zinc-400 shrink-0">
-                                {{ $santri->created_at?->diffForHumans() }}
-                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] text-zinc-500 dark:text-zinc-400 shrink-0">
+                                    {{ $santri->created_at?->diffForHumans() }}
+                                </span>
+                                <button type="button" wire:click="markAsRead('santri', {{ $santri->id }})" title="{{ __('Tandai Dibaca') }}" class="text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 p-0.5 rounded cursor-pointer">
+                                    <flux:icon name="check" class="size-3.5" />
+                                </button>
+                            </div>
                         </div>
 
                         <p class="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
@@ -183,6 +193,7 @@
 
                             <a
                                 href="{{ route('kesantrian.santri') }}"
+                                wire:click="markAsRead('santri', {{ $santri->id }})"
                                 wire:navigate
                                 class="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1"
                             >
@@ -205,9 +216,14 @@
                                     {{ $contact->name ?? ($contact->nama ?? 'Pengirim') }}
                                 </span>
                             </div>
-                            <span class="text-[10px] text-zinc-500 dark:text-zinc-400 shrink-0">
-                                {{ $contact->created_at?->diffForHumans() }}
-                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] text-zinc-500 dark:text-zinc-400 shrink-0">
+                                    {{ $contact->created_at?->diffForHumans() }}
+                                </span>
+                                <button type="button" wire:click="markAsRead('contact', {{ $contact->id }})" title="{{ __('Tandai Dibaca') }}" class="text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 p-0.5 rounded cursor-pointer">
+                                    <flux:icon name="check" class="size-3.5" />
+                                </button>
+                            </div>
                         </div>
 
                         <p class="text-xs text-zinc-600 dark:text-zinc-300 line-clamp-2">
@@ -222,6 +238,7 @@
 
                             <a
                                 href="{{ route('konten.pesan') }}"
+                                wire:click="markAsRead('contact', {{ $contact->id }})"
                                 wire:navigate
                                 class="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1"
                             >

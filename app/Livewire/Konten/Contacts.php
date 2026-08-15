@@ -28,6 +28,15 @@ class Contacts extends Component
     public function mount(): void
     {
         $this->authorize('viewAny', ContactModel::class);
+        ContactModel::query()->where('is_dibaca', false)->update(['is_dibaca' => true]);
+    }
+
+    public function markAsRead(int $id): void
+    {
+        $contact = ContactModel::query()->find($id);
+        if ($contact) {
+            $contact->update(['is_dibaca' => true]);
+        }
     }
 
     public function delete(int $id): void

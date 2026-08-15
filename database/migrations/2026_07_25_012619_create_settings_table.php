@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('lembaga')->nullable();
             $table->string('nsm')->nullable();
             $table->string('alamat')->nullable();
-            $table->string('google_maps_url')->nullable();
+            $table->text('google_maps_url')->nullable();
             $table->string('email')->nullable();
             $table->string('telepon')->nullable();
             $table->string('logo')->nullable();

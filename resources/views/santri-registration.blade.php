@@ -156,7 +156,7 @@
                                             required 
                                             class="w-full rounded-2xl bg-white border {{ $errors->has('jenis_kelamin') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
                                         >
-                                            <option value="">{{ __('-- Pilih Jenis Kelamin --') }}</option>
+                                            <option value="" disabled {{ old('jenis_kelamin') ? '' : 'selected' }}>{{ __('Pilih Jenis Kelamin') }}</option>
                                             @foreach ($genders as $gender)
                                                 <option value="{{ $gender->value }}" {{ old('jenis_kelamin') === $gender->value ? 'selected' : '' }}>
                                                     {{ $gender->value === 'laki_laki' ? __('Laki-laki') : __('Perempuan') }}
@@ -258,7 +258,7 @@
                                             name="lembaga_id" 
                                             class="w-full rounded-2xl bg-white border {{ $errors->has('lembaga_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
                                         >
-                                            <option value="">{{ __('-- Pilih Lembaga --') }}</option>
+                                            <option value="" disabled {{ old('lembaga_id') ? '' : 'selected' }}>{{ __('Pilih Unit Lembaga') }}</option>
                                             @foreach ($lembagas as $lembaga)
                                                 <option value="{{ $lembaga->id }}" {{ old('lembaga_id') == $lembaga->id ? 'selected' : '' }}>
                                                     {{ $lembaga->nama }} ({{ $lembaga->jenjang }})
@@ -283,7 +283,7 @@
                                             name="kelas_id" 
                                             class="w-full rounded-2xl bg-white border {{ $errors->has('kelas_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
                                         >
-                                            <option value="">{{ __('-- Pilih Kelas --') }}</option>
+                                            <option value="" disabled {{ old('kelas_id') ? '' : 'selected' }}>{{ __('Pilih Kelas') }}</option>
                                             @foreach ($kelasList as $kelas)
                                                 <option value="{{ $kelas->id }}" {{ old('kelas_id') == $kelas->id ? 'selected' : '' }}>
                                                     {{ $kelas->nama }} @if($kelas->lembaga) ({{ $kelas->lembaga->jenjang }}) @endif
@@ -614,7 +614,7 @@
                                             required 
                                             class="w-full rounded-2xl bg-white border-2 {{ $errors->has('jenis_kelamin') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
                                         >
-                                            <option value="">{{ __('-- Pilih Jenis Kelamin --') }}</option>
+                                            <option value="" disabled {{ old('jenis_kelamin') ? '' : 'selected' }}>{{ __('Pilih Jenis Kelamin') }}</option>
                                             @foreach ($genders as $gender)
                                                 <option value="{{ $gender->value }}" {{ old('jenis_kelamin') === $gender->value ? 'selected' : '' }}>
                                                     {{ $gender->value === 'laki_laki' ? __('Laki-laki') : __('Perempuan') }}
@@ -716,7 +716,7 @@
                                             name="lembaga_id" 
                                             class="w-full rounded-2xl bg-white border-2 {{ $errors->has('lembaga_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
                                         >
-                                            <option value="">{{ __('-- Pilih Lembaga --') }}</option>
+                                            <option value="" disabled {{ old('lembaga_id') ? '' : 'selected' }}>{{ __('Pilih Unit Lembaga') }}</option>
                                             @foreach ($lembagas as $lembaga)
                                                 <option value="{{ $lembaga->id }}" {{ old('lembaga_id') == $lembaga->id ? 'selected' : '' }}>
                                                     {{ $lembaga->nama }} ({{ $lembaga->jenjang }})
@@ -741,7 +741,7 @@
                                             name="kelas_id" 
                                             class="w-full rounded-2xl bg-white border-2 {{ $errors->has('kelas_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
                                         >
-                                            <option value="">{{ __('-- Pilih Kelas --') }}</option>
+                                            <option value="" disabled {{ old('kelas_id') ? '' : 'selected' }}>{{ __('Pilih Kelas') }}</option>
                                             @foreach ($kelasList as $kelas)
                                                 <option value="{{ $kelas->id }}" {{ old('kelas_id') == $kelas->id ? 'selected' : '' }}>
                                                     {{ $kelas->nama }} @if($kelas->lembaga) ({{ $kelas->lembaga->jenjang }}) @endif

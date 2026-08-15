@@ -19,7 +19,8 @@
     @endif
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <flux:select wire:model.live="kelasFilter" class="max-w-xs" placeholder="{{ __('Semua kelas') }}">
+        <flux:select wire:model.live="kelasFilter" class="max-w-xs" placeholder="{{ __('Pilih Kelas') }}">
+            <flux:select.option value="">{{ __('Semua Kelas') }}</flux:select.option>
             @foreach ($this->kelasOptions as $kelas)
                 <flux:select.option value="{{ $kelas->id }}">{{ $kelas->nama }}</flux:select.option>
             @endforeach
@@ -67,7 +68,7 @@
                 <flux:subheading>{{ __('Bulan dan tahun otomatis diambil dari tanggal bayar.') }}</flux:subheading>
             </div>
 
-            <flux:select wire:model="santriId" :label="__('Santri')">
+            <flux:select wire:model="santriId" :label="__('Santri')" placeholder="{{ __('Pilih Santri') }}">
                 @foreach ($this->santriOptions as $santri)
                     <flux:select.option value="{{ $santri->id }}">{{ $santri->nama_lengkap }} ({{ $santri->noinduk }})</flux:select.option>
                 @endforeach

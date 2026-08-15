@@ -7,7 +7,7 @@
         @php
             $setting = \App\Models\Setting::query()->first();
             $isMasterDataActive = request()->routeIs('akademik.tahun-akademik') || request()->routeIs('akademik.kelas') || request()->routeIs('akademik.mapel') || request()->routeIs('kepegawaian.guru') || request()->routeIs('kesantrian.santri');
-            $isAkademikActive = request()->routeIs('akademik.jadwal-pelajaran') || request()->routeIs('kesantrian.absensi') || request()->routeIs('kepegawaian.absensi') || request()->routeIs('keuangan.spp') || request()->routeIs('kepegawaian.gaji') || request()->routeIs('kesantrian.nilai');
+            $isAkademikActive = request()->routeIs('akademik.jadwal-pelajaran') || request()->routeIs('kesantrian.absensi') || request()->routeIs('kepegawaian.absensi') || request()->routeIs('keuangan.*') || request()->routeIs('kepegawaian.gaji') || request()->routeIs('kesantrian.nilai') || request()->routeIs('akademik.setting-rapor');
             $isKontenActive = request()->routeIs('konten.*');
             $isAdminActive = request()->routeIs('admin.*') || request()->routeIs('settings*') || request()->routeIs('profile.edit') || request()->routeIs('security.edit') || request()->routeIs('appearance.edit');
         @endphp
@@ -79,6 +79,12 @@
                         <flux:sidebar.item icon="banknotes" :href="route('keuangan.spp')" :current="request()->routeIs('keuangan.spp')" wire:navigate>
                             {{ __('Pembayaran SPP') }}
                         </flux:sidebar.item>
+                        <flux:sidebar.item icon="sparkles" :href="route('keuangan.haflatul-imtihan')" :current="request()->routeIs('keuangan.haflatul-imtihan')" wire:navigate>
+                            {{ __('Haflatul Imtihan') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="wallet" :href="route('keuangan.tabungan')" :current="request()->routeIs('keuangan.tabungan')" wire:navigate>
+                            {{ __('Tabungan Santri') }}
+                        </flux:sidebar.item>
                     @endif
 
                     @if ($setting?->hasModule('gaji_guru'))
@@ -90,6 +96,9 @@
                     @if ($setting?->hasModule('nilai'))
                         <flux:sidebar.item icon="pencil-square" :href="route('kesantrian.nilai')" :current="request()->routeIs('kesantrian.nilai')" wire:navigate>
                             {{ __('Nilai Santri') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="document-text" :href="route('akademik.setting-rapor')" :current="request()->routeIs('akademik.setting-rapor')" wire:navigate>
+                            {{ __('Setting Rapor') }}
                         </flux:sidebar.item>
                     @endif
                 </flux:sidebar.group>
