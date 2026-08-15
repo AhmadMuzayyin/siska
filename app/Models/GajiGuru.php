@@ -31,4 +31,9 @@ class GajiGuru extends Model
     {
         return $this->belongsTo(Guru::class);
     }
+
+    public function semester(): BelongsTo
+    {
+        return $this->belongsTo(Semester::class);
+    }
 }

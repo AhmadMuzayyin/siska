@@ -84,7 +84,7 @@
         </flux:table>
     </div>
 
-    <flux:modal name="lembaga-form" class="md:w-[32rem]" @close="$set('editingId', null)">
+    <flux:modal name="lembaga-form" flyout class="md:w-[32rem]" @close="$set('editingId', null)">
         <form wire:submit="save" class="flex flex-col gap-6">
             <div>
                 <flux:heading size="lg">{{ $editingId ? __('Edit Unit Lembaga') : __('Tambah Unit Lembaga Baru') }}</flux:heading>

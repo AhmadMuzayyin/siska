@@ -3,6 +3,7 @@
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SantriRegistrationController;
 use App\Livewire\Dashboard;
+use App\Livewire\Public\DaftarSantri;
 use App\Livewire\Public\Galeri;
 use App\Livewire\Public\Home;
 use App\Livewire\Public\Program;
@@ -14,8 +15,7 @@ Route::livewire('/galeri', Galeri::class)->name('galeri');
 
 Route::view('/tentang', 'tentang')->name('about');
 
-Route::get('/daftar', [SantriRegistrationController::class, 'create'])->name('santri.register.form');
-
+Route::livewire('/daftar', DaftarSantri::class)->name('santri.register.form');
 Route::post('/daftar', [SantriRegistrationController::class, 'store'])
     ->middleware('throttle:6,1')
     ->name('santri.register');

@@ -1,6 +1,5 @@
 <?php
 
-use App\Livewire\Admin\AppSettings;
 use App\Livewire\Admin\Lembagas;
 use App\Livewire\Admin\Users;
 use App\Livewire\Admin\WhatsappBroadcast;
@@ -18,6 +17,7 @@ use App\Livewire\Keuangan\Spp;
 use App\Livewire\Konten\Contacts;
 use App\Livewire\Konten\Galleries;
 use App\Livewire\Konten\Subscriptions;
+use App\Livewire\Settings\Index;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -42,6 +42,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::livewire('admin/lembagas', Lembagas::class)->name('admin.lembagas');
     Route::livewire('admin/users', Users::class)->name('admin.users');
-    Route::livewire('admin/settings', AppSettings::class)->name('admin.settings');
+    Route::livewire('admin/settings', Index::class)->name('admin.settings');
     Route::livewire('admin/whatsapp', WhatsappBroadcast::class)->name('admin.whatsapp');
 });

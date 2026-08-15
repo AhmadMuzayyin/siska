@@ -77,7 +77,7 @@
         </flux:table>
     </div>
 
-    <flux:modal name="kelas-form" class="md:w-96" @close="$set('editingId', null)">
+    <flux:modal name="kelas-form" flyout class="md:w-96" @close="$set('editingId', null)">
         <form wire:submit="save" class="flex flex-col gap-6">
             <div>
                 <flux:heading size="lg">{{ $editingId ? __('Edit Kelas') : __('Tambah Kelas') }}</flux:heading>

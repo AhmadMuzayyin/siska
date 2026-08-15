@@ -14,6 +14,13 @@ class Kelas extends Model
 {
     use HasFactory;
 
+    protected function casts(): array
+    {
+        return [
+            'kapasitas' => 'integer',
+        ];
+    }
+
     public function lembaga(): BelongsTo
     {
         return $this->belongsTo(Lembaga::class);

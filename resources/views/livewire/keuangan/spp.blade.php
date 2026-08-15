@@ -60,7 +60,7 @@
         </flux:table>
     </div>
 
-    <flux:modal name="spp-form" class="md:w-96">
+    <flux:modal name="spp-form" flyout class="md:w-96">
         <form wire:submit="save" class="flex flex-col gap-6">
             <div>
                 <flux:heading size="lg">{{ __('Catat Pembayaran SPP') }}</flux:heading>

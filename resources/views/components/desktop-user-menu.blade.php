@@ -1,39 +1,33 @@
-<flux:dropdown position="bottom" align="start">
-    <flux:sidebar.profile
-        :name="auth()->user()->name"
-        :initials="auth()->user()->initials()"
-        icon:trailing="chevrons-up-down"
-        data-test="sidebar-menu-button"
-    />
-
-    <flux:menu>
-        <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
+<div>
+    <div class="flex items-center justify-between gap-2 p-1.5 rounded-xl bg-zinc-100/80 dark:bg-zinc-800/80 border border-zinc-200/70 dark:border-zinc-700/50">
+        <div class="flex items-center gap-2.5 min-w-0 flex-1">
             <flux:avatar
                 :name="auth()->user()->name"
                 :initials="auth()->user()->initials()"
+                class="size-8 shrink-0"
             />
-            <div class="grid flex-1 text-start text-sm leading-tight">
-                <flux:heading class="truncate">{{ auth()->user()->name }}</flux:heading>
-                <flux:text class="truncate">{{ auth()->user()->email }}</flux:text>
+            <div class="grid flex-1 min-w-0 leading-tight">
+                <span class="truncate text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                    {{ auth()->user()->name }}
+                </span>
+                <span class="truncate text-[10px] text-zinc-500 dark:text-zinc-400">
+                    {{ auth()->user()->email }}
+                </span>
             </div>
         </div>
-        <flux:menu.separator />
-        <flux:menu.radio.group>
-            <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
-                {{ __('Settings') }}
-            </flux:menu.item>
-            <form method="POST" action="{{ route('logout') }}" class="w-full">
-                @csrf
-                <flux:menu.item
-                    as="button"
-                    type="submit"
-                    icon="arrow-right-start-on-rectangle"
-                    class="w-full cursor-pointer"
-                    data-test="logout-button"
-                >
-                    {{ __('Log out') }}
-                </flux:menu.item>
-            </form>
-        </flux:menu.radio.group>
-    </flux:menu>
-</flux:dropdown>
+
+        <form method="POST" action="{{ route('logout') }}" class="shrink-0">
+            @csrf
+            <button
+                type="submit"
+                class="flex size-8 items-center justify-center rounded-lg text-zinc-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 dark:hover:text-rose-400 transition-colors cursor-pointer"
+                title="{{ __('Log out') }}"
+                data-test="logout-button"
+                aria-label="{{ __('Log out') }}"
+            >
+                <flux:icon name="arrow-right-start-on-rectangle" class="size-4" />
+                <span class="sr-only">{{ __('Log out') }}</span>
+            </button>
+        </form>
+    </div>
+</div>

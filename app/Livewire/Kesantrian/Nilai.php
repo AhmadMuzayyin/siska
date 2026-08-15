@@ -39,8 +39,6 @@ class Nilai extends Component
 
     public function setNilai(int $santriId, string $value): void
     {
-        $this->authorize('create', NilaiModel::class);
-
         if (! $this->semesterId || ! $this->mapelId) {
             return;
         }
@@ -55,14 +53,24 @@ class Nilai extends Component
             return;
         }
 
-        NilaiModel::query()->updateOrCreate(
-            [
+        $existing = NilaiModel::query()->where([
+            'santri_id' => $santriId,
+            'semester_id' => $this->semesterId,
+            'mapel_id' => $this->mapelId,
+        ])->first();
+
+        if ($existing) {
+            $this->authorize('update', $existing);
+            $existing->update(['nilai' => $validated]);
+        } else {
+            $this->authorize('create', NilaiModel::class);
+            NilaiModel::query()->create([
                 'santri_id' => $santriId,
                 'semester_id' => $this->semesterId,
                 'mapel_id' => $this->mapelId,
-            ],
-            ['nilai' => $validated],
-        );
+                'nilai' => $validated,
+            ]);
+        }
 
         Flux::toast(variant: 'success', text: __('Nilai tersimpan.'), duration: 2000);
     }

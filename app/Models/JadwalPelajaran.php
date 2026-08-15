@@ -26,6 +26,11 @@ class JadwalPelajaran extends Model
         return $this->belongsTo(Lembaga::class);
     }
 
+    public function semester(): BelongsTo
+    {
+        return $this->belongsTo(Semester::class);
+    }
+
     public function kelas(): BelongsTo
     {
         return $this->belongsTo(Kelas::class);

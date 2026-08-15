@@ -91,3 +91,74 @@ div[data-livewire-progress] {
     border-left-color: #059669 !important;
 }
 
+/* Global autofill reset */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #18181b !important;
+    caret-color: #18181b !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Animasi halus tooltips saat hover sidebar */
+[data-flux-tooltip-content],
+[popover="manual"][data-flux-tooltip-content],
+ui-tooltip [data-flux-tooltip-content] {
+    animation: flux-tooltip-fade 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    transform-origin: left center !important;
+}
+
+@keyframes flux-tooltip-fade {
+    0% {
+        opacity: 0;
+        transform: translateX(-5px) scale(0.96);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* Memastikan logo tetap tampil saat hover di sidebar yang di-collapse */
+[data-flux-sidebar][data-flux-sidebar-collapsed-desktop] [data-flux-sidebar-brand],
+[data-flux-sidebar][data-flux-sidebar-collapsed-desktop]:hover [data-flux-sidebar-brand],
+[data-flux-sidebar][data-flux-sidebar-collapsed-desktop][data-flux-sidebar-active] [data-flux-sidebar-brand] {
+    opacity: 1 !important;
+    display: flex !important;
+    visibility: visible !important;
+    position: relative !important;
+}
+
+/* Hilangkan icon/cursor resize dan scrollbar pada sidebar collapsed */
+[data-flux-sidebar],
+[data-flux-sidebar][data-flux-sidebar-collapsed-desktop],
+ui-sidebar[data-flux-sidebar-collapsed-desktop] {
+    cursor: default !important;
+}
+
+[data-flux-sidebar] [data-flux-sidebar-collapse],
+ui-sidebar-toggle[data-flux-sidebar-collapse] {
+    cursor: default !important;
+}
+
+/* Sembunyikan scrollbar visual di nav sidebar */
+[data-flux-sidebar] nav,
+[data-flux-sidebar] [data-flux-sidebar-nav],
+[data-flux-sidebar] .overflow-y-auto {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+
+[data-flux-sidebar] nav::-webkit-scrollbar,
+[data-flux-sidebar] [data-flux-sidebar-nav]::-webkit-scrollbar,
+[data-flux-sidebar] .overflow-y-auto::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}

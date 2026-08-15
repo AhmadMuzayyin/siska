@@ -95,20 +95,38 @@ class Dashboard extends Component
     public function sppTrendChart(): array
     {
         $lembagaId = app(LembagaService::class)->getActiveLembagaId();
+        $startDate = Carbon::now()->subMonths(5)->startOfMonth();
+        $endDate = Carbon::now()->endOfMonth();
+
+        $totals = Spp::query()
+            ->selectRaw('tahun, bulan, sum(nominal) as total')
+            ->where(function ($q) use ($startDate, $endDate) {
+                if ($startDate->year === $endDate->year) {
+                    $q->where('tahun', $startDate->year)
+                        ->whereBetween('bulan', [$startDate->month, $endDate->month]);
+                } else {
+                    $q->where(function ($sub) use ($startDate) {
+                        $sub->where('tahun', $startDate->year)
+                            ->where('bulan', '>=', $startDate->month);
+                    })->orWhere(function ($sub) use ($endDate) {
+                        $sub->where('tahun', $endDate->year)
+                            ->where('bulan', '<=', $endDate->month);
+                    });
+                }
+            })
+            ->when($lembagaId, fn ($q) => $q->whereHas('santri', fn ($s) => $s->where('lembaga_id', $lembagaId)))
+            ->groupBy('tahun', 'bulan')
+            ->get()
+            ->keyBy(fn ($item) => sprintf('%d-%02d', $item->tahun, $item->bulan));
+
         $categories = [];
         $series = [];
 
         for ($i = 5; $i >= 0; $i--) {
             $date = Carbon::now()->subMonths($i);
             $categories[] = $date->locale('id')->isoFormat('MMM YY');
-
-            $total = (int) Spp::query()
-                ->where('bulan', $date->month)
-                ->where('tahun', $date->year)
-                ->when($lembagaId, fn ($q) => $q->whereHas('santri', fn ($s) => $s->where('lembaga_id', $lembagaId)))
-                ->sum('nominal');
-
-            $series[] = $total;
+            $key = sprintf('%d-%02d', $date->year, $date->month);
+            $series[] = (int) ($totals->get($key)?->total ?? 0);
         }
 
         return [
@@ -158,14 +176,18 @@ class Dashboard extends Component
     {
         $lembagaId = app(LembagaService::class)->getActiveLembagaId();
 
-        $query = Absensi::query()
+        $counts = Absensi::query()
+            ->selectRaw('status, count(*) as count')
             ->whereMonth('tanggal', now()->month)
-            ->when($lembagaId, fn ($q) => $q->whereHas('santri', fn ($s) => $s->where('lembaga_id', $lembagaId)));
+            ->whereYear('tanggal', now()->year)
+            ->when($lembagaId, fn ($q) => $q->whereHas('santri', fn ($s) => $s->where('lembaga_id', $lembagaId)))
+            ->groupBy('status')
+            ->pluck('count', 'status');
 
-        $hadir = (clone $query)->where('status', 'hadir')->count();
-        $izin = (clone $query)->where('status', 'izin')->count();
-        $sakit = (clone $query)->where('status', 'sakit')->count();
-        $alpa = (clone $query)->where('status', 'alpa')->count();
+        $hadir = (int) ($counts->get('hadir') ?? 0);
+        $izin = (int) ($counts->get('izin') ?? 0);
+        $sakit = (int) ($counts->get('sakit') ?? 0);
+        $alpa = (int) ($counts->get('alpa') ?? 0);
 
         // High fallback if empty
         if ($hadir === 0 && $izin === 0 && $sakit === 0 && $alpa === 0) {

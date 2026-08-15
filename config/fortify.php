@@ -143,8 +143,13 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // Registrasi publik dinonaktifkan — admin membuat user dari panel Admin > Users
+        // Features::registration(),
         Features::resetPasswords(),
+        Features::twoFactorAuthentication([
+            'confirm' => true,
+            'confirmPassword' => true,
+        ]),
     ],
 
 ];

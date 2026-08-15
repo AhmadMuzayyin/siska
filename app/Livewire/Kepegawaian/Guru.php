@@ -3,19 +3,16 @@
 namespace App\Livewire\Kepegawaian;
 
 use App\Actions\DeleteGuruAction;
+use App\Actions\SaveGuruAction;
 use App\Enums\Gender;
 use App\Enums\GuruStatus;
-use App\Enums\UserRole;
 use App\Exceptions\GuruMasihDipakaiException;
 use App\Models\Guru as GuruModel;
-use App\Models\User;
 use App\Rules\IndonesianPhoneNumber;
 use App\Traits\WithPerPage;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
@@ -105,7 +102,7 @@ class Guru extends Component
         ];
     }
 
-    public function save(): void
+    public function save(SaveGuruAction $action): void
     {
         $data = $this->validate();
 
@@ -113,41 +110,11 @@ class Guru extends Component
             $guru = GuruModel::query()->with('user')->findOrFail($this->editingId);
             $this->authorize('update', $guru);
 
-            DB::transaction(function () use ($guru, $data): void {
-                $guru->user->update([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    ...(filled($data['password']) ? ['password' => Hash::make($data['password'])] : []),
-                ]);
-
-                $guru->update([
-                    'alamat' => $data['alamat'],
-                    'whatsapp' => IndonesianPhoneNumber::normalize($data['whatsapp']),
-                    'gender' => $data['gender'],
-                    'status' => $data['status'],
-                    'rfid_uid' => $data['rfid_uid'] ?: null,
-                ]);
-            });
+            $action->handle($data, $guru);
         } else {
             $this->authorize('create', GuruModel::class);
 
-            DB::transaction(function () use ($data): void {
-                $user = User::query()->create([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'password' => $data['password'],
-                    'role' => UserRole::Guru,
-                ]);
-
-                GuruModel::query()->create([
-                    'user_id' => $user->id,
-                    'alamat' => $data['alamat'],
-                    'whatsapp' => IndonesianPhoneNumber::normalize($data['whatsapp']),
-                    'gender' => $data['gender'],
-                    'status' => $data['status'],
-                    'rfid_uid' => $data['rfid_uid'] ?: null,
-                ]);
-            });
+            $action->handle($data);
         }
 
         $this->modal('guru-form')->close();

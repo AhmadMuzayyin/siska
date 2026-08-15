@@ -71,7 +71,7 @@
         </flux:table>
     </div>
 
-    <flux:modal name="mapel-form" class="md:w-96" @close="$set('editingId', null)">
+    <flux:modal name="mapel-form" flyout class="md:w-96" @close="$set('editingId', null)">
         <form wire:submit="save" class="flex flex-col gap-6">
             <div>
                 <flux:heading size="lg">{{ $editingId ? __('Edit Mapel') : __('Tambah Mapel') }}</flux:heading>

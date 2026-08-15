@@ -14,6 +14,18 @@ class NewsletterForm extends Component
 
     public bool $submitted = false;
 
+    /**
+     * @return array<string, string>
+     */
+    protected function messages(): array
+    {
+        return [
+            'email.required' => 'Silakan masukkan alamat email Anda.',
+            'email.email' => 'Format alamat email tidak valid.',
+            'email.unique' => 'Alamat email ini sudah terdaftar sebelumnya.',
+        ];
+    }
+
     public function subscribe(): void
     {
         $this->validate();

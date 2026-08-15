@@ -257,7 +257,7 @@ class Santri extends Component
     }
 
     /**
-    * @return Collection<int, LembagaModel>
+     * @return Collection<int, LembagaModel>
      */
     #[Computed]
     public function lembagaOptions(): Collection

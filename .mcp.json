@@ -4,7 +4,7 @@
             "command": "wsl.exe",
             "args": [
                 "/usr/bin/php8.4",
-                "/home/ustaddev/siakad/siska-v2/artisan",
+                "/home/ustdev/siska/artisan",
                 "boost:mcp"
             ]
         }

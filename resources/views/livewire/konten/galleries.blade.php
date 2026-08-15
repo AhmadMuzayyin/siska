@@ -51,7 +51,7 @@
 
     {{ $this->rows->links() }}
 
-    <flux:modal name="gallery-form" class="md:w-96" @close="$set('editingId', null)">
+    <flux:modal name="gallery-form" flyout class="md:w-96" @close="$set('editingId', null)">
         <form wire:submit="save" class="flex flex-col gap-6">
             <div>
                 <flux:heading size="lg">{{ $editingId ? __('Edit Foto') : __('Tambah Foto') }}</flux:heading>

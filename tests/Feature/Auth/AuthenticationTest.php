@@ -1,7 +1,12 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Laravel\Fortify\Features;
+
+beforeEach(function () {
+    $this->withoutMiddleware(ValidateCsrfToken::class);
+});
 
 test('login screen can be rendered', function () {
     $response = $this->get(route('login'));

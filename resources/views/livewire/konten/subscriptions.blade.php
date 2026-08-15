@@ -67,7 +67,7 @@
         </flux:table>
     </div>
 
-    <flux:modal name="broadcast-modal" class="md:w-128" @close="$set('subjek', ''); $set('pesan', '')">
+    <flux:modal name="broadcast-modal" flyout class="md:w-128" @close="$set('subjek', ''); $set('pesan', '')">
         <form wire:submit="sendBroadcast" class="flex flex-col gap-6">
             <div>
                 <flux:heading size="lg">{{ __('Kirim Blast Newsletter') }}</flux:heading>

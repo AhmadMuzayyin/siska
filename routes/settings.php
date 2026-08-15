@@ -1,13 +1,13 @@
 <?php
 
 use App\Livewire\Settings\Appearance;
+use App\Livewire\Settings\Index;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\Security;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
-    Route::redirect('settings', 'settings/profile');
-
+    Route::livewire('settings', Index::class)->name('settings');
     Route::livewire('settings/profile', Profile::class)->name('profile.edit');
 });
 

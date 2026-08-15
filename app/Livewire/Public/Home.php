@@ -118,6 +118,12 @@ class Home extends Component
 
     public function render(): View
     {
+        $theme = $this->setting?->landing_theme ?? 'default';
+
+        if ($theme === 'pixigon') {
+            return view('livewire.public.themes.pixigon');
+        }
+
         return view('livewire.public.home');
     }
 }

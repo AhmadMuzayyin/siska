@@ -21,6 +21,16 @@ class Absensi extends Model
         ];
     }
 
+    public function lembaga(): BelongsTo
+    {
+        return $this->belongsTo(Lembaga::class);
+    }
+
+    public function semester(): BelongsTo
+    {
+        return $this->belongsTo(Semester::class);
+    }
+
     public function jadwalPelajaran(): BelongsTo
     {
         return $this->belongsTo(JadwalPelajaran::class);

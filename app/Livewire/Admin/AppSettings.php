@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Admin;
 
-use App\Enums\UserRole;
+use App\Models\Setting;
 use App\Services\SettingService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
@@ -36,7 +36,7 @@ class AppSettings extends Component
 
     public function mount(SettingService $settingService): void
     {
-        abort_unless(auth()->user()->role === UserRole::Admin, 403);
+        $this->authorize('viewAny', Setting::class);
 
         $setting = $settingService->get();
 
@@ -55,7 +55,7 @@ class AppSettings extends Component
 
     public function save(SettingService $settingService): void
     {
-        abort_unless(auth()->user()->role === UserRole::Admin, 403);
+        $this->authorize('update', $settingService->get());
 
         $data = $this->validate([
             'lembaga' => 'required|string|max:255',

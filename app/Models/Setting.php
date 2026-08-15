@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
  * @property bool $is_multi_lembaga
  * @property array|null $installed_modules
  * @property string $app_version
+ * @property string $landing_theme
  * @property string|null $lembaga
  * @property string|null $nsm
  * @property string|null $alamat
@@ -33,7 +34,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 #[Fillable([
-    'is_installed', 'is_multi_lembaga', 'installed_modules', 'app_version',
+    'is_installed', 'is_multi_lembaga', 'installed_modules', 'app_version', 'landing_theme',
     'lembaga', 'nsm', 'alamat', 'google_maps_url', 'email', 'telepon',
     'logo', 'favicon', 'meta_deskripsi', 'meta_keyword',
     'payroll_cutoff_day', 'fitur_pesan_whatsapp', 'pesan_whatsapp', 'api_key_whatsapp',
@@ -80,7 +81,7 @@ class Setting extends Model
     protected static function booted(): void
     {
         static::creating(function (self $setting): void {
-            if (! app()->runningUnitTests() && static::query()->exists()) {
+            if (app()->isProduction() && static::query()->exists()) {
                 throw new \RuntimeException('Only one Setting row may exist. Update the existing row instead.');
             }
         });

@@ -20,7 +20,7 @@ class SantriRegistrationController extends Controller
     {
         return view('santri-registration', [
             'lembagas' => Lembaga::query()->active()->ordered()->with('kelas')->get(),
-            'kelasList' => Kelas::query()->orderBy('nama')->get(),
+            'kelasList' => Kelas::query()->with('lembaga')->orderBy('nama')->get(),
             'genders' => Gender::cases(),
         ]);
     }

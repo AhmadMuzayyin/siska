@@ -19,6 +19,15 @@ class LembagaSwitcher extends Component
         $this->selectedLembagaId = $activeId ? (string) $activeId : 'all';
     }
 
+    public function switchLembaga(?int $id, LembagaService $service): void
+    {
+        $service->setActiveLembagaId($id);
+        $this->selectedLembagaId = $id ? (string) $id : 'all';
+
+        $this->dispatch('lembaga-changed');
+        $this->js('window.location.reload()');
+    }
+
     public function updatedSelectedLembagaId(string $value, LembagaService $service): void
     {
         if ($value === 'all' || empty($value)) {

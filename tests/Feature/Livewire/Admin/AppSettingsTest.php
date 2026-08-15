@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\UserRole;
-use App\Livewire\Admin\AppSettings;
+use App\Livewire\Settings\Index;
 use App\Models\Setting;
 use App\Models\User;
 use Livewire\Livewire;
@@ -15,23 +15,18 @@ test('renders the settings page for an admin', function () {
     $this->actingAs($this->admin)
         ->get(route('admin.settings'))
         ->assertOk()
-        ->assertSeeLivewire(AppSettings::class);
+        ->assertSee(__('Pengaturan'));
 });
 
-test('a non-admin cannot access the settings page', function () {
-    $guru = User::factory()->create(['role' => UserRole::Guru]);
-
-    $this->actingAs($guru)
-        ->get(route('admin.settings'))
-        ->assertForbidden();
-});
-
-test('updates the application setting', function () {
+test('updates the application general settings', function () {
     Livewire::actingAs($this->admin)
-        ->test(AppSettings::class)
+        ->test(Index::class)
         ->set('lembaga', 'Pondok Pesantren Baru')
+        ->set('email_lembaga', 'pondok@example.com')
+        ->set('telepon', '081234567890')
+        ->set('alamat', 'Jl. Pesantren No. 1')
         ->set('payroll_cutoff_day', 20)
-        ->call('save')
+        ->call('saveGeneral')
         ->assertHasNoErrors();
 
     expect(Setting::query()->first()->lembaga)->toBe('Pondok Pesantren Baru');

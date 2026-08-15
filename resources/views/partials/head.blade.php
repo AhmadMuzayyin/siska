@@ -37,6 +37,21 @@
     #nprogress .peg {
         box-shadow: 0 0 10px #059669, 0 0 5px #059669 !important;
     }
+
+    /* Prevent browser autofill from rendering dark/gray/slate input backgrounds */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+        -webkit-text-fill-color: #18181b !important;
+        caret-color: #18181b !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
 </style>
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])

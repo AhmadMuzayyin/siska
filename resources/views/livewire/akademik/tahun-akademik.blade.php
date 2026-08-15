@@ -92,7 +92,7 @@
         {{ $this->rows->links() }}
     </div>
 
-    <flux:modal name="tahun-form" class="md:w-96" @close="$set('editingTahunId', null)">
+    <flux:modal name="tahun-form" flyout class="md:w-96" @close="$set('editingTahunId', null)">
         <form wire:submit="saveTahun" class="flex flex-col gap-6">
             <div>
                 <flux:heading size="lg">{{ $editingTahunId ? __('Edit Tahun Akademik') : __('Tambah Tahun Akademik') }}</flux:heading>
@@ -117,7 +117,7 @@
         </form>
     </flux:modal>
 
-    <flux:modal name="semester-form" class="md:w-96" @close="$set('semesterTahunAkademikId', null)">
+    <flux:modal name="semester-form" flyout class="md:w-96" @close="$set('semesterTahunAkademikId', null)">
         <form wire:submit="saveSemester" class="flex flex-col gap-6">
             <div>
                 <flux:heading size="lg">{{ __('Tambah Semester') }}</flux:heading>

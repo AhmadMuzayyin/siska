@@ -2,15 +2,13 @@
 
 namespace App\Livewire\Admin;
 
-use App\Enums\UserRole;
-use App\Models\Guru;
+use App\Actions\PrepareWhatsappBroadcastAction;
 use App\Models\Kelas;
-use App\Models\Santri;
+use App\Models\Setting;
 use App\Services\FonnteService;
 use App\Services\SettingService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -53,7 +51,7 @@ class WhatsappBroadcast extends Component
 
     public function mount(SettingService $settingService): void
     {
-        abort_unless(auth()->user()->role === UserRole::Admin, 403);
+        $this->authorize('viewAny', Setting::class);
 
         $setting = $settingService->get();
         $this->apiKeyWhatsapp = (string) $setting->api_key_whatsapp;
@@ -77,7 +75,7 @@ class WhatsappBroadcast extends Component
 
     public function saveToken(SettingService $settingService): void
     {
-        abort_unless(auth()->user()->role === UserRole::Admin, 403);
+        $this->authorize('update', $settingService->get());
 
         $this->validate([
             'apiKeyWhatsapp' => 'required|string|max:255',
@@ -156,9 +154,9 @@ class WhatsappBroadcast extends Component
         }
     }
 
-    public function prepareBroadcast(SettingService $settingService, FonnteService $fonnteService): void
+    public function prepareBroadcast(SettingService $settingService, PrepareWhatsappBroadcastAction $action): void
     {
-        abort_unless(auth()->user()->role === UserRole::Admin, 403);
+        $this->authorize('update', $settingService->get());
 
         $this->validate([
             'messageTemplate' => 'required|string|min:5',
@@ -169,99 +167,17 @@ class WhatsappBroadcast extends Component
         ]);
 
         $setting = $settingService->get();
-        $lembagaName = $setting->lembaga;
+        $lembagaName = (string) $setting->lembaga;
         $todayDate = Carbon::now()->locale('id')->isoFormat('D MMMM YYYY');
 
-        $payloads = [];
-
-        if ($this->targetCategory === 'semua_santri' || $this->targetCategory === 'per_kelas') {
-            $query = Santri::query()->with('kelas');
-
-            if ($this->targetCategory === 'per_kelas' && $this->selectedKelasId) {
-                $query->where('kelas_id', $this->selectedKelasId);
-            }
-
-            /** @var Collection<int, Santri> $santris */
-            $santris = $query->get();
-
-            foreach ($santris as $santri) {
-                $phone = $santri->telepon_wali;
-
-                if (empty($phone)) {
-                    continue;
-                }
-
-                $data = [
-                    'nama' => $santri->nama_lengkap,
-                    'nis' => $santri->nis,
-                    'kelas' => $santri->kelas?->nama ?? '-',
-                    'wali' => $santri->nama_wali ?? $santri->nama_lengkap,
-                    'telepon' => $phone,
-                    'lembaga' => $lembagaName,
-                    'tanggal' => $todayDate,
-                ];
-
-                $formattedMessage = $fonnteService->replacePlaceholders($this->messageTemplate, $data);
-
-                $payloads[] = [
-                    'phone' => $phone,
-                    'message' => $formattedMessage,
-                    'nama' => $santri->nama_lengkap,
-                ];
-            }
-        } elseif ($this->targetCategory === 'semua_guru') {
-            /** @var Collection<int, Guru> $gurus */
-            $gurus = Guru::query()->with('user')->get();
-
-            foreach ($gurus as $guru) {
-                $phone = $guru->whatsapp;
-
-                if (empty($phone)) {
-                    continue;
-                }
-
-                $data = [
-                    'nama' => $guru->user?->name ?? 'Ustadz/ah',
-                    'nip' => $guru->nip ?? '-',
-                    'telepon' => $phone,
-                    'lembaga' => $lembagaName,
-                    'tanggal' => $todayDate,
-                ];
-
-                $formattedMessage = $fonnteService->replacePlaceholders($this->messageTemplate, $data);
-
-                $payloads[] = [
-                    'phone' => $phone,
-                    'message' => $formattedMessage,
-                    'nama' => $guru->user?->name ?? 'Ustadz/ah',
-                ];
-            }
-        } elseif ($this->targetCategory === 'kustom') {
-            $lines = explode("\n", str_replace("\r", '', $this->customPhoneNumbers));
-
-            foreach ($lines as $line) {
-                $phone = trim($line);
-
-                if (empty($phone)) {
-                    continue;
-                }
-
-                $data = [
-                    'nama' => 'Penerima',
-                    'telepon' => $phone,
-                    'lembaga' => $lembagaName,
-                    'tanggal' => $todayDate,
-                ];
-
-                $formattedMessage = $fonnteService->replacePlaceholders($this->messageTemplate, $data);
-
-                $payloads[] = [
-                    'phone' => $phone,
-                    'message' => $formattedMessage,
-                    'nama' => 'Penerima ('.$phone.')',
-                ];
-            }
-        }
+        $payloads = $action->handle(
+            $this->messageTemplate,
+            $this->targetCategory,
+            $this->selectedKelasId,
+            $this->customPhoneNumbers,
+            $lembagaName,
+            $todayDate
+        );
 
         if (empty($payloads)) {
             Flux::toast(variant: 'warning', text: __('Tidak ada nomor tujuan valid yang ditemukan.'));
