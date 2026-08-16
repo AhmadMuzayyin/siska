@@ -1,8 +1,23 @@
 <div class="flex items-center justify-between w-full gap-2 sm:gap-4">
     
-    {{-- Left: Hamburger Toggle Menu Button (App logo stays in sidebar) --}}
-    <div class="flex items-center">
+    {{-- Left: Hamburger Toggle Menu Button & Active Status Texts (Clean Typography) --}}
+    <div class="flex items-center gap-3">
         <flux:sidebar.toggle class="text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg p-1" icon="bars-2" inset="left" />
+            @if ($activeLembagaName)
+                <div class="hidden md:flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-400">
+                    <span><strong class="text-zinc-900 dark:text-zinc-100 font-semibold">{{ $activeLembagaName }}</strong></span>
+                </div>
+            @endif
+
+            @if ($activeSemester && $activeLembagaName)
+            <span class="hidden md:inline text-zinc-300 dark:text-zinc-700">|</span>
+            @endif
+            
+            @if ($activeSemester)
+                <div class="hidden sm:flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-400">
+                    <span><strong class="text-zinc-900 dark:text-zinc-100 font-semibold">{{ $activeSemester->tahunAkademik?->nama }} ({{ ucfirst($activeSemester->tipe?->value ?? '') }})</strong></span>
+                </div>
+            @endif
     </div>
 
     <flux:spacer />

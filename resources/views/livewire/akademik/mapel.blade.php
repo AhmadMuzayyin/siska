@@ -40,7 +40,7 @@
                     <flux:table.row wire:key="mapel-{{ $mapel->id }}">
                         <flux:table.cell>
                             <flux:badge size="sm" color="emerald" class="font-bold">
-                                {{ $mapel->lembaga?->jenjang ?? 'SEMUA (GLOBAL)' }}
+                                {{ $mapel->lembaga?->jenjang ?? 'SEMUA' }}
                             </flux:badge>
                         </flux:table.cell>
                         <flux:table.cell>
@@ -92,7 +92,7 @@
             </div>
 
             <flux:select wire:model="lembaga_id" :label="__('Unit Lembaga (Kosongkan jika Berlaku Semua)')" placeholder="{{ __('Pilih Unit Lembaga') }}">
-                <flux:select.option value="">{{ __('Semua Lembaga (Global)') }}</flux:select.option>
+                <flux:select.option value="">{{ __('Semua Lembaga') }}</flux:select.option>
                 @foreach ($this->lembagaOptions as $lembaga)
                     <flux:select.option value="{{ $lembaga->id }}">{{ $lembaga->nama }} ({{ $lembaga->jenjang }})</flux:select.option>
                 @endforeach

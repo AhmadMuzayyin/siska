@@ -6,19 +6,19 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-            <a href="{{ route('export.excel', 'santri') }}" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                <flux:icon name="arrow-down-tray" class="size-4" /> {{ __('Export Excel') }}
-            </a>
-            <a href="{{ route('export.pdf', 'santri') }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700">
-                <flux:icon name="printer" class="size-4" /> {{ __('Export PDF') }}
-            </a>
+            <flux:button as="a" href="{{ route('export.excel', 'santri') }}" variant="filled" icon="arrow-down-tray" class="bg-emerald-600! hover:bg-emerald-700! text-white! font-bold">
+                {{ __('Export Excel') }}
+            </flux:button>
+            <flux:button as="a" href="{{ route('export.pdf', 'santri') }}" target="_blank" variant="filled" icon="printer" class="bg-rose-600! hover:bg-rose-700! text-white! font-bold">
+                {{ __('Export PDF') }}
+            </flux:button>
             <flux:modal.trigger name="import-santri-modal">
                 <flux:button variant="filled" icon="arrow-up-tray" class="bg-blue-600! hover:bg-blue-700! text-white! font-bold">
                     {{ __('Import Excel') }}
                 </flux:button>
             </flux:modal.trigger>
-            <flux:button variant="filled" icon="sparkles" wire:click="processAutomaticKenaikanKelas" wire:confirm="{{ __('Proses kenaikan kelas otomatis berdasarkan rata-rata akumulasi nilai vs KKM?') }}" class="bg-amber-600! hover:bg-amber-700! text-white! font-bold">
-                {{ __('Kenaikan Kelas Otomatis (KKM)') }}
+            <flux:button variant="filled" icon="sparkles" wire:click="processAutomaticKenaikanKelas" wire:confirm="{{ __('Proses kenaikan kelas berdasarkan rata-rata akumulasi nilai & KKM?') }}" class="bg-amber-600! hover:bg-amber-700! text-white! font-bold">
+                {{ __('Kenaikan Kelas') }}
             </flux:button>
             <flux:button variant="primary" icon="plus" wire:click="create" class="bg-emerald-600! hover:bg-emerald-700! text-white! font-bold">
                 {{ __('Tambah Santri') }}

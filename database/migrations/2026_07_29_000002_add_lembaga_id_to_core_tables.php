@@ -14,12 +14,12 @@ return new class extends Migration
     {
         // 1. Get existing setting or create default lembaga name
         $setting = DB::table('settings')->first();
-        $lembagaNama = $setting?->lembaga ?? 'TPQ & Madin Al-Hikmah';
+        $lembagaNama = $setting?->lembaga ?? 'MDTA ARROQY';
 
         $defaultLembagaId = DB::table('lembagas')->insertGetId([
-            'kode' => 'tpq-madin',
+            'kode' => 'MDTA-01',
             'nama' => $lembagaNama,
-            'jenjang' => 'TPQ',
+            'jenjang' => 'MDTA',
             'nsm' => $setting?->nsm ?? null,
             'alamat' => $setting?->alamat ?? null,
             'telepon' => $setting?->telepon ?? null,

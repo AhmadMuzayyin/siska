@@ -6,12 +6,12 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
-            <a href="{{ route('export.excel', 'guru') }}" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">
-                <flux:icon name="arrow-down-tray" class="size-4" /> {{ __('Export Excel') }}
-            </a>
-            <a href="{{ route('export.pdf', 'guru') }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700">
-                <flux:icon name="printer" class="size-4" /> {{ __('Export PDF') }}
-            </a>
+            <flux:button as="a" href="{{ route('export.excel', 'guru') }}" variant="filled" icon="arrow-down-tray" class="bg-emerald-600! hover:bg-emerald-700! text-white! font-bold">
+                {{ __('Export Excel') }}
+            </flux:button>
+            <flux:button as="a" href="{{ route('export.pdf', 'guru') }}" target="_blank" variant="filled" icon="printer" class="bg-rose-600! hover:bg-rose-700! text-white! font-bold">
+                {{ __('Export PDF') }}
+            </flux:button>
             <flux:modal.trigger name="import-guru-modal">
                 <flux:button variant="filled" icon="arrow-up-tray" class="bg-blue-600! hover:bg-blue-700! text-white! font-bold">
                     {{ __('Import Excel') }}

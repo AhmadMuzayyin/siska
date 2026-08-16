@@ -39,9 +39,8 @@ class DatabaseSeeder extends Seeder
             'role' => UserRole::Admin,
         ]);
 
-        $lembagaDefault = Lembaga::factory()->create([
+        $lembagaDefault = Lembaga::query()->firstOrCreate(['kode' => 'MDTA-01'], [
             'nama' => 'MDTA ARROQY',
-            'kode' => 'MDTA-01',
             'is_active' => true,
         ]);
 

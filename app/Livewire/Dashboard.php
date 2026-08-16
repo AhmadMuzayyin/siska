@@ -192,17 +192,10 @@ class Dashboard extends Component
         $sakit = (int) ($counts->get('sakit') ?? 0);
         $alpa = (int) ($counts->get('alpa') ?? 0);
 
-        // High fallback if empty
-        if ($hadir === 0 && $izin === 0 && $sakit === 0 && $alpa === 0) {
-            $hadir = 85;
-            $izin = 8;
-            $sakit = 5;
-            $alpa = 2;
-        }
-
         return [
             'labels' => ['Hadir', 'Izin', 'Sakit', 'Alpa'],
             'series' => [$hadir, $izin, $sakit, $alpa],
+            'total' => $hadir + $izin + $sakit + $alpa,
         ];
     }
 

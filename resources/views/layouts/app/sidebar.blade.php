@@ -13,7 +13,9 @@
 
             $setting = \App\Models\Setting::query()->first();
             $isMasterDataActive = request()->routeIs('akademik.tahun-akademik') || request()->routeIs('akademik.kelas') || request()->routeIs('akademik.mapel') || request()->routeIs('akademik.kategori-nilai-harian') || request()->routeIs('kepegawaian.guru') || request()->routeIs('kesantrian.santri');
-            $isAkademikActive = request()->routeIs('akademik.jadwal-pelajaran') || request()->routeIs('kesantrian.absensi') || request()->routeIs('kepegawaian.absensi') || request()->routeIs('keuangan.*') || request()->routeIs('kepegawaian.gaji') || request()->routeIs('kesantrian.nilai') || request()->routeIs('kesantrian.nilai-harian') || request()->routeIs('akademik.setting-rapor');
+            $isAkademikActive = request()->routeIs('akademik.kalender-akademik') || request()->routeIs('akademik.jadwal-pelajaran') || request()->routeIs('kesantrian.absensi') || request()->routeIs('kesantrian.nilai-harian') || request()->routeIs('kesantrian.nilai') || request()->routeIs('akademik.setting-rapor');
+            $isOperasionalActive = request()->routeIs('kepegawaian.absensi') || request()->routeIs('kepegawaian.gaji');
+            $isKeuanganActive = request()->routeIs('keuangan.*');
             $isKontenActive = request()->routeIs('konten.*');
             $isAdminActive = request()->routeIs('admin.*') || request()->routeIs('settings*') || request()->routeIs('profile.edit') || request()->routeIs('security.edit') || request()->routeIs('appearance.edit');
         @endphp
@@ -28,16 +30,16 @@
 
             {{-- Middle Scrollable Nav --}}
             <flux:sidebar.nav class="flex-1 overflow-y-auto pr-1 py-2 space-y-1.5">
-                {{-- 1. Platform (Dashboard) --}}
+                {{-- Dashboard --}}
                 <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
                 </flux:sidebar.item>
 
                 @if (! $isSantri)
-                    {{-- 2. Master Data --}}
+                    {{-- 1. Master --}}
                     @if ($setting?->hasModule('akademik'))
                         <flux:sidebar.group 
-                            :heading="__('Master Data')" 
+                            :heading="__('Master')" 
                             icon="circle-stack" 
                             expandable 
                             :expanded="$isMasterDataActive"
@@ -66,43 +68,23 @@
                         </flux:sidebar.group>
                     @endif
 
-                    {{-- 3. Akademik & Operasional --}}
+                    {{-- 2. Akademik --}}
                     <flux:sidebar.group 
-                        :heading="__('Akademik & Operasional')" 
+                        :heading="__('Akademik')" 
                         icon="academic-cap" 
                         expandable 
                         :expanded="$isAkademikActive"
                     >
+                        <flux:sidebar.item icon="calendar-days" :href="route('akademik.kalender-akademik')" :current="request()->routeIs('akademik.kalender-akademik')" wire:navigate>
+                            {{ __('Kalender Akademik') }}
+                        </flux:sidebar.item>
+
                         @if ($setting?->hasModule('jadwal_absensi'))
                             <flux:sidebar.item icon="clock" :href="route('akademik.jadwal-pelajaran')" :current="request()->routeIs('akademik.jadwal-pelajaran')" wire:navigate>
                                 {{ __('Jadwal Pelajaran') }}
                             </flux:sidebar.item>
                             <flux:sidebar.item icon="clipboard-document-check" :href="route('kesantrian.absensi')" :current="request()->routeIs('kesantrian.absensi')" wire:navigate>
                                 {{ __('Absensi Santri') }}
-                            </flux:sidebar.item>
-                        @endif
-
-                        @if ($setting?->hasModule('absensi_guru'))
-                            <flux:sidebar.item icon="clipboard-document-check" :href="route('kepegawaian.absensi')" :current="request()->routeIs('kepegawaian.absensi')" wire:navigate>
-                                {{ __('Absensi Guru') }}
-                            </flux:sidebar.item>
-                        @endif
-
-                        @if (($isAdmin || $isOperator) && $setting?->hasModule('spp'))
-                            <flux:sidebar.item icon="banknotes" :href="route('keuangan.spp')" :current="request()->routeIs('keuangan.spp')" wire:navigate>
-                                {{ __('Pembayaran SPP') }}
-                            </flux:sidebar.item>
-                            <flux:sidebar.item icon="sparkles" :href="route('keuangan.haflatul-imtihan')" :current="request()->routeIs('keuangan.haflatul-imtihan')" wire:navigate>
-                                {{ __('Pembayaran Haflah') }}
-                            </flux:sidebar.item>
-                            <flux:sidebar.item icon="wallet" :href="route('keuangan.tabungan')" :current="request()->routeIs('keuangan.tabungan')" wire:navigate>
-                                {{ __('Tabungan Santri') }}
-                            </flux:sidebar.item>
-                        @endif
-
-                        @if (($isAdmin || $isOperator) && $setting?->hasModule('gaji_guru'))
-                            <flux:sidebar.item icon="calculator" :href="route('kepegawaian.gaji')" :current="request()->routeIs('kepegawaian.gaji')" wire:navigate>
-                                {{ __('Gaji Guru') }}
                             </flux:sidebar.item>
                         @endif
 
@@ -118,13 +100,55 @@
                             </flux:sidebar.item>
                         @endif
                     </flux:sidebar.group>
+
+                    {{-- 3. Operasional --}}
+                    @if ($setting?->hasModule('absensi_guru') || $setting?->hasModule('gaji_guru'))
+                        <flux:sidebar.group 
+                            :heading="__('Operasional')" 
+                            icon="briefcase" 
+                            expandable 
+                            :expanded="$isOperasionalActive"
+                        >
+                            @if ($setting?->hasModule('absensi_guru'))
+                                <flux:sidebar.item icon="clipboard-document-check" :href="route('kepegawaian.absensi')" :current="request()->routeIs('kepegawaian.absensi')" wire:navigate>
+                                    {{ __('Absensi Guru') }}
+                                </flux:sidebar.item>
+                            @endif
+
+                            @if (($isAdmin || $isOperator) && $setting?->hasModule('gaji_guru'))
+                                <flux:sidebar.item icon="calculator" :href="route('kepegawaian.gaji')" :current="request()->routeIs('kepegawaian.gaji')" wire:navigate>
+                                    {{ __('Gaji Guru') }}
+                                </flux:sidebar.item>
+                            @endif
+                        </flux:sidebar.group>
+                    @endif
+
+                    {{-- 4. Keuangan --}}
+                    @if (($isAdmin || $isOperator) && $setting?->hasModule('spp'))
+                        <flux:sidebar.group 
+                            :heading="__('Keuangan')" 
+                            icon="banknotes" 
+                            expandable 
+                            :expanded="$isKeuanganActive"
+                        >
+                            <flux:sidebar.item icon="banknotes" :href="route('keuangan.spp')" :current="request()->routeIs('keuangan.spp')" wire:navigate>
+                                {{ __('Pembayaran SPP') }}
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="sparkles" :href="route('keuangan.haflatul-imtihan')" :current="request()->routeIs('keuangan.haflatul-imtihan')" wire:navigate>
+                                {{ __('Pembayaran Haflah') }}
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="wallet" :href="route('keuangan.tabungan')" :current="request()->routeIs('keuangan.tabungan')" wire:navigate>
+                                {{ __('Tabungan Santri') }}
+                            </flux:sidebar.item>
+                        </flux:sidebar.group>
+                    @endif
                 @endif
 
                 @if ($isAdmin)
-                    {{-- 4. Konten Website --}}
+                    {{-- 5. Konten --}}
                     @if ($setting?->hasModule('konten'))
                         <flux:sidebar.group 
-                            :heading="__('Konten Website')" 
+                            :heading="__('Konten')" 
                             icon="newspaper" 
                             expandable 
                             :expanded="$isKontenActive"
@@ -141,9 +165,9 @@
                         </flux:sidebar.group>
                     @endif
 
-                    {{-- 5. Administrasi & Sistem --}}
+                    {{-- 6. Administrasi --}}
                     <flux:sidebar.group 
-                        :heading="__('Administrasi & Sistem')" 
+                        :heading="__('Administrasi')" 
                         icon="cog-6-tooth" 
                         expandable 
                         :expanded="$isAdminActive"
@@ -153,9 +177,9 @@
                                 {{ __('Lembaga') }}
                             </flux:sidebar.item>
                         @endif
-                            <flux:sidebar.item icon="key" :href="route('admin.roles')" :current="request()->routeIs('admin.roles')" wire:navigate>
-                                {{ __('Peran & Izin') }}
-                            </flux:sidebar.item>
+                        <flux:sidebar.item icon="key" :href="route('admin.roles')" :current="request()->routeIs('admin.roles')" wire:navigate>
+                            {{ __('Peran & Izin') }}
+                        </flux:sidebar.item>
                         <flux:sidebar.item icon="shield-check" :href="route('admin.users')" :current="request()->routeIs('admin.users')" wire:navigate>
                             {{ __('Pengguna') }}
                         </flux:sidebar.item>

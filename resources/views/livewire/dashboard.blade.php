@@ -308,9 +308,16 @@
                         <flux:subheading class="text-xs">{{ __('Statistik presensi bulan ini') }}</flux:subheading>
                     </div>
                 </div>
-                <div x-data="absensiChartComponent(@js($this->absensiChart))" class="w-full">
-                    <div x-ref="absensiChart" class="w-full h-64"></div>
-                </div>
+                @if (($this->absensiChart['total'] ?? 0) > 0)
+                    <div x-data="absensiChartComponent(@js($this->absensiChart))" class="w-full">
+                        <div x-ref="absensiChart" class="w-full h-64"></div>
+                    </div>
+                @else
+                    <div class="flex flex-col items-center justify-center h-64 text-center text-zinc-400 space-y-2">
+                        <flux:icon name="clipboard-document-check" class="size-8 text-zinc-300 dark:text-zinc-600" />
+                        <p class="text-xs font-medium">{{ __('Belum ada data presensi santri bulan ini.') }}</p>
+                    </div>
+                @endif
             </div>
         </div>
 

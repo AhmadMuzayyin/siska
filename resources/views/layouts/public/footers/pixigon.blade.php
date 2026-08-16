@@ -59,7 +59,7 @@
                     <li><a href="{{ route('program') }}#tpq" wire:navigate class="hover:text-white hover:underline transition">{{ __('TPQ Tilawati') }}</a></li>
                     <li><a href="{{ route('program') }}#mdta" wire:navigate class="hover:text-white hover:underline transition">{{ __('Madin Diniyah') }}</a></li>
                     <li><a href="{{ route('program') }}#tahfizh" wire:navigate class="hover:text-white hover:underline transition">{{ __('Tahfidz Qur\'an') }}</a></li>
-                    <li><a href="{{ route('login') }}" class="hover:text-white hover:underline transition">{{ __('Portal Login') }}</a></li>
+                    <li><a href="{{ route('login') }}" wire:navigate class="hover:text-white hover:underline transition">{{ __('Portal Login') }}</a></li>
                 </ul>
             </div>
 

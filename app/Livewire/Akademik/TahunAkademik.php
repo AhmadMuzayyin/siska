@@ -179,6 +179,8 @@ class TahunAkademik extends Component
 
         $action->handle($semester);
 
+        $this->dispatch('semester-changed');
+
         Flux::toast(variant: 'success', text: __('Semester berhasil diaktifkan.'));
     }
 

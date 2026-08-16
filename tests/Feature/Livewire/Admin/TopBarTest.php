@@ -6,10 +6,14 @@ use App\Enums\UserRole;
 use App\Livewire\Admin\TopBar;
 use App\Models\Contact;
 use App\Models\Santri;
+use App\Models\Semester;
+use App\Models\TahunAkademik;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 use Livewire\Livewire;
 
 beforeEach(function () {
+    $this->seed(RoleAndPermissionSeeder::class);
     $this->admin = User::factory()->create(['role' => UserRole::Admin]);
 });
 
@@ -41,4 +45,15 @@ test('displays notification count for pending santri and unread messages', funct
         ->assertDontSee('Wali Santri Penanya')
         ->call('markAllAsRead')
         ->assertDontSee('Calon Santri Baru');
+});
+
+test('updates active semester display when semester-changed event is dispatched', function () {
+    $tahun = TahunAkademik::factory()->create(['nama' => '2026/2027']);
+    $semester = Semester::factory()->for($tahun)->active()->create(['tipe' => 'genap']);
+
+    Livewire::actingAs($this->admin)
+        ->test(TopBar::class)
+        ->dispatch('semester-changed')
+        ->assertSee('2026/2027')
+        ->assertSee('Genap');
 });

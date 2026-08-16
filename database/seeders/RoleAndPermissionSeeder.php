@@ -42,6 +42,7 @@ class RoleAndPermissionSeeder extends Seeder
             'input-nilai',
             'view-nilai',
             'manage-setting-rapor',
+            'manage-kalender-akademik',
             'print-rapor',
 
             // Keuangan

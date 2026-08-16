@@ -3,11 +3,13 @@
 namespace App\Livewire\Admin;
 
 use App\Enums\UserRole;
+use App\Models\Lembaga;
 use App\Models\User as UserModel;
 use App\Policies\UserPolicy;
 use App\Traits\WithPerPage;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -34,6 +36,8 @@ class Users extends Component
 
     public string $role = 'guru';
 
+    public ?int $lembaga_id = null;
+
     public function mount(): void
     {
         $this->authorize('viewAny', UserModel::class);
@@ -48,7 +52,7 @@ class Users extends Component
     {
         $this->authorize('create', UserModel::class);
 
-        $this->reset(['editingId', 'name', 'email', 'password']);
+        $this->reset(['editingId', 'name', 'email', 'password', 'lembaga_id']);
         $this->role = 'guru';
 
         $this->modal('user-form')->show();
@@ -64,6 +68,7 @@ class Users extends Component
         $this->email = $user->email;
         $this->password = '';
         $this->role = $user->role->value;
+        $this->lembaga_id = $user->lembaga_id;
 
         $this->modal('user-form')->show();
     }
@@ -78,12 +83,30 @@ class Users extends Component
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->editingId)],
             'password' => [$this->editingId ? 'nullable' : 'required', 'string', 'min:8'],
             'role' => ['required', Rule::enum(UserRole::class)],
+            'lembaga_id' => [
+                Rule::requiredIf(fn () => $this->role === UserRole::Operator->value),
+                'nullable',
+                'integer',
+                'exists:lembagas,id',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function messages(): array
+    {
+        return [
+            'lembaga_id.required' => 'Pengguna dengan peran Operator wajib terikat pada Unit Lembaga tertentu.',
         ];
     }
 
     public function save(): void
     {
         $data = $this->validate();
+
+        $lembagaId = $data['role'] === UserRole::Operator->value ? $data['lembaga_id'] : $data['lembaga_id'];
 
         if ($this->editingId) {
             $user = UserModel::query()->findOrFail($this->editingId);
@@ -99,6 +122,7 @@ class Users extends Component
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'role' => $data['role'],
+                'lembaga_id' => $lembagaId,
                 ...(filled($data['password']) ? ['password' => Hash::make($data['password'])] : []),
             ]);
         } else {
@@ -109,11 +133,12 @@ class Users extends Component
                 'email' => $data['email'],
                 'password' => $data['password'],
                 'role' => $data['role'],
+                'lembaga_id' => $lembagaId,
             ]);
         }
 
         $this->modal('user-form')->close();
-        $this->reset(['editingId', 'name', 'email', 'password']);
+        $this->reset(['editingId', 'name', 'email', 'password', 'lembaga_id']);
         $this->role = 'guru';
 
         Flux::toast(variant: 'success', text: __('Data pengguna berhasil disimpan.'));
@@ -148,9 +173,19 @@ class Users extends Component
     public function rows(): LengthAwarePaginator
     {
         return UserModel::query()
+            ->with('lembaga')
             ->when($this->search, fn ($query) => $query->where('name', 'like', "%{$this->search}%")->orWhere('email', 'like', "%{$this->search}%"))
             ->orderBy('name')
             ->paginate($this->perPage);
+    }
+
+    /**
+     * @return Collection<int, Lembaga>
+     */
+    #[Computed]
+    public function lembagasOptions(): Collection
+    {
+        return Lembaga::query()->active()->ordered()->get();
     }
 
     /**

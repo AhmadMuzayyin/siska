@@ -7,6 +7,7 @@ use App\Livewire\Admin\Roles;
 use App\Livewire\Admin\Users;
 use App\Livewire\Admin\WhatsappBroadcast;
 use App\Livewire\Akademik\JadwalPelajaran;
+use App\Livewire\Akademik\KalenderAkademik;
 use App\Livewire\Akademik\KategoriNilaiHarian;
 use App\Livewire\Akademik\Kelas;
 use App\Livewire\Akademik\Mapel;
@@ -30,6 +31,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('akademik/tahun-akademik', TahunAkademik::class)->name('akademik.tahun-akademik');
+    Route::livewire('akademik/kalender-akademik', KalenderAkademik::class)->name('akademik.kalender-akademik');
     Route::livewire('akademik/kelas', Kelas::class)->name('akademik.kelas');
     Route::livewire('akademik/mapel', Mapel::class)->name('akademik.mapel');
     Route::livewire('akademik/kategori-nilai-harian', KategoriNilaiHarian::class)->name('akademik.kategori-nilai-harian');

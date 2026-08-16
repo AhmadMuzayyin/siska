@@ -9,7 +9,7 @@
                 <span class="text-2xl" aria-hidden="true">🍪</span>
                 <p class="text-sm text-zinc-600 dark:text-zinc-300">
                     {{ __('Kami menggunakan cookie untuk meningkatkan pengalaman Anda. Dengan melanjutkan, Anda menyetujui') }}
-                    <a href="{{ route('cookies') }}" class="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700">{{ __('kebijakan cookie') }}</a>
+                    <a href="{{ route('cookies') }}" wire:navigate class="font-medium text-emerald-600 underline underline-offset-2 hover:text-emerald-700">{{ __('kebijakan cookie') }}</a>
                     {{ __('kami.') }}
                 </p>
             </div>

@@ -48,7 +48,7 @@
                     <h3 class="font-bold text-emerald-950 text-base mb-2">{{ __('5. Hubungi Kami') }}</h3>
                     <p class="text-xs text-zinc-600 leading-relaxed">
                         {{ __('Jika Anda memiliki pertanyaan mengenai kebijakan privasi ini, silakan hubungi kami melalui halaman') }}
-                        <a href="{{ route('contact.show') }}" class="text-emerald-700 font-bold underline hover:text-emerald-800">{{ __('Kontak') }}</a>.
+                        <a href="{{ route('contact.show') }}" wire:navigate class="text-emerald-700 font-bold underline hover:text-emerald-800">{{ __('Kontak') }}</a>.
                     </p>
                 </div>
             </div>

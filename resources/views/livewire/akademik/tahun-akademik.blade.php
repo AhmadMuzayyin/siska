@@ -26,7 +26,7 @@
                     <div class="flex items-center gap-3">
                         <flux:heading size="lg">{{ $tahun->nama }}</flux:heading>
                         <flux:badge size="sm" color="emerald" class="font-bold">
-                            {{ $tahun->lembaga?->nama ? ($tahun->lembaga->nama . ' (' . $tahun->lembaga->jenjang . ')') : __('Semua Lembaga (Global)') }}
+                            {{ $tahun->lembaga?->nama ? ($tahun->lembaga->nama . ' (' . $tahun->lembaga->jenjang . ')') : __('') }}
                         </flux:badge>
                     </div>
 
@@ -100,7 +100,7 @@
             </div>
 
             <flux:select wire:model="lembaga_id" :label="__('Unit Lembaga (Kosongkan jika Berlaku Semua)')" placeholder="{{ __('Pilih Unit Lembaga') }}">
-                <flux:select.option value="">{{ __('Semua Lembaga (Global)') }}</flux:select.option>
+                <flux:select.option value="">{{ __('Semua Lembaga') }}</flux:select.option>
                 @foreach ($this->lembagaOptions as $l)
                     <flux:select.option value="{{ $l->id }}">{{ $l->nama }} ({{ $l->jenjang }})</flux:select.option>
                 @endforeach

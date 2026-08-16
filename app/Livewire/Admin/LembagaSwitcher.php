@@ -25,7 +25,7 @@ class LembagaSwitcher extends Component
         $this->selectedLembagaId = $id ? (string) $id : 'all';
 
         $this->dispatch('lembaga-changed');
-        $this->js('window.location.reload()');
+        $this->redirect(url()->previous(), navigate: true);
     }
 
     public function updatedSelectedLembagaId(string $value, LembagaService $service): void
@@ -37,7 +37,7 @@ class LembagaSwitcher extends Component
         }
 
         $this->dispatch('lembaga-changed');
-        $this->js('window.location.reload()');
+        $this->redirect(url()->previous(), navigate: true);
     }
 
     /**
@@ -47,6 +47,18 @@ class LembagaSwitcher extends Component
     public function lembagas(): Collection
     {
         return Lembaga::query()->active()->ordered()->get();
+    }
+
+    #[Computed]
+    public function activeLembagaName(): string
+    {
+        if ($this->selectedLembagaId === 'all' || empty($this->selectedLembagaId)) {
+            return __('Semua Lembaga');
+        }
+
+        $lembaga = $this->lembagas->firstWhere('id', (int) $this->selectedLembagaId);
+
+        return $lembaga?->nama ?? __('Semua Lembaga');
     }
 
     public function render(): View
