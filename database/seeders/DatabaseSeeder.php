@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(RoleAndPermissionSeeder::class);
+
         Setting::query()->firstOrCreate([], [
             'is_installed' => true,
             'is_multi_lembaga' => true,

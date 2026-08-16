@@ -2,9 +2,13 @@
 
 namespace App\Livewire\Auth;
 
+use App\Enums\UserRole;
+use App\Models\Santri;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -18,7 +22,7 @@ use Livewire\Component;
 #[Layout('layouts.auth.empty')]
 class Login extends Component
 {
-    #[Validate('required|string|email')]
+    #[Validate('required|string')]
     public string $email = '';
 
     #[Validate('required|string')]
@@ -43,8 +47,7 @@ class Login extends Component
     protected function messages(): array
     {
         return [
-            'email.required' => 'Alamat email wajib diisi.',
-            'email.email' => 'Format alamat email tidak valid.',
+            'email.required' => 'Email atau Nomor Induk (NIS) wajib diisi.',
             'password.required' => 'Kata sandi wajib diisi.',
         ];
     }
@@ -55,18 +58,48 @@ class Login extends Component
 
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
-            RateLimiter::hit($this->throttleKey());
+        $input = trim($this->email);
 
-            throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
-            ]);
+        // 1. Attempt standard email/password authentication
+        if (Auth::attempt(['email' => $input, 'password' => $this->password], $this->remember)) {
+            RateLimiter::clear($this->throttleKey());
+            Session::regenerate();
+
+            return redirect()->intended(route('dashboard', absolute: false));
         }
 
-        RateLimiter::clear($this->throttleKey());
-        Session::regenerate();
+        // 2. Attempt Santri / Wali NIS (noinduk) authentication
+        $santri = Santri::query()->where('noinduk', $input)->first();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        if ($santri) {
+            $user = User::query()->where('santri_id', $santri->id)->first()
+                ?? User::query()->where('email', $santri->noinduk)->first();
+
+            if (! $user) {
+                // Initialize default Santri account with password = noinduk
+                $user = User::query()->create([
+                    'name' => $santri->nama_lengkap,
+                    'email' => $santri->noinduk,
+                    'password' => Hash::make($santri->noinduk),
+                    'role' => UserRole::Santri,
+                    'santri_id' => $santri->id,
+                    'lembaga_id' => $santri->lembaga_id,
+                ]);
+            }
+
+            if (Auth::attempt(['email' => $user->email, 'password' => $this->password], $this->remember)) {
+                RateLimiter::clear($this->throttleKey());
+                Session::regenerate();
+
+                return redirect()->intended(route('dashboard', absolute: false));
+            }
+        }
+
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => __('Email / Nomor Induk (NIS) atau kata sandi tidak cocok.'),
+        ]);
     }
 
     protected function ensureIsNotRateLimited(): void

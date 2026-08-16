@@ -3,6 +3,7 @@
 use App\Http\Controllers\ExportImportController;
 use App\Http\Controllers\RaporPrintController;
 use App\Livewire\Admin\Lembagas;
+use App\Livewire\Admin\Roles;
 use App\Livewire\Admin\Users;
 use App\Livewire\Admin\WhatsappBroadcast;
 use App\Livewire\Akademik\JadwalPelajaran;
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::livewire('admin/lembagas', Lembagas::class)->name('admin.lembagas');
     Route::livewire('admin/users', Users::class)->name('admin.users');
+    Route::livewire('admin/roles', Roles::class)->name('admin.roles');
     Route::livewire('admin/settings', Index::class)->name('admin.settings');
     Route::livewire('admin/whatsapp', WhatsappBroadcast::class)->name('admin.whatsapp');
 });

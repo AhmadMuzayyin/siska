@@ -172,16 +172,16 @@
                                 {{-- Email Input --}}
                                 <div class="space-y-1.5">
                                     <label for="pixigon_email" class="text-xs font-bold text-zinc-800 uppercase tracking-wider">
-                                        {{ __('Email Akun') }} <span class="text-rose-500">*</span>
+                                        {{ __('Email Akun / No. Induk (NIS)') }} <span class="text-rose-500">*</span>
                                     </label>
                                     <div class="relative">
                                         <input 
                                             id="pixigon_email" 
                                             wire:model="email" 
-                                            type="email" 
+                                            type="text" 
                                             required 
-                                            autocomplete="email" 
-                                            placeholder="nama@email.com"
+                                            autocomplete="username" 
+                                            placeholder="nama@email.com atau NIS Santri"
                                             class="w-full rounded-2xl bg-white border {{ $errors->has('email') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 text-sm text-zinc-900 placeholder-zinc-400 shadow-2xs outline-none transition-all"
                                         />
                                     </div>
@@ -518,16 +518,16 @@
                                 {{-- Email Input --}}
                                 <div class="space-y-2">
                                     <label for="default_email" class="text-xs font-bold text-emerald-950 uppercase tracking-wider">
-                                        {{ __('Alamat Email') }} <span class="text-rose-500">*</span>
+                                        {{ __('Email Akun / No. Induk (NIS)') }} <span class="text-rose-500">*</span>
                                     </label>
                                     <div class="relative">
                                         <input 
                                             id="default_email" 
                                             wire:model="email" 
-                                            type="email" 
+                                            type="text" 
                                             required 
-                                            autocomplete="email" 
-                                            placeholder="nama@email.com"
+                                            autocomplete="username" 
+                                            placeholder="nama@email.com atau NIS Santri"
                                             class="w-full rounded-2xl bg-white border-2 {{ $errors->has('email') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 placeholder-zinc-400 shadow-2xs outline-none transition-all"
                                         />
                                     </div>

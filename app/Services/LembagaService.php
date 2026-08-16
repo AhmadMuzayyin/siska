@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\UserRole;
 use App\Models\Lembaga;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -22,6 +23,16 @@ class LembagaService
      */
     public function getActiveLembagaId(): ?int
     {
+        $user = auth()->user();
+
+        if ($user && $user->role === UserRole::Operator && $user->lembaga_id) {
+            return (int) $user->lembaga_id;
+        }
+
+        if ($user && $user->role === UserRole::Santri && $user->santri_id) {
+            return (int) ($user->santri?->lembaga_id ?? $user->lembaga_id);
+        }
+
         $sessionValue = session('active_lembaga_id');
 
         if ($sessionValue === 'all' || $sessionValue === null) {

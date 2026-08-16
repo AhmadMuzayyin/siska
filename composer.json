@@ -19,7 +19,8 @@
         "livewire/flux": "^2.13.1",
         "livewire/livewire": "^4.1",
         "phpoffice/phpspreadsheet": "^5.9",
-        "phpoffice/phpword": "^1.4"
+        "phpoffice/phpword": "^1.4",
+        "spatie/laravel-permission": "^8.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",

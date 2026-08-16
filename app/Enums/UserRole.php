@@ -8,4 +8,6 @@ enum UserRole: string
     case Keuangan = 'keuangan';
     case Guru = 'guru';
     case KepalaMadrasah = 'kepala_madrasah';
+    case Operator = 'operator';
+    case Santri = 'santri';
 }
