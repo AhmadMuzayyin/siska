@@ -7,6 +7,7 @@ use App\Livewire\Admin\Roles;
 use App\Livewire\Admin\Users;
 use App\Livewire\Admin\WhatsappBroadcast;
 use App\Livewire\Akademik\JadwalPelajaran;
+use App\Livewire\Akademik\KategoriNilaiHarian;
 use App\Livewire\Akademik\Kelas;
 use App\Livewire\Akademik\Mapel;
 use App\Livewire\Akademik\SettingRapor;
@@ -16,6 +17,7 @@ use App\Livewire\Kepegawaian\GajiGuru;
 use App\Livewire\Kepegawaian\Guru;
 use App\Livewire\Kesantrian\AbsensiSantri;
 use App\Livewire\Kesantrian\Nilai;
+use App\Livewire\Kesantrian\NilaiHarian;
 use App\Livewire\Kesantrian\Santri;
 use App\Livewire\Keuangan\HaflatulImtihan;
 use App\Livewire\Keuangan\Spp;
@@ -30,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('akademik/tahun-akademik', TahunAkademik::class)->name('akademik.tahun-akademik');
     Route::livewire('akademik/kelas', Kelas::class)->name('akademik.kelas');
     Route::livewire('akademik/mapel', Mapel::class)->name('akademik.mapel');
+    Route::livewire('akademik/kategori-nilai-harian', KategoriNilaiHarian::class)->name('akademik.kategori-nilai-harian');
     Route::livewire('akademik/jadwal-pelajaran', JadwalPelajaran::class)->name('akademik.jadwal-pelajaran');
     Route::livewire('akademik/setting-rapor', SettingRapor::class)->name('akademik.setting-rapor');
     Route::get('akademik/rapor/print/{santri}', [RaporPrintController::class, 'print'])->name('akademik.rapor.print');
@@ -41,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('kesantrian/santri', Santri::class)->name('kesantrian.santri');
     Route::livewire('kesantrian/absensi', AbsensiSantri::class)->name('kesantrian.absensi');
     Route::livewire('kesantrian/nilai', Nilai::class)->name('kesantrian.nilai');
+    Route::livewire('kesantrian/nilai-harian', NilaiHarian::class)->name('kesantrian.nilai-harian');
 
     Route::livewire('keuangan/spp', Spp::class)->name('keuangan.spp');
     Route::livewire('keuangan/haflatul-imtihan', HaflatulImtihan::class)->name('keuangan.haflatul-imtihan');

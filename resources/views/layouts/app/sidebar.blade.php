@@ -12,8 +12,8 @@
             $isSantri = $userRole === \App\Enums\UserRole::Santri;
 
             $setting = \App\Models\Setting::query()->first();
-            $isMasterDataActive = request()->routeIs('akademik.tahun-akademik') || request()->routeIs('akademik.kelas') || request()->routeIs('akademik.mapel') || request()->routeIs('kepegawaian.guru') || request()->routeIs('kesantrian.santri');
-            $isAkademikActive = request()->routeIs('akademik.jadwal-pelajaran') || request()->routeIs('kesantrian.absensi') || request()->routeIs('kepegawaian.absensi') || request()->routeIs('keuangan.*') || request()->routeIs('kepegawaian.gaji') || request()->routeIs('kesantrian.nilai') || request()->routeIs('akademik.setting-rapor');
+            $isMasterDataActive = request()->routeIs('akademik.tahun-akademik') || request()->routeIs('akademik.kelas') || request()->routeIs('akademik.mapel') || request()->routeIs('akademik.kategori-nilai-harian') || request()->routeIs('kepegawaian.guru') || request()->routeIs('kesantrian.santri');
+            $isAkademikActive = request()->routeIs('akademik.jadwal-pelajaran') || request()->routeIs('kesantrian.absensi') || request()->routeIs('kepegawaian.absensi') || request()->routeIs('keuangan.*') || request()->routeIs('kepegawaian.gaji') || request()->routeIs('kesantrian.nilai') || request()->routeIs('kesantrian.nilai-harian') || request()->routeIs('akademik.setting-rapor');
             $isKontenActive = request()->routeIs('konten.*');
             $isAdminActive = request()->routeIs('admin.*') || request()->routeIs('settings*') || request()->routeIs('profile.edit') || request()->routeIs('security.edit') || request()->routeIs('appearance.edit');
         @endphp
@@ -51,6 +51,9 @@
                                 </flux:sidebar.item>
                                 <flux:sidebar.item icon="book-open" :href="route('akademik.mapel')" :current="request()->routeIs('akademik.mapel')" wire:navigate>
                                     {{ __('Mata Pelajaran') }}
+                                </flux:sidebar.item>
+                                <flux:sidebar.item icon="tag" :href="route('akademik.kategori-nilai-harian')" :current="request()->routeIs('akademik.kategori-nilai-harian')" wire:navigate>
+                                    {{ __('Kategori Nilai Harian') }}
                                 </flux:sidebar.item>
                                 <flux:sidebar.item icon="user-circle" :href="route('kepegawaian.guru')" :current="request()->routeIs('kepegawaian.guru')" wire:navigate>
                                     {{ __('Data Guru') }}
@@ -90,7 +93,7 @@
                                 {{ __('Pembayaran SPP') }}
                             </flux:sidebar.item>
                             <flux:sidebar.item icon="sparkles" :href="route('keuangan.haflatul-imtihan')" :current="request()->routeIs('keuangan.haflatul-imtihan')" wire:navigate>
-                                {{ __('Haflatul Imtihan') }}
+                                {{ __('Pembayaran Haflah') }}
                             </flux:sidebar.item>
                             <flux:sidebar.item icon="wallet" :href="route('keuangan.tabungan')" :current="request()->routeIs('keuangan.tabungan')" wire:navigate>
                                 {{ __('Tabungan Santri') }}
@@ -104,8 +107,11 @@
                         @endif
 
                         @if ($setting?->hasModule('nilai'))
+                            <flux:sidebar.item icon="clipboard-document-list" :href="route('kesantrian.nilai-harian')" :current="request()->routeIs('kesantrian.nilai-harian')" wire:navigate>
+                                {{ __('Nilai Harian') }}
+                            </flux:sidebar.item>
                             <flux:sidebar.item icon="pencil-square" :href="route('kesantrian.nilai')" :current="request()->routeIs('kesantrian.nilai')" wire:navigate>
-                                {{ __('Nilai Santri') }}
+                                {{ __('Nilai Mapel') }}
                             </flux:sidebar.item>
                             <flux:sidebar.item icon="document-text" :href="route('akademik.setting-rapor')" :current="request()->routeIs('akademik.setting-rapor')" wire:navigate>
                                 {{ __('Setting Rapor') }}

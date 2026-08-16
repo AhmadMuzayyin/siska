@@ -31,7 +31,7 @@ class Lembagas extends Component
     public string $kode = '';
 
     #[Validate('required|string|max:100')]
-    public string $jenjang = 'TPQ';
+    public string $jenjang = 'MDTA';
 
     #[Validate('nullable|string|max:100')]
     public string $nsm = '';

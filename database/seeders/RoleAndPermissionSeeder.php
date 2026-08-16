@@ -26,6 +26,7 @@ class RoleAndPermissionSeeder extends Seeder
             'manage-tahun-akademik',
             'manage-kelas',
             'manage-mapel',
+            'manage-kategori-nilai-harian',
             'manage-guru',
             'manage-santri',
 
@@ -35,6 +36,8 @@ class RoleAndPermissionSeeder extends Seeder
             'input-absensi-santri',
             'manage-absensi-guru',
             'input-absensi-guru',
+            'manage-nilai-harian',
+            'input-nilai-harian',
             'manage-nilai',
             'input-nilai',
             'view-nilai',
@@ -73,6 +76,7 @@ class RoleAndPermissionSeeder extends Seeder
             'manage-tahun-akademik',
             'manage-kelas',
             'manage-mapel',
+            'manage-kategori-nilai-harian',
             'manage-guru',
             'manage-santri',
             'manage-jadwal',
@@ -80,6 +84,8 @@ class RoleAndPermissionSeeder extends Seeder
             'input-absensi-santri',
             'manage-absensi-guru',
             'input-absensi-guru',
+            'manage-nilai-harian',
+            'input-nilai-harian',
             'manage-nilai',
             'input-nilai',
             'view-nilai',
@@ -97,6 +103,8 @@ class RoleAndPermissionSeeder extends Seeder
             'manage-jadwal',
             'input-absensi-santri',
             'input-absensi-guru',
+            'manage-nilai-harian',
+            'input-nilai-harian',
             'input-nilai',
             'view-nilai',
             'print-rapor',
@@ -120,6 +128,7 @@ class RoleAndPermissionSeeder extends Seeder
             'print-rapor',
             'manage-absensi-santri',
             'manage-absensi-guru',
+            'manage-nilai-harian',
         ]);
 
         $santriRole = Role::firstOrCreate(['name' => UserRole::Santri->value, 'guard_name' => 'web']);
