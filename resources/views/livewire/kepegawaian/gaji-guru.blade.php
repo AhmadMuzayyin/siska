@@ -1,7 +1,14 @@
 <div class="flex flex-col gap-6">
-    <div>
-        <flux:heading size="xl">{{ __('Gaji Guru') }}</flux:heading>
-        <flux:subheading>{{ __('Hitung bisyaroh guru berdasarkan kehadiran bulanan.') }}</flux:subheading>
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <flux:heading size="xl">{{ __('Gaji Guru') }}</flux:heading>
+            <flux:subheading>{{ __('Hitung bisyaroh guru berdasarkan kehadiran bulanan.') }}</flux:subheading>
+        </div>
+
+        <div class="flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-xs text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+            <flux:icon name="calendar" class="size-4 text-emerald-600 dark:text-emerald-400" />
+            <span>{{ __('Tanggal Cutoff Payroll:') }} <strong class="font-bold text-zinc-900 dark:text-white">{{ __('Tgl :day setiap bulan', ['day' => $this->payrollCutoffDay]) }}</strong></span>
+        </div>
     </div>
 
     @if (!$this->activeSemester)

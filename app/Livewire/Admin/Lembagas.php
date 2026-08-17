@@ -24,6 +24,8 @@ class Lembagas extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     #[Validate('required|string|max:255')]
     public string $nama = '';
 
@@ -142,9 +144,14 @@ class Lembagas extends Component
         Flux::toast(variant: 'success', text: __('Unit Lembaga berhasil disimpan.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $lembaga = LembagaModel::query()->withCount(['kelas', 'santris', 'mapels'])->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $lembaga = LembagaModel::query()->withCount(['kelas', 'santris', 'mapels'])->findOrFail($targetId);
         $this->authorize('delete', $lembaga);
 
         if ($lembaga->kelas_count + $lembaga->santris_count + $lembaga->mapels_count > 0) {
@@ -154,6 +161,7 @@ class Lembagas extends Component
         }
 
         $lembaga->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Unit Lembaga berhasil dihapus.'));
     }

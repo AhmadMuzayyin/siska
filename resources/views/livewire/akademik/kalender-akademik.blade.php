@@ -32,6 +32,55 @@
         @endif
     </div>
 
+    {{-- KONTROL AKSES FITUR INPUT NILAI & PPDB ONLINE (KHUSUS ADMIN/OPERATOR) --}}
+    @can('update', app(\App\Services\SettingService::class)->get())
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex items-center justify-between p-4 rounded-2xl border transition-all {{ $is_input_nilai_open ? 'bg-emerald-50/70 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-800/50' : 'bg-rose-50/70 border-rose-200 dark:bg-rose-950/20 dark:border-rose-800/50' }}">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl flex items-center justify-center shrink-0 {{ $is_input_nilai_open ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white' }}">
+                        <flux:icon name="{{ $is_input_nilai_open ? 'lock-open' : 'lock-closed' }}" class="size-5" />
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">{{ __('Akses Input Nilai') }}</h4>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400">
+                            {{ $is_input_nilai_open ? __('Status: DIBUKA (Guru & Operator dapat menginput nilai)') : __('Status: DIKUNCI (Akses nilai ditutup oleh Admin)') }}
+                        </p>
+                    </div>
+                </div>
+                <flux:button 
+                    wire:click="toggleInputNilai" 
+                    size="xs" 
+                    variant="{{ $is_input_nilai_open ? 'filled' : 'primary' }}"
+                    class="{{ $is_input_nilai_open ? 'bg-rose-600! text-white! hover:bg-rose-700!' : 'bg-emerald-600! text-white! hover:bg-emerald-700!' }}"
+                >
+                    {{ $is_input_nilai_open ? __('Kunci Akses') : __('Buka Akses') }}
+                </flux:button>
+            </div>
+
+            <div class="flex items-center justify-between p-4 rounded-2xl border transition-all {{ $is_ppdb_open ? 'bg-emerald-50/70 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-800/50' : 'bg-rose-50/70 border-rose-200 dark:bg-rose-800/50' }}">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl flex items-center justify-center shrink-0 {{ $is_ppdb_open ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white' }}">
+                        <flux:icon name="{{ $is_ppdb_open ? 'user-plus' : 'no-symbol' }}" class="size-5" />
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">{{ __('Akses PPDB Online') }}</h4>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400">
+                            {{ $is_ppdb_open ? __('Status: DIBUKA (Pendaftaran santri baru publik dapat diakses)') : __('Status: DIKUNCI (Pendaftaran publik ditutup)') }}
+                        </p>
+                    </div>
+                </div>
+                <flux:button 
+                    wire:click="togglePpdb" 
+                    size="xs" 
+                    variant="{{ $is_ppdb_open ? 'filled' : 'primary' }}"
+                    class="{{ $is_ppdb_open ? 'bg-rose-600! text-white! hover:bg-rose-700!' : 'bg-emerald-600! text-white! hover:bg-emerald-700!' }}"
+                >
+                    {{ $is_ppdb_open ? __('Kunci PPDB') : __('Buka PPDB') }}
+                </flux:button>
+            </div>
+        </div>
+    @endcan
+
     {{-- WARNING STATE: JIKA BELUM ADA SEMESTER AKTIF --}}
     @if (! $this->activeSemester)
         <div class="p-6 rounded-3xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 space-y-4 text-center">
@@ -145,7 +194,7 @@
                                                     <button type="button" wire:click="edit({{ $event->id }})" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 cursor-pointer">
                                                         {{ __('Edit') }}
                                                     </button>
-                                                    <button type="button" wire:click="delete({{ $event->id }})" wire:confirm="{{ __('Yakin ingin menghapus agenda ini?') }}" class="text-xs font-bold text-rose-600 hover:text-rose-700 cursor-pointer">
+                                                    <button type="button" wire:click="$set('deletingId', {{ $event->id }})" x-on:click="$flux.modal('confirm-delete-agenda-modal').show()" class="text-xs font-bold text-rose-600 hover:text-rose-700 cursor-pointer">
                                                         {{ __('Hapus') }}
                                                     </button>
                                                 </div>
@@ -195,7 +244,7 @@
                                                     <button type="button" wire:click="edit({{ $event->id }})" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 cursor-pointer">
                                                         {{ __('Edit') }}
                                                     </button>
-                                                    <button type="button" wire:click="delete({{ $event->id }})" wire:confirm="{{ __('Yakin ingin menghapus agenda ini?') }}" class="text-xs font-bold text-rose-600 hover:text-rose-700 cursor-pointer">
+                                                    <button type="button" wire:click="$set('deletingId', {{ $event->id }})" x-on:click="$flux.modal('confirm-delete-agenda-modal').show()" class="text-xs font-bold text-rose-600 hover:text-rose-700 cursor-pointer">
                                                         {{ __('Hapus') }}
                                                     </button>
                                                 </div>
@@ -414,4 +463,12 @@
         </form>
     </flux:modal>
 
+    {{-- Confirm Delete Agenda Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-agenda-modal" 
+        title="{{ __('Hapus Agenda Kalender') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus agenda kegiatan kalender akademik ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Agenda') }}" 
+    />
 </div>

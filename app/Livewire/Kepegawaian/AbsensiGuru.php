@@ -4,10 +4,12 @@ namespace App\Livewire\Kepegawaian;
 
 use App\Actions\RecordTeacherAttendanceAction;
 use App\Enums\GuruStatus;
+use App\Enums\HariSekolah;
 use App\Enums\TeacherAttendanceStatus;
 use App\Exceptions\DuplicateAttendanceException;
 use App\Models\AbsensiGuru as AbsensiGuruModel;
 use App\Models\Guru as GuruModel;
+use App\Models\JadwalPelajaran;
 use App\Models\Semester;
 use App\Services\SemesterService;
 use Carbon\CarbonImmutable;
@@ -45,13 +47,36 @@ class AbsensiGuru extends Component
             return;
         }
 
+        $carbonDate = CarbonImmutable::parse($this->tanggal);
+        $hariSekolah = HariSekolah::fromCarbonDayOfWeek($carbonDate->dayOfWeek);
+
+        $hasSchedule = JadwalPelajaran::query()
+            ->where('guru_id', $guruId)
+            ->where('semester_id', $this->semesterId)
+            ->where('hari', $hariSekolah)
+            ->exists();
+
+        if (! $hasSchedule) {
+            $guru = GuruModel::query()->find($guruId);
+            Flux::toast(
+                variant: 'danger',
+                text: __('Guru :nama tidak memiliki jadwal mengajar pada hari :hari (:tanggal). Absensi tidak dapat dicatat.', [
+                    'nama' => $guru?->user?->name ?? 'Guru',
+                    'hari' => ucfirst($hariSekolah->value),
+                    'tanggal' => $carbonDate->format('d/m/Y'),
+                ])
+            );
+
+            return;
+        }
+
         $semester = Semester::query()->findOrFail($this->semesterId);
 
         try {
             $action->handle(
                 $semester,
                 [['guru_id' => $guruId, 'status' => TeacherAttendanceStatus::from($status)]],
-                CarbonImmutable::parse($this->tanggal),
+                $carbonDate,
             );
 
             Flux::toast(variant: 'success', text: __('Absensi tersimpan.'), duration: 2000);
@@ -69,6 +94,14 @@ class AbsensiGuru extends Component
         return Semester::query()->with('tahunAkademik')->orderByDesc('id')->get();
     }
 
+    #[Computed]
+    public function hariSekolah(): HariSekolah
+    {
+        $carbonDate = CarbonImmutable::parse($this->tanggal);
+
+        return HariSekolah::fromCarbonDayOfWeek($carbonDate->dayOfWeek);
+    }
+
     /**
      * @return Collection<int, GuruModel>
      */
@@ -80,6 +113,15 @@ class AbsensiGuru extends Component
             ->get()
             ->keyBy('guru_id');
 
+        $hariSekolah = $this->hariSekolah;
+
+        $jadwals = JadwalPelajaran::query()
+            ->with(['kelas', 'mapel'])
+            ->where('semester_id', $this->semesterId)
+            ->where('hari', $hariSekolah)
+            ->get()
+            ->groupBy('guru_id');
+
         return GuruModel::query()
             ->with('user')
             ->where('status', GuruStatus::Aktif)
@@ -90,9 +132,13 @@ class AbsensiGuru extends Component
             })
             ->orderBy('id')
             ->get()
-            ->map(function (GuruModel $guru) use ($existing) {
+            ->map(function (GuruModel $guru) use ($existing, $jadwals) {
                 $record = $existing->get($guru->id);
                 $guru->recordedStatus = $record?->status->value;
+
+                $guruSchedules = $jadwals->get($guru->id, collect());
+                $guru->schedules = $guruSchedules;
+                $guru->hasSchedule = $guruSchedules->isNotEmpty();
 
                 return $guru;
             });

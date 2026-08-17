@@ -25,6 +25,8 @@ class Roles extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     public string $name = '';
 
     /**
@@ -96,11 +98,16 @@ class Roles extends Component
         Flux::toast(variant: 'success', text: __('Peran dan izin akses berhasil disimpan.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
         $this->authorize('delete', auth()->user());
 
-        $role = Role::query()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $role = Role::query()->findOrFail($targetId);
 
         if ($role->name === 'admin') {
             Flux::toast(variant: 'danger', text: __('Peran Admin Utama tidak boleh dihapus.'));
@@ -109,6 +116,7 @@ class Roles extends Component
         }
 
         $role->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Peran berhasil dihapus.'));
     }

@@ -25,6 +25,8 @@ class KategoriNilaiHarian extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     public string $nama = '';
 
     public int $bobot = 10;
@@ -115,12 +117,18 @@ class KategoriNilaiHarian extends Component
         Flux::toast(variant: 'success', text: __('Kategori Nilai Harian berhasil disimpan.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $kategori = KategoriModel::query()->visibleTo()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $kategori = KategoriModel::query()->visibleTo()->findOrFail($targetId);
         $this->authorize('delete', $kategori);
 
         $kategori->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Kategori Nilai Harian berhasil dihapus.'));
     }

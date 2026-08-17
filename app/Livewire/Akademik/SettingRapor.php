@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Akademik;
 
+use App\Models\Lembaga;
 use App\Models\Mapel as MapelModel;
 use App\Models\SettingRapor as SettingRaporModel;
 use App\Services\LembagaService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -19,6 +21,8 @@ class SettingRapor extends Component
     use WithFileUploads;
 
     public ?int $selectedMapelId = null;
+
+    public ?int $selectedLembagaId = null;
 
     public string $deskripsi_a = '';
 
@@ -36,16 +40,40 @@ class SettingRapor extends Component
     {
         $this->authorize('viewAny', SettingRaporModel::class);
 
+        $activeLembagaId = app(LembagaService::class)->getActiveLembagaId();
+        if ($activeLembagaId) {
+            $this->selectedLembagaId = $activeLembagaId;
+        }
+
         $firstMapel = $this->mapelOptions->first();
         if ($firstMapel) {
             $this->selectedMapelId = $firstMapel->id;
             $this->loadSettings();
         }
 
-        $globalSetting = SettingRaporModel::query()->whereNull('mapel_id')->first();
-        if ($globalSetting) {
-            $this->currentTemplatePath = $globalSetting->template_path;
+        $this->loadTemplatePath();
+    }
+
+    public function updatedSelectedLembagaId(): void
+    {
+        $this->loadTemplatePath();
+    }
+
+    public function loadTemplatePath(): void
+    {
+        $setting = SettingRaporModel::query()
+            ->where('lembaga_id', $this->selectedLembagaId)
+            ->whereNull('mapel_id')
+            ->first();
+
+        if (! $setting && $this->selectedLembagaId) {
+            $setting = SettingRaporModel::query()
+                ->whereNull('lembaga_id')
+                ->whereNull('mapel_id')
+                ->first();
         }
+
+        $this->currentTemplatePath = $setting?->template_path;
     }
 
     public function updatedSelectedMapelId(): void
@@ -82,15 +110,20 @@ class SettingRapor extends Component
             'deskripsi_d' => 'nullable|string',
         ]);
 
-        SettingRaporModel::query()->updateOrCreate(
-            ['mapel_id' => $this->selectedMapelId],
-            [
-                'deskripsi_a' => $this->deskripsi_a,
-                'deskripsi_b' => $this->deskripsi_b,
-                'deskripsi_c' => $this->deskripsi_c,
-                'deskripsi_d' => $this->deskripsi_d,
-            ]
-        );
+        DB::transaction(function () {
+            SettingRaporModel::query()->updateOrCreate(
+                [
+                    'mapel_id' => $this->selectedMapelId,
+                    'lembaga_id' => $this->selectedLembagaId,
+                ],
+                [
+                    'deskripsi_a' => $this->deskripsi_a,
+                    'deskripsi_b' => $this->deskripsi_b,
+                    'deskripsi_c' => $this->deskripsi_c,
+                    'deskripsi_d' => $this->deskripsi_d,
+                ]
+            );
+        });
 
         Flux::toast(variant: 'success', text: __('Deskripsi nilai mata pelajaran berhasil disimpan.'));
     }
@@ -100,22 +133,28 @@ class SettingRapor extends Component
         $this->authorize('create', SettingRaporModel::class);
 
         $this->validate([
-            'template_file' => 'required|file|mimes:docx|max:10240',
+            'template_file' => 'required|file|mimes:docx,html,blade.php|max:10240',
+            'selectedLembagaId' => 'nullable|integer|exists:lembagas,id',
         ], [
-            'template_file.mimes' => __('File template rapor hanya boleh dokumen Word (.docx).'),
+            'template_file.mimes' => __('File template rapor hanya boleh dokumen Word (.docx) atau HTML/Blade.'),
         ]);
 
-        $path = $this->template_file->store('templates/rapor', 'public');
+        DB::transaction(function () {
+            $path = $this->template_file->store('templates/rapor', 'public');
 
-        SettingRaporModel::query()->updateOrCreate(
-            ['mapel_id' => null],
-            ['template_path' => $path]
-        );
+            SettingRaporModel::query()->updateOrCreate(
+                [
+                    'mapel_id' => null,
+                    'lembaga_id' => $this->selectedLembagaId,
+                ],
+                ['template_path' => $path]
+            );
 
-        $this->currentTemplatePath = $path;
-        $this->reset('template_file');
+            $this->currentTemplatePath = $path;
+            $this->reset('template_file');
+        });
 
-        Flux::toast(variant: 'success', text: __('Template Rapor (.docx) berhasil diunggah.'));
+        Flux::toast(variant: 'success', text: __('Template Rapor berhasil diunggah.'));
     }
 
     /**
@@ -125,11 +164,25 @@ class SettingRapor extends Component
     public function mapelOptions(): Collection
     {
         $activeLembagaId = app(LembagaService::class)->getActiveLembagaId();
-
-        return MapelModel::query()
+        $mapels = MapelModel::query()
             ->when($activeLembagaId, fn ($q) => $q->where('lembaga_id', $activeLembagaId)->orWhereNull('lembaga_id'))
             ->orderBy('nama')
             ->get();
+
+        if ($mapels->count() === 1 && ! $this->selectedMapelId) {
+            $this->selectedMapelId = $mapels->first()->id;
+        }
+
+        return $mapels;
+    }
+
+    /**
+     * @return Collection<int, Lembaga>
+     */
+    #[Computed]
+    public function lembagaOptions(): Collection
+    {
+        return Lembaga::query()->where('is_active', true)->orderBy('nama')->get();
     }
 
     public function render(): View

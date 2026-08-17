@@ -6,14 +6,14 @@ use App\Models\Semester;
 use App\Models\SettingRapor;
 use App\Models\User;
 
-test('admin can access setting rapor and print student report card', function () {
+test('admin can access rapor page and print student report card', function () {
     $admin = User::factory()->create(['role' => 'admin']);
     $mapel = Mapel::factory()->create(['nama' => 'Fiqih']);
     $santri = Santri::factory()->create();
     $semester = Semester::factory()->active()->create();
 
     $this->actingAs($admin)
-        ->get(route('akademik.setting-rapor'))
+        ->get(route('akademik.rapor'))
         ->assertOk();
 
     SettingRapor::query()->create([

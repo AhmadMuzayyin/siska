@@ -86,6 +86,19 @@
                             </div>
                         @endif
 
+                        @if (! ($isPpdbOpen ?? true))
+                            <div class="rounded-2xl bg-amber-50 border border-amber-300 p-8 text-amber-900 flex flex-col items-center justify-center text-center space-y-3 shadow-xs">
+                                <div class="size-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
+                                    <flux:icon name="lock-closed" class="size-6" />
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-base text-amber-950">{{ __('Pendaftaran PPDB Online Saat Ini Dikunci') }}</h4>
+                                    <p class="text-xs text-amber-800 mt-1 max-w-md">
+                                        {{ __('Pendaftaran Santri Baru Online (PPDB) belum dibuka atau telah dikunci oleh Administrator. Silakan hubungi pengurus lembaga untuk informasi lebih lanjut.') }}
+                                    </p>
+                                </div>
+                            </div>
+                        @else
                         <form method="POST" action="{{ route('santri.register') }}" class="flex flex-col gap-10">
                             @csrf
 
@@ -154,11 +167,11 @@
                                             id="pixigon_jenis_kelamin" 
                                             name="jenis_kelamin" 
                                             required 
-                                            class="w-full rounded-2xl bg-white border {{ $errors->has('jenis_kelamin') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
+                                            class="w-full rounded-2xl bg-white border {{ $errors->has('jenis_kelamin') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 pr-10 text-sm text-zinc-900 shadow-2xs outline-none transition-all appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%232e5b18%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
                                         >
-                                            <option value="" disabled {{ old('jenis_kelamin') ? '' : 'selected' }}>{{ __('Pilih Jenis Kelamin') }}</option>
+                                            <option value="" disabled {{ old('jenis_kelamin') ? '' : 'selected' }} class="bg-white text-zinc-400 py-2">{{ __('Pilih Jenis Kelamin') }}</option>
                                             @foreach ($genders as $gender)
-                                                <option value="{{ $gender->value }}" {{ old('jenis_kelamin') === $gender->value ? 'selected' : '' }}>
+                                                <option value="{{ $gender->value }}" {{ old('jenis_kelamin') === $gender->value ? 'selected' : '' }} class="bg-white text-zinc-900 py-2">
                                                     {{ $gender->value === 'laki_laki' ? __('Laki-laki') : __('Perempuan') }}
                                                 </option>
                                             @endforeach
@@ -256,11 +269,11 @@
                                         <select 
                                             id="pixigon_lembaga_id" 
                                             name="lembaga_id" 
-                                            class="w-full rounded-2xl bg-white border {{ $errors->has('lembaga_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
+                                            class="w-full rounded-2xl bg-white border {{ $errors->has('lembaga_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 pr-10 text-sm text-zinc-900 shadow-2xs outline-none transition-all appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%232e5b18%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
                                         >
-                                            <option value="" disabled {{ old('lembaga_id') ? '' : 'selected' }}>{{ __('Pilih Unit Lembaga') }}</option>
+                                            <option value="" disabled {{ old('lembaga_id') ? '' : 'selected' }} class="bg-white text-zinc-400 py-2">{{ __('Pilih Unit Lembaga') }}</option>
                                             @foreach ($lembagas as $lembaga)
-                                                <option value="{{ $lembaga->id }}" {{ old('lembaga_id') == $lembaga->id ? 'selected' : '' }}>
+                                                <option value="{{ $lembaga->id }}" {{ old('lembaga_id') == $lembaga->id ? 'selected' : '' }} class="bg-white text-zinc-900 py-2">
                                                     {{ $lembaga->nama }} ({{ $lembaga->jenjang }})
                                                 </option>
                                             @endforeach
@@ -281,11 +294,11 @@
                                         <select 
                                             id="pixigon_kelas_id" 
                                             name="kelas_id" 
-                                            class="w-full rounded-2xl bg-white border {{ $errors->has('kelas_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
+                                            class="w-full rounded-2xl bg-white border {{ $errors->has('kelas_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-[#d6eda6] focus:border-[#6bb82d] focus:ring-4 focus:ring-[#6bb82d]/15' }} px-4 py-3.5 pr-10 text-sm text-zinc-900 shadow-2xs outline-none transition-all appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%232e5b18%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
                                         >
-                                            <option value="" disabled {{ old('kelas_id') ? '' : 'selected' }}>{{ __('Pilih Kelas') }}</option>
+                                            <option value="" disabled {{ old('kelas_id') ? '' : 'selected' }} class="bg-white text-zinc-400 py-2">{{ __('Pilih Kelas') }}</option>
                                             @foreach ($kelasList as $kelas)
-                                                <option value="{{ $kelas->id }}" {{ old('kelas_id') == $kelas->id ? 'selected' : '' }}>
+                                                <option value="{{ $kelas->id }}" {{ old('kelas_id') == $kelas->id ? 'selected' : '' }} class="bg-white text-zinc-900 py-2">
                                                     {{ $kelas->nama }} @if($kelas->lembaga) ({{ $kelas->lembaga->jenjang }}) @endif
                                                 </option>
                                             @endforeach
@@ -484,6 +497,7 @@
                             </div>
 
                         </form>
+                        @endif
                     </div>
                 </div>
             </section>
@@ -544,6 +558,19 @@
                             </div>
                         @endif
 
+                        @if (! ($isPpdbOpen ?? true))
+                            <div class="rounded-2xl bg-amber-50 border border-amber-300 p-8 text-amber-900 flex flex-col items-center justify-center text-center space-y-3 shadow-xs">
+                                <div class="size-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
+                                    <flux:icon name="lock-closed" class="size-6" />
+                                </div>
+                                <div>
+                                    <h4 class="font-extrabold text-base text-amber-950">{{ __('Pendaftaran PPDB Online Saat Ini Dikunci') }}</h4>
+                                    <p class="text-xs text-amber-800 mt-1 max-w-md">
+                                        {{ __('Pendaftaran Santri Baru Online (PPDB) belum dibuka atau telah dikunci oleh Administrator. Silakan hubungi pengurus lembaga untuk informasi lebih lanjut.') }}
+                                    </p>
+                                </div>
+                            </div>
+                        @else
                         <form method="POST" action="{{ route('santri.register') }}" class="flex flex-col gap-10">
                             @csrf
 
@@ -612,11 +639,11 @@
                                             id="default_jenis_kelamin" 
                                             name="jenis_kelamin" 
                                             required 
-                                            class="w-full rounded-2xl bg-white border-2 {{ $errors->has('jenis_kelamin') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
+                                            class="w-full rounded-2xl bg-white border-2 {{ $errors->has('jenis_kelamin') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 pr-10 text-sm text-zinc-900 shadow-2xs outline-none transition-all appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23059669%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
                                         >
-                                            <option value="" disabled {{ old('jenis_kelamin') ? '' : 'selected' }}>{{ __('Pilih Jenis Kelamin') }}</option>
+                                            <option value="" disabled {{ old('jenis_kelamin') ? '' : 'selected' }} class="bg-white text-zinc-400 py-2">{{ __('Pilih Jenis Kelamin') }}</option>
                                             @foreach ($genders as $gender)
-                                                <option value="{{ $gender->value }}" {{ old('jenis_kelamin') === $gender->value ? 'selected' : '' }}>
+                                                <option value="{{ $gender->value }}" {{ old('jenis_kelamin') === $gender->value ? 'selected' : '' }} class="bg-white text-zinc-900 py-2">
                                                     {{ $gender->value === 'laki_laki' ? __('Laki-laki') : __('Perempuan') }}
                                                 </option>
                                             @endforeach
@@ -714,11 +741,11 @@
                                         <select 
                                             id="default_lembaga_id" 
                                             name="lembaga_id" 
-                                            class="w-full rounded-2xl bg-white border-2 {{ $errors->has('lembaga_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
+                                            class="w-full rounded-2xl bg-white border-2 {{ $errors->has('lembaga_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 pr-10 text-sm text-zinc-900 shadow-2xs outline-none transition-all appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23059669%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
                                         >
-                                            <option value="" disabled {{ old('lembaga_id') ? '' : 'selected' }}>{{ __('Pilih Unit Lembaga') }}</option>
+                                            <option value="" disabled {{ old('lembaga_id') ? '' : 'selected' }} class="bg-white text-zinc-400 py-2">{{ __('Pilih Unit Lembaga') }}</option>
                                             @foreach ($lembagas as $lembaga)
-                                                <option value="{{ $lembaga->id }}" {{ old('lembaga_id') == $lembaga->id ? 'selected' : '' }}>
+                                                <option value="{{ $lembaga->id }}" {{ old('lembaga_id') == $lembaga->id ? 'selected' : '' }} class="bg-white text-zinc-900 py-2">
                                                     {{ $lembaga->nama }} ({{ $lembaga->jenjang }})
                                                 </option>
                                             @endforeach
@@ -739,11 +766,11 @@
                                         <select 
                                             id="default_kelas_id" 
                                             name="kelas_id" 
-                                            class="w-full rounded-2xl bg-white border-2 {{ $errors->has('kelas_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 text-sm text-zinc-900 shadow-2xs outline-none transition-all"
+                                            class="w-full rounded-2xl bg-white border-2 {{ $errors->has('kelas_id') ? 'border-rose-400 ring-2 ring-rose-300/30' : 'border-emerald-200 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-500/15' }} px-4 py-3.5 pr-10 text-sm text-zinc-900 shadow-2xs outline-none transition-all appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23059669%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat"
                                         >
-                                            <option value="" disabled {{ old('kelas_id') ? '' : 'selected' }}>{{ __('Pilih Kelas') }}</option>
+                                            <option value="" disabled {{ old('kelas_id') ? '' : 'selected' }} class="bg-white text-zinc-400 py-2">{{ __('Pilih Kelas') }}</option>
                                             @foreach ($kelasList as $kelas)
-                                                <option value="{{ $kelas->id }}" {{ old('kelas_id') == $kelas->id ? 'selected' : '' }}>
+                                                <option value="{{ $kelas->id }}" {{ old('kelas_id') == $kelas->id ? 'selected' : '' }} class="bg-white text-zinc-900 py-2">
                                                     {{ $kelas->nama }} @if($kelas->lembaga) ({{ $kelas->lembaga->jenjang }}) @endif
                                                 </option>
                                             @endforeach
@@ -942,6 +969,7 @@
                             </div>
 
                         </form>
+                        @endif
                     </div>
                 </div>
             </section>

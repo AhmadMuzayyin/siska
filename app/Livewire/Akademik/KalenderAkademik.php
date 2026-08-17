@@ -7,6 +7,7 @@ use App\Models\Lembaga;
 use App\Models\Semester;
 use App\Services\LembagaService;
 use App\Services\SemesterService;
+use App\Services\SettingService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,6 +21,8 @@ class KalenderAkademik extends Component
     public int $currentYear;
 
     public ?int $editingId = null;
+
+    public ?int $deletingId = null;
 
     public string $judul = '';
 
@@ -37,9 +40,17 @@ class KalenderAkademik extends Component
 
     public ?int $lembaga_id = null;
 
+    public bool $is_input_nilai_open = true;
+
+    public bool $is_ppdb_open = true;
+
     public function mount(): void
     {
         $this->authorize('viewAny', KalenderModel::class);
+
+        $setting = app(SettingService::class)->get();
+        $this->is_input_nilai_open = (bool) ($setting->is_input_nilai_open ?? true);
+        $this->is_ppdb_open = (bool) ($setting->is_ppdb_open ?? true);
 
         $activeSemester = app(SemesterService::class)->current();
 
@@ -51,6 +62,32 @@ class KalenderAkademik extends Component
 
         $this->mulai = now()->format('Y-m-d');
         $this->lembaga_id = app(LembagaService::class)->getActiveLembagaId();
+    }
+
+    public function toggleInputNilai(SettingService $settingService): void
+    {
+        $setting = $settingService->get();
+        $this->authorize('update', $setting);
+
+        $newStatus = ! $this->is_input_nilai_open;
+        $settingService->update(['is_input_nilai_open' => $newStatus]);
+        $this->is_input_nilai_open = $newStatus;
+
+        $msg = $newStatus ? __('Akses Input Nilai DIBUKA.') : __('Akses Input Nilai DIKUNCI.');
+        Flux::toast(variant: $newStatus ? 'success' : 'warning', text: $msg);
+    }
+
+    public function togglePpdb(SettingService $settingService): void
+    {
+        $setting = $settingService->get();
+        $this->authorize('update', $setting);
+
+        $newStatus = ! $this->is_ppdb_open;
+        $settingService->update(['is_ppdb_open' => $newStatus]);
+        $this->is_ppdb_open = $newStatus;
+
+        $msg = $newStatus ? __('Akses Pendaftaran PPDB DIBUKA.') : __('Akses Pendaftaran PPDB DIKUNCI.');
+        Flux::toast(variant: $newStatus ? 'success' : 'warning', text: $msg);
     }
 
     public function openDrawer(?string $date = null): void
@@ -165,12 +202,18 @@ class KalenderAkademik extends Component
         Flux::toast(variant: 'success', text: __('Agenda kalender akademik berhasil disimpan.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $event = KalenderModel::query()->visibleTo()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $event = KalenderModel::query()->visibleTo()->findOrFail($targetId);
         $this->authorize('delete', $event);
 
         $event->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Agenda kalender akademik berhasil dihapus.'));
     }

@@ -23,27 +23,48 @@
         </div>
     @else
 
+    @if (! app(\App\Services\KalenderAkademikService::class)->canInputNilai(now()->toDateString(), app(\App\Services\LembagaService::class)->getActiveLembagaId()))
+        <div class="rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900 dark:border-amber-800/40 dark:bg-amber-950/30 dark:text-amber-300 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <flux:icon name="lock-closed" class="size-5 text-amber-600 shrink-0" />
+                <div>
+                    <strong class="font-bold">{{ __('Penginputan Nilai Dikunci:') }}</strong>
+                    {{ __('Penginputan nilai saat ini sedang dikunci oleh Administrator.') }}
+                </div>
+            </div>
+            @can('update', app(\App\Services\SettingService::class)->get())
+                <flux:button wire:click="toggleInputNilai" size="xs" variant="primary" class="bg-emerald-600! hover:bg-emerald-700! text-white! font-bold shrink-0">
+                    {{ __('Buka Akses Nilai Sekarang') }}
+                </flux:button>
+            @endcan
+        </div>
+    @endif
+
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex flex-wrap items-center gap-3">
-            <flux:select wire:model.live="semesterId" class="max-w-sm" placeholder="{{ __('Pilih Semester') }}">
-                @foreach ($this->semesterOptions as $semester)
-                    <flux:select.option value="{{ $semester->id }}" :selected="$semesterId == $semester->id">
-                        {{ $semester->tahunAkademik->nama }} &mdash; {{ ucfirst($semester->tipe->value) }}
-                    </flux:select.option>
-                @endforeach
-            </flux:select>
+            <div class="w-60">
+                <x-select-search 
+                    wire:model.live="semesterId" 
+                    :options="$this->semesterSearchOptions" 
+                    placeholder="{{ __('Pilih Semester') }}" 
+                />
+            </div>
 
-            <flux:select wire:model.live="kelasId" class="max-w-44" placeholder="{{ __('Pilih Kelas') }}">
-                @foreach ($this->kelasOptions as $kelas)
-                    <flux:select.option value="{{ $kelas->id }}" :selected="$kelasId == $kelas->id">{{ $kelas->nama }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <div class="w-48">
+                <x-select-search 
+                    wire:model.live="kelasId" 
+                    :options="$this->kelasOptions" 
+                    placeholder="{{ __('Pilih Kelas') }}" 
+                />
+            </div>
 
-            <flux:select wire:model.live="mapelId" class="max-w-44" placeholder="{{ __('Pilih Mata Pelajaran') }}">
-                @foreach ($this->mapelOptions as $mapel)
-                    <flux:select.option value="{{ $mapel->id }}" :selected="$mapelId == $mapel->id">{{ $mapel->nama }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <div class="w-52">
+                <x-select-search 
+                    wire:model.live="mapelId" 
+                    :options="$this->mapelOptions" 
+                    placeholder="{{ __('Pilih Mata Pelajaran') }}" 
+                />
+            </div>
         </div>
 
         <div class="w-full sm:w-auto">

@@ -311,9 +311,8 @@
 
                                 <button
                                     type="button"
-                                    wire:click="disconnectDevice"
-                                    wire:confirm="{{ __('Yakin ingin memutuskan koneksi perangkat?') }}"
-                                    class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-rose-600/20 hover:bg-rose-700 transition"
+                                    x-on:click="$flux.modal('confirm-disconnect-device-modal').show()"
+                                    class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-rose-600/20 hover:bg-rose-700 transition cursor-pointer"
                                 >
                                     <flux:icon name="power" class="size-4 shrink-0 text-white" />
                                     <span>{{ __('Putuskan') }}</span>
@@ -325,6 +324,15 @@
             </div>
         </div>
     @endif
+
+    {{-- Confirm Disconnect Device Modal --}}
+    <x-confirm-modal 
+        name="confirm-disconnect-device-modal" 
+        title="{{ __('Putuskan Koneksi Perangkat') }}" 
+        description="{{ __('Apakah Anda yakin ingin memutuskan koneksi sesi WhatsApp gateway pada perangkat ini?') }}" 
+        action="disconnectDevice" 
+        confirmText="{{ __('Putuskan Sesi') }}" 
+    />
 
     {{-- JavaScript Async Broadcast Engine --}}
     <script>
@@ -350,12 +358,16 @@
             const delaySec = @json($delaySeconds);
 
             if (!payloads || payloads.length === 0) {
-                alert('Tidak ada data broadcast untuk dikirim.');
+                if (window.Flux) {
+                    Flux.toast({ variant: 'warning', text: 'Tidak ada data broadcast untuk dikirim.' });
+                }
                 return;
             }
 
             if (!apiKey) {
-                alert('Token API Fonnte belum diatur pada Pengaturan Perangkat.');
+                if (window.Flux) {
+                    Flux.toast({ variant: 'danger', text: 'Token API Fonnte belum diatur pada Pengaturan Perangkat.' });
+                }
                 return;
             }
 

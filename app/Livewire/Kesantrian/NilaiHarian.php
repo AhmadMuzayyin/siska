@@ -8,11 +8,13 @@ use App\Models\Kelas;
 use App\Models\NilaiHarian as NilaiHarianModel;
 use App\Models\Santri;
 use App\Models\Semester;
+use App\Services\KalenderAkademikService;
 use App\Services\LembagaService;
 use App\Services\SemesterService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -105,6 +107,13 @@ class NilaiHarian extends Component
     {
         $this->authorize('create', NilaiHarianModel::class);
 
+        $activeLembagaId = app(LembagaService::class)->getActiveLembagaId();
+        if (! app(KalenderAkademikService::class)->canInputNilai($this->tanggal, $activeLembagaId)) {
+            Flux::toast(variant: 'danger', text: __('Penginputan Nilai Harian saat ini dikunci oleh Admin.'));
+
+            return;
+        }
+
         $this->validate([
             'kelas_id' => 'required|exists:kelas,id',
             'kategori_nilai_harian_id' => 'required|exists:kategori_nilai_harians,id',
@@ -119,21 +128,23 @@ class NilaiHarian extends Component
             'tanggal.required' => 'Tanggal penilaian wajib diisi.',
         ]);
 
-        foreach ($this->scores as $santriId => $data) {
-            NilaiHarianModel::query()->updateOrCreate(
-                [
-                    'kategori_nilai_harian_id' => $this->kategori_nilai_harian_id,
-                    'santri_id' => $santriId,
-                    'semester_id' => $this->semester_id,
-                    'tanggal' => $this->tanggal,
-                ],
-                [
-                    'nilai' => (int) $data['nilai'],
-                    'catatan' => $data['catatan'] ?? null,
-                    'user_id' => auth()->id(),
-                ]
-            );
-        }
+        DB::transaction(function () {
+            foreach ($this->scores as $santriId => $data) {
+                NilaiHarianModel::query()->updateOrCreate(
+                    [
+                        'kategori_nilai_harian_id' => $this->kategori_nilai_harian_id,
+                        'santri_id' => $santriId,
+                        'semester_id' => $this->semester_id,
+                        'tanggal' => $this->tanggal,
+                    ],
+                    [
+                        'nilai' => (int) $data['nilai'],
+                        'catatan' => $data['catatan'] ?? null,
+                        'user_id' => auth()->id(),
+                    ]
+                );
+            }
+        });
 
         Flux::toast(variant: 'success', text: __('Nilai Harian Santri berhasil disimpan.'));
     }
@@ -146,9 +157,15 @@ class NilaiHarian extends Component
     {
         $lembagaId = app(LembagaService::class)->getActiveLembagaId();
 
-        return Kelas::query()
+        $kelases = Kelas::query()
             ->when($lembagaId, fn ($q) => $q->where('lembaga_id', $lembagaId))
             ->get();
+
+        if ($kelases->count() === 1 && ! $this->kelas_id) {
+            $this->kelas_id = $kelases->first()->id;
+        }
+
+        return $kelases;
     }
 
     /**
@@ -157,7 +174,26 @@ class NilaiHarian extends Component
     #[Computed]
     public function kategoriList(): Collection
     {
-        return KategoriNilaiHarian::query()->visibleTo()->get();
+        $kategori = KategoriNilaiHarian::query()->visibleTo()->get();
+
+        if ($kategori->count() === 1 && ! $this->kategori_nilai_harian_id) {
+            $this->kategori_nilai_harian_id = $kategori->first()->id;
+        }
+
+        return $kategori;
+    }
+
+    /**
+     * @return array<int, array{value: int, label: string, sublabel: string}>
+     */
+    #[Computed]
+    public function kategoriSearchOptions(): array
+    {
+        return $this->kategoriList->map(fn ($k) => [
+            'value' => $k->id,
+            'label' => $k->nama,
+            'sublabel' => __('Bobot :bobot%', ['bobot' => $k->bobot]),
+        ])->toArray();
     }
 
     /**
@@ -167,6 +203,18 @@ class NilaiHarian extends Component
     public function semesterList(): Collection
     {
         return Semester::query()->with('tahunAkademik')->get();
+    }
+
+    /**
+     * @return array<int, array{value: int, label: string}>
+     */
+    #[Computed]
+    public function semesterSearchOptions(): array
+    {
+        return $this->semesterList->map(fn ($s) => [
+            'value' => $s->id,
+            'label' => ($s->tahunAkademik?->nama ?? '').' — '.ucfirst($s->tipe->value),
+        ])->toArray();
     }
 
     /**

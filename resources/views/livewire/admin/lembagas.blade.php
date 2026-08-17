@@ -66,9 +66,9 @@
                                     size="sm"
                                     variant="ghost"
                                     icon="trash"
-                                    class="text-red-600 hover:text-red-700"
-                                    wire:click="delete({{ $item->id }})"
-                                    wire:confirm="{{ __('Yakin ingin menghapus unit lembaga ini?') }}"
+                                    class="text-red-600 hover:text-red-700 cursor-pointer"
+                                    wire:click="$set('deletingId', {{ $item->id }})"
+                                    x-on:click="$flux.modal('confirm-delete-lembaga-modal').show()"
                                 />
                             </div>
                         </flux:table.cell>
@@ -126,4 +126,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Lembaga Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-lembaga-modal" 
+        title="{{ __('Hapus Unit Lembaga') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus unit lembaga ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Lembaga') }}" 
+    />
 </div>

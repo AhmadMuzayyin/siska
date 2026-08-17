@@ -13,42 +13,40 @@
     <div class="bg-white dark:bg-zinc-900 p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-4">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {{-- Kelas Selector --}}
-            <flux:field>
+            <div class="space-y-1.5">
                 <flux:label>{{ __('Pilih Kelas') }} <span class="text-rose-500">*</span></flux:label>
-                <flux:select wire:model.live="kelas_id">
-                    @foreach ($this->kelasList as $k)
-                        <option value="{{ $k->id }}">{{ $k->nama }}</option>
-                    @endforeach
-                </flux:select>
-            </flux:field>
+                <x-select-search 
+                    wire:model.live="kelas_id" 
+                    :options="$this->kelasList" 
+                    placeholder="{{ __('Pilih Kelas') }}" 
+                />
+            </div>
 
             {{-- Kategori Nilai Selector --}}
-            <flux:field>
+            <div class="space-y-1.5">
                 <flux:label>{{ __('Kategori Kriteria Nilai') }} <span class="text-rose-500">*</span></flux:label>
-                <flux:select wire:model.live="kategori_nilai_harian_id">
-                    @foreach ($this->kategoriList as $kat)
-                        <option value="{{ $kat->id }}">{{ $kat->nama }} (Bobot {{ $kat->bobot }}%)</option>
-                    @endforeach
-                </flux:select>
-            </flux:field>
+                <x-select-search 
+                    wire:model.live="kategori_nilai_harian_id" 
+                    :options="$this->kategoriSearchOptions" 
+                    placeholder="{{ __('Pilih Kategori') }}" 
+                />
+            </div>
 
             {{-- Semester Selector --}}
-            <flux:field>
+            <div class="space-y-1.5">
                 <flux:label>{{ __('Semester') }} <span class="text-rose-500">*</span></flux:label>
-                <flux:select wire:model.live="semester_id">
-                    @foreach ($this->semesterList as $sem)
-                        <option value="{{ $sem->id }}">
-                            {{ $sem->tahunAkademik?->nama }} - {{ ucfirst($sem->tipe->value) }}
-                        </option>
-                    @endforeach
-                </flux:select>
-            </flux:field>
+                <x-select-search 
+                    wire:model.live="semester_id" 
+                    :options="$this->semesterSearchOptions" 
+                    placeholder="{{ __('Pilih Semester') }}" 
+                />
+            </div>
 
             {{-- Tanggal Penilaian --}}
-            <flux:field>
+            <div class="space-y-1.5">
                 <flux:label>{{ __('Tanggal Penilaian') }} <span class="text-rose-500">*</span></flux:label>
                 <flux:input type="date" wire:model.live="tanggal" />
-            </flux:field>
+            </div>
         </div>
     </div>
 

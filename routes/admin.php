@@ -11,7 +11,6 @@ use App\Livewire\Akademik\KalenderAkademik;
 use App\Livewire\Akademik\KategoriNilaiHarian;
 use App\Livewire\Akademik\Kelas;
 use App\Livewire\Akademik\Mapel;
-use App\Livewire\Akademik\SettingRapor;
 use App\Livewire\Akademik\TahunAkademik;
 use App\Livewire\Kepegawaian\AbsensiGuru;
 use App\Livewire\Kepegawaian\GajiGuru;
@@ -36,7 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('akademik/mapel', Mapel::class)->name('akademik.mapel');
     Route::livewire('akademik/kategori-nilai-harian', KategoriNilaiHarian::class)->name('akademik.kategori-nilai-harian');
     Route::livewire('akademik/jadwal-pelajaran', JadwalPelajaran::class)->name('akademik.jadwal-pelajaran');
-    Route::livewire('akademik/setting-rapor', SettingRapor::class)->name('akademik.setting-rapor');
+    Route::livewire('akademik/rapor', 'akademik.rapor')->name('akademik.rapor');
     Route::get('akademik/rapor/print/{santri}', [RaporPrintController::class, 'print'])->name('akademik.rapor.print');
 
     Route::livewire('kepegawaian/guru', Guru::class)->name('kepegawaian.guru');

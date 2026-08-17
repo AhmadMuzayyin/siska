@@ -50,7 +50,7 @@
                         <flux:table.cell><flux:badge size="sm" color="zinc">{{ ucfirst($item->metode_pembayaran) }}</flux:badge></flux:table.cell>
                         <flux:table.cell align="end" variant="strong" class="text-emerald-700 dark:text-emerald-400">Rp{{ number_format($item->nominal, 0, ',', '.') }}</flux:table.cell>
                         <flux:table.cell align="end">
-                            <flux:button size="sm" variant="ghost" icon="trash" class="text-red-600 hover:text-red-700" wire:click="delete({{ $item->id }})" wire:confirm="{{ __('Yakin hapus data pembayaran ini?') }}" />
+                            <flux:button size="sm" variant="ghost" icon="trash" class="text-red-600 hover:text-red-700 cursor-pointer" wire:click="$set('deletingId', {{ $item->id }})" x-on:click="$flux.modal('confirm-delete-haflatul-modal').show()" />
                         </flux:table.cell>
                     </flux:table.row>
                 @empty
@@ -71,11 +71,12 @@
                 <flux:subheading>{{ __('Masukkan data pembayaran sumbangan acara imtihan.') }}</flux:subheading>
             </div>
 
-            <flux:select wire:model="santriId" :label="__('Santri')" placeholder="{{ __('Pilih Santri') }}">
-                @foreach ($this->santriOptions as $santri)
-                    <flux:select.option value="{{ $santri->id }}">{{ $santri->nama_lengkap }} ({{ $santri->noinduk }})</flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model="santriId" 
+                :options="$this->santriOptions" 
+                label="{{ __('Santri') }}" 
+                placeholder="{{ __('Pilih Santri') }}" 
+            />
 
             <flux:input wire:model="nominal" type="number" min="1000" :label="__('Nominal Sumbangan (Rp)')" />
             <flux:input wire:model="tanggal" type="date" :label="__('Tanggal Bayar')" />
@@ -96,4 +97,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Haflatul Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-haflatul-modal" 
+        title="{{ __('Hapus Pembayaran Haflatul Imtihan') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus catatan pembayaran Haflatul Imtihan ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Pembayaran') }}" 
+    />
 </div>

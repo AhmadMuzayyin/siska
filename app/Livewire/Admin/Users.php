@@ -28,6 +28,8 @@ class Users extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     public string $name = '';
 
     public string $email = '';
@@ -144,9 +146,14 @@ class Users extends Component
         Flux::toast(variant: 'success', text: __('Data pengguna berhasil disimpan.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $user = UserModel::query()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $user = UserModel::query()->findOrFail($targetId);
         $this->authorize('delete', $user);
 
         if (app(UserPolicy::class)->isProtectedAdmin($user)) {
@@ -162,8 +169,9 @@ class Users extends Component
         }
 
         $user->delete();
+        $this->deletingId = null;
 
-        Flux::toast(variant: 'success', text: __('Data pengguna berhasil dihapus.'));
+        Flux::toast(variant: 'success', text: __('Pengguna berhasil dihapus.'));
     }
 
     /**
@@ -185,7 +193,13 @@ class Users extends Component
     #[Computed]
     public function lembagasOptions(): Collection
     {
-        return Lembaga::query()->active()->ordered()->get();
+        $lembagas = Lembaga::query()->active()->ordered()->get();
+
+        if ($lembagas->count() === 1 && ! $this->lembaga_id) {
+            $this->lembaga_id = $lembagas->first()->id;
+        }
+
+        return $lembagas;
     }
 
     /**

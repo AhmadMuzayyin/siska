@@ -24,9 +24,9 @@
                             size="sm"
                             variant="ghost"
                             icon="trash"
-                            class="text-red-600 hover:text-red-700"
-                            wire:click="delete({{ $contact->id }})"
-                            wire:confirm="{{ __('Yakin ingin menghapus pesan ini?') }}"
+                            class="text-red-600 hover:text-red-700 cursor-pointer"
+                            wire:click="$set('deletingId', {{ $contact->id }})"
+                            x-on:click="$flux.modal('confirm-delete-contact-modal').show()"
                         />
                     </div>
                 </div>
@@ -40,4 +40,13 @@
     </div>
 
     {{ $this->rows->links() }}
+
+    {{-- Confirm Delete Contact Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-contact-modal" 
+        title="{{ __('Hapus Pesan Masuk') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus pesan kontak masuk ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Pesan') }}" 
+    />
 </div>

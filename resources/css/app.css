@@ -162,3 +162,28 @@ ui-sidebar-toggle[data-flux-sidebar-collapse] {
     width: 0 !important;
     height: 0 !important;
 }
+
+/* Custom Slim Scrollbar for Dropdowns and Tables */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(16, 185, 129, 0.4) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(16, 185, 129, 0.4);
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(5, 150, 105, 0.7);
+}
+

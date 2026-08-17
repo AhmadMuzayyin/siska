@@ -68,11 +68,12 @@
                 <flux:subheading>{{ __('Bulan dan tahun otomatis diambil dari tanggal bayar.') }}</flux:subheading>
             </div>
 
-            <flux:select wire:model="santriId" :label="__('Santri')" placeholder="{{ __('Pilih Santri') }}">
-                @foreach ($this->santriOptions as $santri)
-                    <flux:select.option value="{{ $santri->id }}">{{ $santri->nama_lengkap }} ({{ $santri->noinduk }})</flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model="santriId" 
+                :options="$this->santriOptions" 
+                label="{{ __('Santri') }}" 
+                placeholder="{{ __('Pilih Santri') }}" 
+            />
 
             <flux:input wire:model="tanggal" type="date" :label="__('Tanggal Bayar')" />
             <flux:input wire:model="nominal" type="number" min="1" :label="__('Nominal')" />

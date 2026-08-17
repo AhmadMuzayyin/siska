@@ -29,6 +29,10 @@ class TahunAkademik extends Component
 
     public ?int $editingTahunId = null;
 
+    public ?int $deletingTahunId = null;
+
+    public ?int $deletingSemesterId = null;
+
     public ?int $lembaga_id = null;
 
     #[Validate('required|string|max:255')]
@@ -99,13 +103,18 @@ class TahunAkademik extends Component
         Flux::toast(variant: 'success', text: __('Tahun akademik berhasil disimpan.'));
     }
 
-    public function deleteTahun(int $id): void
+    public function deleteTahun(?int $id = null): void
     {
+        $targetId = $id ?? $this->deletingTahunId;
+        if (! $targetId) {
+            return;
+        }
+
         $tahun = TahunAkademikModel::query()
-            ->with(['semesters' => fn ($query) => $query->withCount([
+            ->with(['semesters' => fn ($q) => $q->withCount([
                 'jadwalPelajarans', 'absensis', 'absensiGurus', 'nilais', 'spps', 'gajiGurus',
             ])])
-            ->findOrFail($id);
+            ->findOrFail($targetId);
         $this->authorize('delete', $tahun);
 
         // Cek apakah ada semester yang sudah punya data transaksi
@@ -126,6 +135,7 @@ class TahunAkademik extends Component
 
         // cascadeOnDelete() di migrasi akan menghapus semua semester terkait
         $tahun->delete();
+        $this->deletingTahunId = null;
 
         Flux::toast(variant: 'success', text: __('Tahun akademik berhasil dihapus.'));
     }
@@ -184,11 +194,16 @@ class TahunAkademik extends Component
         Flux::toast(variant: 'success', text: __('Semester berhasil diaktifkan.'));
     }
 
-    public function deleteSemester(int $id): void
+    public function deleteSemester(?int $id = null): void
     {
+        $targetId = $id ?? $this->deletingSemesterId;
+        if (! $targetId) {
+            return;
+        }
+
         $semester = SemesterModel::query()
             ->withCount(['jadwalPelajarans', 'absensis', 'absensiGurus', 'nilais', 'spps', 'gajiGurus'])
-            ->findOrFail($id);
+            ->findOrFail($targetId);
         $this->authorize('delete', $semester);
 
         $inUse = $semester->jadwal_pelajarans_count
@@ -205,6 +220,7 @@ class TahunAkademik extends Component
         }
 
         $semester->delete();
+        $this->deletingSemesterId = null;
 
         Flux::toast(variant: 'success', text: __('Semester berhasil dihapus.'));
     }

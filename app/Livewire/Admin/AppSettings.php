@@ -6,6 +6,7 @@ use App\Models\Setting;
 use App\Services\SettingService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -34,6 +35,10 @@ class AppSettings extends Component
 
     public string $google_maps_url = '';
 
+    public bool $is_input_nilai_open = true;
+
+    public bool $is_ppdb_open = true;
+
     public function mount(SettingService $settingService): void
     {
         $this->authorize('viewAny', Setting::class);
@@ -51,6 +56,8 @@ class AppSettings extends Component
         $this->fitur_pesan_whatsapp = $setting->fitur_pesan_whatsapp;
         $this->pesan_whatsapp = (string) $setting->pesan_whatsapp;
         $this->google_maps_url = (string) $setting->google_maps_url;
+        $this->is_input_nilai_open = $setting->is_input_nilai_open ?? true;
+        $this->is_ppdb_open = $setting->is_ppdb_open ?? true;
     }
 
     public function save(SettingService $settingService): void
@@ -69,9 +76,13 @@ class AppSettings extends Component
             'fitur_pesan_whatsapp' => 'boolean',
             'pesan_whatsapp' => 'nullable|string',
             'google_maps_url' => 'nullable|url|max:1000',
+            'is_input_nilai_open' => 'boolean',
+            'is_ppdb_open' => 'boolean',
         ]);
 
-        $settingService->update($data);
+        DB::transaction(function () use ($data, $settingService) {
+            $settingService->update($data);
+        });
 
         Flux::toast(variant: 'success', text: __('Pengaturan aplikasi berhasil disimpan.'));
     }

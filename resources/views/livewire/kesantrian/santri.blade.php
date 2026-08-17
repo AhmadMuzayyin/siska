@@ -17,7 +17,7 @@
                     {{ __('Import Excel') }}
                 </flux:button>
             </flux:modal.trigger>
-            <flux:button variant="filled" icon="sparkles" wire:click="processAutomaticKenaikanKelas" wire:confirm="{{ __('Proses kenaikan kelas berdasarkan rata-rata akumulasi nilai & KKM?') }}" class="bg-amber-600! hover:bg-amber-700! text-white! font-bold">
+            <flux:button variant="filled" icon="sparkles" x-on:click="$flux.modal('confirm-kenaikan-kelas-modal').show()" class="bg-amber-600! hover:bg-amber-700! text-white! font-bold">
                 {{ __('Kenaikan Kelas') }}
             </flux:button>
             <flux:button variant="primary" icon="plus" wire:click="create" class="bg-emerald-600! hover:bg-emerald-700! text-white! font-bold">
@@ -34,19 +34,22 @@
             class="max-w-xs"
         />
 
-        <flux:select wire:model.live="kelasFilter" class="max-w-44" placeholder="{{ __('Pilih Kelas') }}">
-            <flux:select.option value="">{{ __('Semua Kelas') }}</flux:select.option>
-            @foreach ($this->kelasOptions as $kelas)
-                <flux:select.option value="{{ $kelas->id }}">{{ $kelas->nama }}</flux:select.option>
-            @endforeach
-        </flux:select>
+        <div class="w-48">
+            <x-select-search 
+                wire:model.live="kelasFilter" 
+                :options="$this->kelasFilterOptions" 
+                placeholder="{{ __('Semua Kelas') }}" 
+            />
+        </div>
 
-        <flux:select wire:model.live="statusFilter" class="max-w-44" placeholder="{{ __('Pilih Status') }}">
-            <flux:select.option value="">{{ __('Semua Status') }}</flux:select.option>
-            @foreach ($this->statuses as $statusOption)
-                <flux:select.option value="{{ $statusOption->value }}">{{ ucfirst(str_replace('_', ' ', $statusOption->value)) }}</flux:select.option>
-            @endforeach
-        </flux:select>
+        <div class="w-44">
+            <x-select-search 
+                wire:model.live="statusFilter" 
+                :options="$this->statusFilterOptions" 
+                :searchable="false"
+                placeholder="{{ __('Semua Status') }}" 
+            />
+        </div>
     </div>
 
     @if (count($selected) > 0)
@@ -100,9 +103,6 @@
                         </flux:table.cell>
                         <flux:table.cell align="end">
                             <div class="flex justify-end gap-1">
-                                <a href="{{ route('akademik.rapor.print', $santri->id) }}" target="_blank" class="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:text-blue-800 px-2 py-1 rounded bg-blue-50 border border-blue-200">
-                                    <flux:icon name="printer" class="size-3.5" /> {{ __('Cetak Rapor') }}
-                                </a>
                                 @if ($santri->status->value === 'pending_approval')
                                     <flux:button size="sm" variant="ghost" icon="check" class="text-green-600 hover:text-green-700 font-bold" wire:click="approve({{ $santri->id }})">
                                         {{ __('Setujui') }}
@@ -113,9 +113,9 @@
                                     size="sm"
                                     variant="ghost"
                                     icon="trash"
-                                    class="text-red-600 hover:text-red-700"
-                                    wire:click="delete({{ $santri->id }})"
-                                    wire:confirm="{{ __('Yakin ingin menghapus data santri ini?') }}"
+                                    class="text-red-600 hover:text-red-700 cursor-pointer"
+                                    wire:click="$set('deletingId', {{ $santri->id }})"
+                                    x-on:click="$flux.modal('confirm-delete-santri-modal').show()"
                                 />
                             </div>
                         </flux:table.cell>
@@ -140,17 +140,19 @@
 
             <flux:heading size="sm">{{ __('Data Pokok') }}</flux:heading>
 
-            <flux:select wire:model.live="lembaga_id" :label="__('Unit Lembaga')" placeholder="{{ __('Pilih Unit Lembaga') }}">
-                @foreach ($this->lembagaOptions as $l)
-                    <flux:select.option value="{{ $l->id }}">{{ $l->nama }} ({{ $l->jenjang }})</flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model.live="lembaga_id" 
+                :options="$this->lembagaOptions->map(fn($l) => ['value' => $l->id, 'label' => $l->nama . ' (' . $l->jenjang . ')'])->toArray()" 
+                label="{{ __('Unit Lembaga') }}" 
+                placeholder="{{ __('Pilih Unit Lembaga') }}" 
+            />
 
-            <flux:select wire:model="kelas_id" :label="__('Kelas')" placeholder="{{ __('Pilih Kelas') }}">
-                @foreach ($this->kelasOptions as $kelas)
-                    <flux:select.option value="{{ $kelas->id }}">{{ $kelas->nama }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model="kelas_id" 
+                :options="$this->kelasOptions" 
+                label="{{ __('Kelas') }}" 
+                placeholder="{{ __('Pilih Kelas') }}" 
+            />
             <div class="grid grid-cols-2 gap-4">
                 <flux:input wire:model="noinduk" :label="__('No. Induk')" />
                 <flux:input wire:model="rfid_uid" :label="__('RFID UID (opsional)')" />
@@ -237,4 +239,23 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Santri Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-santri-modal" 
+        title="{{ __('Hapus Data Santri') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus data santri ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Santri') }}" 
+    />
+
+    {{-- Confirm Kenaikan Kelas Modal --}}
+    <x-confirm-modal 
+        name="confirm-kenaikan-kelas-modal" 
+        title="{{ __('Proses Kenaikan Kelas Otomatis') }}" 
+        description="{{ __('Sistem akan mengevaluasi rata-rata akumulasi nilai dan KKM seluruh santri untuk memproses kenaikan kelas. Lanjutkan?') }}" 
+        action="processAutomaticKenaikanKelas" 
+        variant="warning" 
+        confirmText="{{ __('Ya, Proses Kenaikan') }}" 
+    />
 </div>

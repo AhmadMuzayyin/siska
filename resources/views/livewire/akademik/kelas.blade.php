@@ -65,9 +65,9 @@
                                     size="sm"
                                     variant="ghost"
                                     icon="trash"
-                                    class="text-red-600 hover:text-red-700"
-                                    wire:click="delete({{ $kelas->id }})"
-                                    wire:confirm="{{ __('Yakin ingin menghapus kelas ini?') }}"
+                                    class="text-red-600 hover:text-red-700 cursor-pointer"
+                                    wire:click="$set('deletingId', {{ $kelas->id }})"
+                                    x-on:click="$flux.modal('confirm-delete-kelas-modal').show()"
                                 />
                             </div>
                         </flux:table.cell>
@@ -113,4 +113,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Kelas Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-kelas-modal" 
+        title="{{ __('Hapus Kelas') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus kelas ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Kelas') }}" 
+    />
 </div>

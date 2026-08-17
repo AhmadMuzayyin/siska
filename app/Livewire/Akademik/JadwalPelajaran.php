@@ -36,6 +36,8 @@ class JadwalPelajaran extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     public ?int $semester_id = null;
 
     public ?int $kelas_id = null;
@@ -203,9 +205,14 @@ class JadwalPelajaran extends Component
         Flux::toast(variant: 'success', text: __('Jadwal pelajaran berhasil disimpan.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $jadwal = JadwalPelajaranModel::query()->withCount('absensis')->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $jadwal = JadwalPelajaranModel::query()->withCount('absensis')->findOrFail($targetId);
         $this->authorize('delete', $jadwal);
 
         if ($jadwal->absensis_count > 0) {
@@ -215,6 +222,7 @@ class JadwalPelajaran extends Component
         }
 
         $jadwal->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Jadwal pelajaran berhasil dihapus.'));
     }
@@ -291,6 +299,65 @@ class JadwalPelajaran extends Component
     public function guruOptions(): Collection
     {
         return GuruModel::query()->with('user')->get();
+    }
+
+    /**
+     * @return array<int, array{value: int, label: string, sublabel: string}>
+     */
+    #[Computed]
+    public function guruSearchOptions(): array
+    {
+        return $this->guruOptions->map(fn ($g) => [
+            'value' => $g->id,
+            'label' => $g->user->name,
+            'sublabel' => $g->nip ? 'NIP: '.$g->nip : 'Guru',
+        ])->toArray();
+    }
+
+    /**
+     * @return array<int, array{value: string, label: string}>
+     */
+    #[Computed]
+    public function semesterFilterOptions(): array
+    {
+        $options = [['value' => '', 'label' => __('Semua Semester')]];
+        foreach ($this->semesterOptions as $s) {
+            $options[] = [
+                'value' => (string) $s->id,
+                'label' => $s->tahunAkademik->nama.' — '.ucfirst($s->tipe->value).($s->is_aktif ? ' ('.__('Aktif').')' : ''),
+            ];
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return array<int, array{value: string, label: string}>
+     */
+    #[Computed]
+    public function kelasFilterOptions(): array
+    {
+        $options = [['value' => '', 'label' => __('Semua Kelas')]];
+        foreach ($this->kelasOptions as $k) {
+            $options[] = [
+                'value' => (string) $k->id,
+                'label' => $k->nama,
+            ];
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return array<int, array{value: string, label: string}>
+     */
+    #[Computed]
+    public function hariSearchOptions(): array
+    {
+        return array_map(fn ($h) => [
+            'value' => $h->value,
+            'label' => ucfirst($h->value),
+        ], HariSekolah::cases());
     }
 
     /**

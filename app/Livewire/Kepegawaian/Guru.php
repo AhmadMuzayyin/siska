@@ -29,6 +29,8 @@ class Guru extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     public string $name = '';
 
     public string $email = '';
@@ -124,13 +126,21 @@ class Guru extends Component
         Flux::toast(variant: 'success', text: __('Data guru berhasil disimpan.'));
     }
 
-    public function delete(int $id, DeleteGuruAction $action): void
+    public function delete(?int $id = null, ?DeleteGuruAction $action = null): void
     {
-        $guru = GuruModel::query()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $guru = GuruModel::query()->findOrFail($targetId);
         $this->authorize('delete', $guru);
+
+        $action = $action ?? app(DeleteGuruAction::class);
 
         try {
             $action->handle($guru);
+            $this->deletingId = null;
             Flux::toast(variant: 'success', text: __('Data guru berhasil dihapus.'));
         } catch (GuruMasihDipakaiException $exception) {
             Flux::toast(variant: 'danger', text: $exception->getMessage());

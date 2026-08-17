@@ -27,22 +27,21 @@
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex flex-wrap items-center gap-3">
-            <flux:select wire:model.live="semesterFilter" class="max-w-xs" placeholder="{{ __('Pilih Semester') }}">
-                <flux:select.option value="">{{ __('Semua Semester') }}</flux:select.option>
-                @foreach ($this->semesterOptions as $semester)
-                    <flux:select.option value="{{ $semester->id }}" :selected="$semesterFilter == $semester->id">
-                        {{ $semester->tahunAkademik->nama }} &mdash; {{ ucfirst($semester->tipe->value) }}
-                        @if ($semester->is_aktif) ({{ __('Aktif') }}) @endif
-                    </flux:select.option>
-                @endforeach
-            </flux:select>
+            <div class="w-60">
+                <x-select-search 
+                    wire:model.live="semesterFilter" 
+                    :options="$this->semesterFilterOptions" 
+                    placeholder="{{ __('Semua Semester') }}" 
+                />
+            </div>
 
-            <flux:select wire:model.live="kelasFilter" class="max-w-44" placeholder="{{ __('Pilih Kelas') }}">
-                <flux:select.option value="">{{ __('Semua Kelas') }}</flux:select.option>
-                @foreach ($this->kelasOptions as $kelas)
-                    <flux:select.option value="{{ $kelas->id }}">{{ $kelas->nama }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <div class="w-48">
+                <x-select-search 
+                    wire:model.live="kelasFilter" 
+                    :options="$this->kelasFilterOptions" 
+                    placeholder="{{ __('Semua Kelas') }}" 
+                />
+            </div>
         </div>
 
         <div class="w-full sm:w-auto">
@@ -76,9 +75,9 @@
                                     size="sm"
                                     variant="ghost"
                                     icon="trash"
-                                    class="text-red-600 hover:text-red-700"
-                                    wire:click="delete({{ $jadwal->id }})"
-                                    wire:confirm="{{ __('Yakin ingin menghapus jadwal ini?') }}"
+                                    class="text-red-600 hover:text-red-700 cursor-pointer"
+                                    wire:click="$set('deletingId', {{ $jadwal->id }})"
+                                    x-on:click="$flux.modal('confirm-delete-jadwal-modal').show()"
                                 />
                             </div>
                         </flux:table.cell>
@@ -101,37 +100,41 @@
                 <flux:subheading>{{ __('Satu kelas hanya boleh satu mapel per hari & jam yang sama.') }}</flux:subheading>
             </div>
 
-            <flux:select wire:model="semester_id" :label="__('Semester')" placeholder="{{ __('Pilih Semester') }}">
-                @foreach ($this->semesterOptions as $semester)
-                    <flux:select.option value="{{ $semester->id }}">
-                        {{ $semester->tahunAkademik->nama }} &mdash; {{ ucfirst($semester->tipe->value) }}
-                    </flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model="semester_id" 
+                :options="$this->semesterOptions->map(fn($s) => ['value' => $s->id, 'label' => $s->tahunAkademik->nama . ' — ' . ucfirst($s->tipe->value)])->toArray()" 
+                label="{{ __('Semester') }}" 
+                placeholder="{{ __('Pilih Semester') }}" 
+            />
 
-            <flux:select wire:model="kelas_id" :label="__('Kelas')" placeholder="{{ __('Pilih Kelas') }}">
-                @foreach ($this->kelasOptions as $kelas)
-                    <flux:select.option value="{{ $kelas->id }}">{{ $kelas->nama }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model="kelas_id" 
+                :options="$this->kelasOptions" 
+                label="{{ __('Kelas') }}" 
+                placeholder="{{ __('Pilih Kelas') }}" 
+            />
 
-            <flux:select wire:model="mapel_id" :label="__('Mata Pelajaran')" placeholder="{{ __('Pilih Mata Pelajaran') }}">
-                @foreach ($this->mapelOptions as $mapel)
-                    <flux:select.option value="{{ $mapel->id }}">{{ $mapel->nama }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model="mapel_id" 
+                :options="$this->mapelOptions" 
+                label="{{ __('Mata Pelajaran') }}" 
+                placeholder="{{ __('Pilih Mata Pelajaran') }}" 
+            />
 
-            <flux:select wire:model="guru_id" :label="__('Guru Pengajar')" placeholder="{{ __('Pilih Guru Pengajar') }}">
-                @foreach ($this->guruOptions as $guru)
-                    <flux:select.option value="{{ $guru->id }}">{{ $guru->user->name }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model="guru_id" 
+                :options="$this->guruSearchOptions" 
+                label="{{ __('Guru Pengajar') }}" 
+                placeholder="{{ __('Pilih Guru Pengajar') }}" 
+            />
 
-            <flux:select wire:model="hari" :label="__('Hari')" placeholder="{{ __('Pilih Hari') }}">
-                @foreach ($this->hariOptions as $hari)
-                    <flux:select.option value="{{ $hari->value }}">{{ ucfirst($hari->value) }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model="hari" 
+                :options="$this->hariSearchOptions" 
+                :searchable="false"
+                label="{{ __('Hari') }}" 
+                placeholder="{{ __('Pilih Hari') }}" 
+            />
 
             <div class="grid grid-cols-2 gap-4">
                 <flux:input wire:model="jam_mulai" type="time" :label="__('Jam Mulai')" />
@@ -177,4 +180,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Jadwal Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-jadwal-modal" 
+        title="{{ __('Hapus Jadwal Pelajaran') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus jadwal pelajaran ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Jadwal') }}" 
+    />
 </div>

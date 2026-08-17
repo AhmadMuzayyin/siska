@@ -27,6 +27,8 @@ class Tabungan extends Component
 
     public ?int $kelasFilter = null;
 
+    public ?int $deletingId = null;
+
     public ?string $santriId = null;
 
     public string $tipe = 'setor';
@@ -108,11 +110,17 @@ class Tabungan extends Component
         Flux::toast(variant: 'success', text: __('Transaksi tabungan berhasil dicatat.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $item = TabunganModel::query()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $item = TabunganModel::query()->findOrFail($targetId);
         $this->authorize('delete', $item);
         $item->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Transaksi tabungan berhasil dihapus.'));
     }

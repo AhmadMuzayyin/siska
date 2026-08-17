@@ -13,7 +13,7 @@
 
             $setting = \App\Models\Setting::query()->first();
             $isMasterDataActive = request()->routeIs('akademik.tahun-akademik') || request()->routeIs('akademik.kelas') || request()->routeIs('akademik.mapel') || request()->routeIs('akademik.kategori-nilai-harian') || request()->routeIs('kepegawaian.guru') || request()->routeIs('kesantrian.santri');
-            $isAkademikActive = request()->routeIs('akademik.kalender-akademik') || request()->routeIs('akademik.jadwal-pelajaran') || request()->routeIs('kesantrian.absensi') || request()->routeIs('kesantrian.nilai-harian') || request()->routeIs('kesantrian.nilai') || request()->routeIs('akademik.setting-rapor');
+            $isAkademikActive = request()->routeIs('akademik.kalender-akademik') || request()->routeIs('akademik.jadwal-pelajaran') || request()->routeIs('kesantrian.absensi') || request()->routeIs('kesantrian.nilai-harian') || request()->routeIs('kesantrian.nilai') || request()->routeIs('akademik.rapor');
             $isOperasionalActive = request()->routeIs('kepegawaian.absensi') || request()->routeIs('kepegawaian.gaji');
             $isKeuanganActive = request()->routeIs('keuangan.*');
             $isKontenActive = request()->routeIs('konten.*');
@@ -95,8 +95,8 @@
                             <flux:sidebar.item icon="pencil-square" :href="route('kesantrian.nilai')" :current="request()->routeIs('kesantrian.nilai')" wire:navigate>
                                 {{ __('Nilai Mapel') }}
                             </flux:sidebar.item>
-                            <flux:sidebar.item icon="document-text" :href="route('akademik.setting-rapor')" :current="request()->routeIs('akademik.setting-rapor')" wire:navigate>
-                                {{ __('Setting Rapor') }}
+                            <flux:sidebar.item icon="document-text" :href="route('akademik.rapor')" :current="request()->routeIs('akademik.rapor')" wire:navigate>
+                                {{ __('Rapor') }}
                             </flux:sidebar.item>
                         @endif
                     </flux:sidebar.group>

@@ -22,6 +22,8 @@ class Subscriptions extends Component
 
     public string $search = '';
 
+    public ?int $deletingId = null;
+
     #[Validate('required|string|max:255')]
     public string $subjek = '';
 
@@ -84,12 +86,18 @@ class Subscriptions extends Component
         );
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $subscription = SubscriptionModel::query()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $subscription = SubscriptionModel::query()->findOrFail($targetId);
         $this->authorize('delete', $subscription);
 
         $subscription->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Langganan berhasil dihapus.'));
     }

@@ -36,9 +36,9 @@
                             size="sm"
                             variant="ghost"
                             icon="trash"
-                            class="text-red-600 hover:text-red-700"
-                            wire:click="deleteTahun({{ $tahun->id }})"
-                            wire:confirm="{{ __('Yakin ingin menghapus tahun akademik ini?') }}"
+                            class="text-red-600 hover:text-red-700 cursor-pointer"
+                            wire:click="$set('deletingTahunId', {{ $tahun->id }})"
+                            x-on:click="$flux.modal('confirm-delete-tahun-modal').show()"
                         />
                     </div>
                 </div>
@@ -67,9 +67,9 @@
                                 size="sm"
                                 variant="ghost"
                                 icon="trash"
-                                class="text-red-600 hover:text-red-700"
-                                wire:click="deleteSemester({{ $semester->id }})"
-                                wire:confirm="{{ __('Yakin ingin menghapus semester ini?') }}"
+                                class="text-red-600 hover:text-red-700 cursor-pointer"
+                                wire:click="$set('deletingSemesterId', {{ $semester->id }})"
+                                x-on:click="$flux.modal('confirm-delete-semester-modal').show()"
                             />
                         </div>
                     @empty
@@ -141,4 +141,22 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Tahun Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-tahun-modal" 
+        title="{{ __('Hapus Tahun Akademik') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus tahun akademik ini?') }}" 
+        action="deleteTahun" 
+        confirmText="{{ __('Hapus Tahun') }}" 
+    />
+
+    {{-- Confirm Delete Semester Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-semester-modal" 
+        title="{{ __('Hapus Semester') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus semester ini?') }}" 
+        action="deleteSemester" 
+        confirmText="{{ __('Hapus Semester') }}" 
+    />
 </div>

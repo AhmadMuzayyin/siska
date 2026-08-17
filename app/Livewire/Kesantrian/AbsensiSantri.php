@@ -91,6 +91,21 @@ class AbsensiSantri extends Component
     }
 
     /**
+     * @return array<int, array{value: int, label: string, sublabel: string}>
+     */
+    #[Computed]
+    public function jadwalSearchOptions(): array
+    {
+        return $this->jadwalOptions->map(function ($j) {
+            return [
+                'value' => $j->id,
+                'label' => $j->kelas->nama.' — '.$j->mapel->nama,
+                'sublabel' => ucfirst($j->hari->value).' ('.substr($j->jam_mulai, 0, 5).' - '.substr($j->jam_selesai, 0, 5).')',
+            ];
+        })->toArray();
+    }
+
+    /**
      * @return Collection<int, SantriModel>
      */
     #[Computed]

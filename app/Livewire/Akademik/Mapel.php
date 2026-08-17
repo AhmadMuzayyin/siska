@@ -26,6 +26,8 @@ class Mapel extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     public ?int $lembaga_id = null;
 
     #[Validate('required|string|max:255')]
@@ -98,9 +100,14 @@ class Mapel extends Component
         Flux::toast(variant: 'success', text: __('Data mata pelajaran berhasil disimpan.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $mapel = MapelModel::query()->withCount(['jadwalPelajarans', 'nilais'])->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $mapel = MapelModel::query()->withCount(['jadwalPelajarans', 'nilais'])->findOrFail($targetId);
         $this->authorize('delete', $mapel);
 
         if ($mapel->jadwal_pelajarans_count + $mapel->nilais_count > 0) {
@@ -110,6 +117,7 @@ class Mapel extends Component
         }
 
         $mapel->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Data mata pelajaran berhasil dihapus.'));
     }

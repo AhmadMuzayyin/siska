@@ -38,6 +38,7 @@ use Illuminate\Support\Carbon;
     'lembaga', 'nsm', 'alamat', 'google_maps_url', 'email', 'telepon',
     'logo', 'favicon', 'meta_deskripsi', 'meta_keyword',
     'payroll_cutoff_day', 'fitur_pesan_whatsapp', 'pesan_whatsapp', 'api_key_whatsapp',
+    'is_input_nilai_open', 'is_ppdb_open',
 ])]
 #[Hidden(['api_key_whatsapp'])]
 class Setting extends Model
@@ -59,6 +60,8 @@ class Setting extends Model
             'payroll_cutoff_day' => 'integer',
             'fitur_pesan_whatsapp' => 'boolean',
             'api_key_whatsapp' => 'encrypted',
+            'is_input_nilai_open' => 'boolean',
+            'is_ppdb_open' => 'boolean',
         ];
     }
 

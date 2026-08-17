@@ -20,6 +20,8 @@ class Contacts extends Component
 
     public string $search = '';
 
+    public ?int $deletingId = null;
+
     public function updatedSearch(): void
     {
         $this->resetPage();
@@ -39,12 +41,18 @@ class Contacts extends Component
         }
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $contact = ContactModel::query()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $contact = ContactModel::query()->findOrFail($targetId);
         $this->authorize('delete', $contact);
 
         $contact->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Pesan berhasil dihapus.'));
     }

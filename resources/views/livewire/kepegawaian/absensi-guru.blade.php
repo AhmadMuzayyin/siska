@@ -23,6 +23,10 @@
             </flux:select>
 
             <flux:input wire:model.live="tanggal" type="date" class="max-w-44" />
+            
+            <flux:badge size="sm" color="zinc" class="font-semibold">
+                {{ __('Hari:') }} {{ ucfirst($this->hariSekolah->value) }}
+            </flux:badge>
         </div>
 
         <div class="w-full sm:w-auto">
@@ -34,35 +38,86 @@
         <flux:table>
             <flux:table.columns>
                 <flux:table.column>{{ __('Nama Guru') }}</flux:table.column>
+                <flux:table.column>{{ __('Jadwal Mengajar Hari Ini') }}</flux:table.column>
                 <flux:table.column align="end">{{ __('Status Kehadiran') }}</flux:table.column>
             </flux:table.columns>
 
             <flux:table.rows>
                 @forelse ($this->roster as $guru)
                     <flux:table.row wire:key="absensi-guru-{{ $guru->id }}">
-                        <flux:table.cell variant="strong">{{ $guru->user->name }}</flux:table.cell>
+                        <flux:table.cell variant="strong">
+                            <div class="font-bold text-zinc-900 dark:text-white">{{ $guru->user->name }}</div>
+                            <div class="text-[11px] text-zinc-500">{{ $guru->nip ? 'NIP: '.$guru->nip : 'Guru' }}</div>
+                        </flux:table.cell>
+
+                        <flux:table.cell>
+                            @if ($guru->hasSchedule)
+                                <div class="flex flex-wrap gap-1.5">
+                                    @foreach ($guru->schedules as $sch)
+                                        <span class="inline-flex items-center gap-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 px-2 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40">
+                                            <flux:icon name="academic-cap" class="size-3 text-emerald-600 dark:text-emerald-400" />
+                                            <span>{{ $sch->kelas->nama }} &middot; {{ $sch->mapel->nama }}</span>
+                                            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">({{ substr($sch->jam_mulai, 0, 5) }}-{{ substr($sch->jam_selesai, 0, 5) }})</span>
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @else
+                                <flux:badge size="sm" color="zinc">
+                                    {{ __('Tidak Ada Jadwal') }}
+                                </flux:badge>
+                            @endif
+                        </flux:table.cell>
+
                         <flux:table.cell align="end">
                             @if ($guru->recordedStatus)
-                                <flux:badge size="sm" :color="$guru->recordedStatus === 'hadir' ? 'green' : 'amber'">
+                                <flux:badge size="sm" :color="$guru->recordedStatus === 'hadir' ? 'green' : ($guru->recordedStatus === 'alpa' ? 'red' : 'amber')" class="font-bold uppercase tracking-wider">
                                     {{ ucfirst($guru->recordedStatus) }}
                                 </flux:badge>
+                            @elseif (!$guru->hasSchedule)
+                                <span class="text-xs text-zinc-400 dark:text-zinc-500 italic">
+                                    {{ __('Tidak dapat diisi (Tanpa Jadwal)') }}
+                                </span>
                             @else
-                                <flux:select
-                                    size="sm"
-                                    class="max-w-36"
-                                    placeholder="{{ __('Pilih Status') }}"
-                                    wire:change="setStatus({{ $guru->id }}, $event.target.value)"
-                                >
-                                    @foreach ($this->statuses as $status)
-                                        <flux:select.option value="{{ $status->value }}">{{ ucfirst($status->value) }}</flux:select.option>
-                                    @endforeach
-                                </flux:select>
+                                <div class="flex justify-end gap-1">
+                                    <flux:button 
+                                        size="xs" 
+                                        variant="ghost" 
+                                        wire:click="setStatus({{ $guru->id }}, 'hadir')" 
+                                        class="hover:bg-emerald-50! hover:text-emerald-700! font-bold"
+                                    >
+                                        {{ __('Hadir') }}
+                                    </flux:button>
+                                    <flux:button 
+                                        size="xs" 
+                                        variant="ghost" 
+                                        wire:click="setStatus({{ $guru->id }}, 'izin')" 
+                                        class="hover:bg-blue-50! hover:text-blue-700!"
+                                    >
+                                        {{ __('Izin') }}
+                                    </flux:button>
+                                    <flux:button 
+                                        size="xs" 
+                                        variant="ghost" 
+                                        wire:click="setStatus({{ $guru->id }}, 'sakit')" 
+                                        class="hover:bg-amber-50! hover:text-amber-700!"
+                                    >
+                                        {{ __('Sakit') }}
+                                    </flux:button>
+                                    <flux:button 
+                                        size="xs" 
+                                        variant="ghost" 
+                                        wire:click="setStatus({{ $guru->id }}, 'alpa')" 
+                                        class="hover:bg-rose-50! hover:text-rose-700!"
+                                    >
+                                        {{ __('Alpa') }}
+                                    </flux:button>
+                                </div>
                             @endif
                         </flux:table.cell>
                     </flux:table.row>
                 @empty
                     <flux:table.row>
-                        <flux:table.cell colspan="2" class="py-10 text-center text-zinc-400">
+                        <flux:table.cell colspan="3" class="py-10 text-center text-zinc-400">
                             {{ __('Tidak ada guru ditemukan.') }}
                         </flux:table.cell>
                     </flux:table.row>

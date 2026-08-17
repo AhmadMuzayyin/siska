@@ -37,6 +37,8 @@ class Santri extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     public ?int $lembaga_id = null;
 
     public ?int $kelas_id = null;
@@ -197,9 +199,14 @@ class Santri extends Component
         }
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $santri = SantriModel::query()->withCount(['absensis', 'spps', 'nilais'])->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $santri = SantriModel::query()->withCount(['absensis', 'spps', 'nilais'])->findOrFail($targetId);
         $this->authorize('delete', $santri);
 
         if ($santri->absensis_count + $santri->spps_count + $santri->nilais_count > 0) {
@@ -209,6 +216,7 @@ class Santri extends Component
         }
 
         $santri->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Data santri berhasil dihapus.'));
     }
@@ -279,7 +287,13 @@ class Santri extends Component
     #[Computed]
     public function lembagaOptions(): Collection
     {
-        return LembagaModel::query()->active()->ordered()->get();
+        $lembagas = LembagaModel::query()->active()->ordered()->get();
+
+        if ($lembagas->count() === 1 && ! $this->lembaga_id) {
+            $this->lembaga_id = $lembagas->first()->id;
+        }
+
+        return $lembagas;
     }
 
     /**
@@ -288,10 +302,44 @@ class Santri extends Component
     #[Computed]
     public function kelasOptions(): Collection
     {
-        return KelasModel::query()
+        $kelases = KelasModel::query()
             ->when($this->lembaga_id, fn ($q) => $q->where('lembaga_id', $this->lembaga_id))
             ->orderBy('nama')
             ->get();
+
+        if ($kelases->count() === 1 && ! $this->kelas_id) {
+            $this->kelas_id = $kelases->first()->id;
+        }
+
+        return $kelases;
+    }
+
+    /**
+     * @return array<int, array{value: string, label: string}>
+     */
+    #[Computed]
+    public function kelasFilterOptions(): array
+    {
+        $options = [['value' => '', 'label' => __('Semua Kelas')]];
+        foreach ($this->kelasOptions as $k) {
+            $options[] = ['value' => (string) $k->id, 'label' => $k->nama];
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return array<int, array{value: string, label: string}>
+     */
+    #[Computed]
+    public function statusFilterOptions(): array
+    {
+        $options = [['value' => '', 'label' => __('Semua Status')]];
+        foreach ($this->statuses as $s) {
+            $options[] = ['value' => $s->value, 'label' => ucfirst(str_replace('_', ' ', $s->value))];
+        }
+
+        return $options;
     }
 
     /**

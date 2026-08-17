@@ -28,6 +28,8 @@ class HaflatulImtihan extends Component
 
     public ?int $kelasFilter = null;
 
+    public ?int $deletingId = null;
+
     public ?string $santriId = null;
 
     public int $nominal = 250000;
@@ -97,11 +99,17 @@ class HaflatulImtihan extends Component
         Flux::toast(variant: 'success', text: __('Pembayaran Haflatul Imtihan berhasil dicatat.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $item = HaflatulModel::query()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $item = HaflatulModel::query()->findOrFail($targetId);
         $this->authorize('delete', $item);
         $item->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Catatan pembayaran berhasil dihapus.'));
     }

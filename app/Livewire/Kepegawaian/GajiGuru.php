@@ -9,6 +9,7 @@ use App\Models\GajiGuru as GajiGuruModel;
 use App\Models\Guru as GuruModel;
 use App\Models\Semester;
 use App\Services\SemesterService;
+use App\Services\SettingService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
@@ -104,6 +105,12 @@ class GajiGuru extends Component
     public function activeSemester(): ?Semester
     {
         return Semester::query()->active()->first();
+    }
+
+    #[Computed]
+    public function payrollCutoffDay(): int
+    {
+        return (int) (app(SettingService::class)->get()->payroll_cutoff_day ?: 25);
     }
 
     public function render(): View

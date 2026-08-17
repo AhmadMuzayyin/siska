@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('setting_rapors', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('lembaga_id')->nullable()->constrained('lembagas')->cascadeOnDelete();
             $table->foreignId('mapel_id')->nullable()->constrained('mapels')->cascadeOnDelete();
             $table->text('deskripsi_a')->nullable();
             $table->text('deskripsi_b')->nullable();

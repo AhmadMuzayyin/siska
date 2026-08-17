@@ -48,6 +48,12 @@
         <flux:switch wire:model="fitur_pesan_whatsapp" :label="__('Aktifkan pesan WhatsApp otomatis')" />
         <flux:textarea wire:model="pesan_whatsapp" :label="__('Template Pesan')" rows="3" />
 
+        <flux:separator />
+
+        <flux:heading size="sm">{{ __('Buka / Kunci Fitur Sistem') }}</flux:heading>
+        <flux:switch wire:model="is_input_nilai_open" :label="__('Buka Akses Penginputan Nilai (Mata Pelajaran & Nilai Harian)')" description="{{ __('Jika dinonaktifkan, penginputan nilai oleh guru & operator akan dikunci.') }}" />
+        <flux:switch wire:model="is_ppdb_open" :label="__('Buka Akses Pendaftaran Santri Baru Online (PPDB)')" description="{{ __('Jika dinonaktifkan, formulir pendaftaran santri baru publik akan dikunci.') }}" />
+
         <div class="flex justify-end">
             <flux:button type="submit" variant="primary">{{ __('Simpan Pengaturan') }}</flux:button>
         </div>

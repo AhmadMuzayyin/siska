@@ -14,13 +14,13 @@
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex flex-wrap items-center gap-3">
-            <flux:select wire:model.live="jadwalId" class="max-w-sm" placeholder="{{ __('Pilih Jadwal Pelajaran') }}">
-                @foreach ($this->jadwalOptions as $jadwal)
-                    <flux:select.option value="{{ $jadwal->id }}" :selected="$jadwalId == $jadwal->id">
-                        {{ $jadwal->kelas->nama }} &middot; {{ $jadwal->mapel->nama }} &middot; {{ ucfirst($jadwal->hari->value) }} {{ substr($jadwal->jam_mulai, 0, 5) }}
-                    </flux:select.option>
-                @endforeach
-            </flux:select>
+            <div class="w-72 sm:w-80">
+                <x-select-search 
+                    wire:model.live="jadwalId" 
+                    :options="$this->jadwalSearchOptions" 
+                    placeholder="{{ __('Pilih Jadwal Pelajaran') }}" 
+                />
+            </div>
 
             <flux:input wire:model.live="tanggal" type="date" class="max-w-44" />
         </div>

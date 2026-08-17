@@ -26,6 +26,8 @@ class Galleries extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     #[Validate('required|string|in:kegiatan,wisata,bimbingan')]
     public string $type = 'kegiatan';
 
@@ -97,12 +99,18 @@ class Galleries extends Component
         Flux::toast(variant: 'success', text: __('Galeri berhasil disimpan.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $gallery = GalleryModel::query()->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $gallery = GalleryModel::query()->findOrFail($targetId);
         $this->authorize('delete', $gallery);
 
         $gallery->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Galeri berhasil dihapus.'));
     }

@@ -384,10 +384,10 @@
                             </div>
                         </details>
 
-                        <form method="POST" action="/user/two-factor-authentication">
+                        <form id="disable-2fa-index-form" method="POST" action="/user/two-factor-authentication">
                             @csrf
                             @method('DELETE')
-                            <flux:button size="sm" variant="danger" type="submit" onclick="return confirm('{{ __('Apakah Anda yakin ingin menonaktifkan Two-Factor Authentication?') }}')">
+                            <flux:button size="sm" variant="danger" type="button" x-on:click="$flux.modal('confirm-disable-2fa-index-modal').show()">
                                 {{ __('Nonaktifkan 2FA') }}
                             </flux:button>
                         </form>
@@ -441,4 +441,26 @@
             </div>
         </div>
     @endif
+
+    {{-- Confirm Disable 2FA Modal --}}
+    <flux:modal name="confirm-disable-2fa-index-modal" class="md:w-96 space-y-6">
+        <div class="space-y-2">
+            <flux:heading size="lg">{{ __('Nonaktifkan 2FA') }}</flux:heading>
+            <flux:subheading>{{ __('Apakah Anda yakin ingin menonaktifkan Two-Factor Authentication?') }}</flux:subheading>
+        </div>
+
+        <div class="flex justify-end gap-2">
+            <flux:modal.close>
+                <flux:button variant="ghost">{{ __('Batal') }}</flux:button>
+            </flux:modal.close>
+
+            <flux:button 
+                variant="filled" 
+                onclick="document.getElementById('disable-2fa-index-form').submit()"
+                class="bg-rose-600! hover:bg-rose-700! text-white! font-bold"
+            >
+                {{ __('Ya, Nonaktifkan') }}
+            </flux:button>
+        </div>
+    </flux:modal>
 </div>

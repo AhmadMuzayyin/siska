@@ -58,9 +58,9 @@
                                     size="sm"
                                     variant="ghost"
                                     icon="trash"
-                                    class="text-red-600 hover:text-red-700"
-                                    wire:click="delete({{ $guru->id }})"
-                                    wire:confirm="{{ __('Yakin ingin menghapus guru ini?') }}"
+                                    class="text-red-600 hover:text-red-700 cursor-pointer"
+                                    wire:click="$set('deletingId', {{ $guru->id }})"
+                                    x-on:click="$flux.modal('confirm-delete-guru-modal').show()"
                                 />
                             </div>
                         </flux:table.cell>
@@ -152,4 +152,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Guru Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-guru-modal" 
+        title="{{ __('Hapus Data Guru') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus data guru ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Guru') }}" 
+    />
 </div>

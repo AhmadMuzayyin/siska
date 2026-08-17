@@ -83,9 +83,9 @@
                             variant="ghost" 
                             size="xs" 
                             icon="trash" 
-                            class="text-rose-600 hover:text-rose-700" 
-                            wire:click="delete({{ $role->id }})"
-                            wire:confirm="Yakin ingin menghapus peran '{{ $role->name }}'?"
+                            class="text-rose-600 hover:text-rose-700 cursor-pointer" 
+                            wire:click="$set('deletingId', {{ $role->id }})"
+                            x-on:click="$flux.modal('confirm-delete-role-modal').show()"
                         />
                     @endif
                 </div>
@@ -168,4 +168,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Role Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-role-modal" 
+        title="{{ __('Hapus Peran') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus peran ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Peran') }}" 
+    />
 </div>

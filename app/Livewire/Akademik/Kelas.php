@@ -29,6 +29,8 @@ class Kelas extends Component
 
     public ?int $editingId = null;
 
+    public ?int $deletingId = null;
+
     public ?int $lembaga_id = null;
 
     #[Validate('required|string|max:255')]
@@ -113,9 +115,14 @@ class Kelas extends Component
         Flux::toast(variant: 'success', text: __('Data kelas berhasil disimpan.'));
     }
 
-    public function delete(int $id): void
+    public function delete(?int $id = null): void
     {
-        $kelas = KelasModel::query()->withCount(['santris', 'waliKelas'])->findOrFail($id);
+        $targetId = $id ?? $this->deletingId;
+        if (! $targetId) {
+            return;
+        }
+
+        $kelas = KelasModel::query()->withCount(['santris', 'waliKelas'])->findOrFail($targetId);
         $this->authorize('delete', $kelas);
 
         if ($kelas->santris_count > 0) {
@@ -126,6 +133,7 @@ class Kelas extends Component
 
         $kelas->waliKelas()->delete();
         $kelas->delete();
+        $this->deletingId = null;
 
         Flux::toast(variant: 'success', text: __('Data kelas berhasil dihapus.'));
     }

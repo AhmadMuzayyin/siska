@@ -26,6 +26,8 @@ class SettingService
                 'payroll_cutoff_day' => 25,
                 'fitur_pesan_whatsapp' => true,
                 'pesan_whatsapp' => 'Assalamu\'alaikum, ada yang bisa kami bantu mengenai MDTA ARROQY?',
+                'is_input_nilai_open' => true,
+                'is_ppdb_open' => true,
                 'google_maps_url' => 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3950.0!2d112.7!3d-7.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMTUnMDAuMCJTIDExMsKwNDInMDAuMCJF!5e0!3m2!1sen!2sid!4v1700000000000',
             ]);
             Cache::forever(self::CACHE_KEY, $setting);

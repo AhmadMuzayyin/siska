@@ -38,9 +38,9 @@
                                 size="sm"
                                 variant="ghost"
                                 icon="trash"
-                                class="text-red-600 hover:text-red-700"
-                                wire:click="delete({{ $gallery->id }})"
-                                wire:confirm="{{ __('Yakin ingin menghapus foto ini?') }}"
+                                class="text-red-600 hover:text-red-700 cursor-pointer"
+                                wire:click="$set('deletingId', {{ $gallery->id }})"
+                                x-on:click="$flux.modal('confirm-delete-gallery-modal').show()"
                             />
                         </div>
                     </div>
@@ -83,4 +83,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Gallery Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-gallery-modal" 
+        title="{{ __('Hapus Foto Galeri') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus foto galeri ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Foto') }}" 
+    />
 </div>

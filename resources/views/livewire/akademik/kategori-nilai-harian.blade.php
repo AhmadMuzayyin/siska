@@ -85,9 +85,9 @@
                                     variant="ghost" 
                                     size="xs" 
                                     icon="trash" 
-                                    class="text-rose-600 hover:text-rose-700" 
-                                    wire:click="delete({{ $row->id }})"
-                                    wire:confirm="Hapus kategori nilai {{ $row->nama }}?"
+                                    class="text-rose-600 hover:text-rose-700 cursor-pointer" 
+                                    wire:click="$set('deletingId', {{ $row->id }})"
+                                    x-on:click="$flux.modal('confirm-delete-kategori-modal').show()"
                                 />
                             </td>
                         </tr>
@@ -189,4 +189,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Kategori Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-kategori-modal" 
+        title="{{ __('Hapus Kategori Nilai Harian') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus kategori kriteria penilaian ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Kategori') }}" 
+    />
 </div>

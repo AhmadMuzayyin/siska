@@ -7,12 +7,15 @@ use App\Models\Mapel as MapelModel;
 use App\Models\Nilai as NilaiModel;
 use App\Models\Santri as SantriModel;
 use App\Models\Semester;
+use App\Services\KalenderAkademikService;
 use App\Services\LembagaService;
 use App\Services\PredikatCalculator;
 use App\Services\SemesterService;
+use App\Services\SettingService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -37,6 +40,18 @@ class Nilai extends Component
         $this->mapelId = $this->mapelOptions->first()?->id;
     }
 
+    public function toggleInputNilai(SettingService $settingService): void
+    {
+        $setting = $settingService->get();
+        $this->authorize('update', $setting);
+
+        $newStatus = ! ($setting->is_input_nilai_open ?? true);
+        $settingService->update(['is_input_nilai_open' => $newStatus]);
+
+        $msg = $newStatus ? __('Akses Input Nilai DIBUKA.') : __('Akses Input Nilai DIKUNCI.');
+        Flux::toast(variant: $newStatus ? 'success' : 'warning', text: $msg);
+    }
+
     public function setNilai(int $santriId, string $value): void
     {
         if (! $this->semesterId || ! $this->mapelId) {
@@ -53,24 +68,33 @@ class Nilai extends Component
             return;
         }
 
-        $existing = NilaiModel::query()->where([
-            'santri_id' => $santriId,
-            'semester_id' => $this->semesterId,
-            'mapel_id' => $this->mapelId,
-        ])->first();
+        $activeLembagaId = app(LembagaService::class)->getActiveLembagaId();
+        if (! app(KalenderAkademikService::class)->canInputNilai(now()->toDateString(), $activeLembagaId)) {
+            Flux::toast(variant: 'danger', text: __('Penginputan nilai saat ini dikunci oleh Admin.'));
 
-        if ($existing) {
-            $this->authorize('update', $existing);
-            $existing->update(['nilai' => $validated]);
-        } else {
-            $this->authorize('create', NilaiModel::class);
-            NilaiModel::query()->create([
+            return;
+        }
+
+        DB::transaction(function () use ($santriId, $validated) {
+            $existing = NilaiModel::query()->where([
                 'santri_id' => $santriId,
                 'semester_id' => $this->semesterId,
                 'mapel_id' => $this->mapelId,
-                'nilai' => $validated,
-            ]);
-        }
+            ])->first();
+
+            if ($existing) {
+                $this->authorize('update', $existing);
+                $existing->update(['nilai' => $validated]);
+            } else {
+                $this->authorize('create', NilaiModel::class);
+                NilaiModel::query()->create([
+                    'santri_id' => $santriId,
+                    'semester_id' => $this->semesterId,
+                    'mapel_id' => $this->mapelId,
+                    'nilai' => $validated,
+                ]);
+            }
+        });
 
         Flux::toast(variant: 'success', text: __('Nilai tersimpan.'), duration: 2000);
     }
@@ -82,6 +106,18 @@ class Nilai extends Component
     public function semesterOptions(): Collection
     {
         return Semester::query()->with('tahunAkademik')->orderByDesc('id')->get();
+    }
+
+    /**
+     * @return array<int, array{value: int, label: string}>
+     */
+    #[Computed]
+    public function semesterSearchOptions(): array
+    {
+        return $this->semesterOptions->map(fn ($s) => [
+            'value' => $s->id,
+            'label' => $s->tahunAkademik->nama.' — '.ucfirst($s->tipe->value),
+        ])->toArray();
     }
 
     /**

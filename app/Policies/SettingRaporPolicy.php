@@ -23,13 +23,13 @@ class SettingRaporPolicy
         return in_array($user->role, [UserRole::Admin, UserRole::Guru, UserRole::KepalaMadrasah], true);
     }
 
-    public function update(User $user, SettingRapor $settingRapor): bool
+    public function update(User $user, ?SettingRapor $settingRapor = null): bool
     {
         return in_array($user->role, [UserRole::Admin, UserRole::Guru, UserRole::KepalaMadrasah], true);
     }
 
-    public function delete(User $user, SettingRapor $settingRapor): bool
+    public function delete(User $user, ?SettingRapor $settingRapor = null): bool
     {
-        return in_array($user->role, [UserRole::Admin], true);
+        return in_array($user->role, [UserRole::Admin, UserRole::Guru, UserRole::KepalaMadrasah], true);
     }
 }

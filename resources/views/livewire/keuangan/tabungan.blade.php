@@ -53,7 +53,7 @@
                             Rp{{ number_format($item->saldo_akhir, 0, ',', '.') }}
                         </flux:table.cell>
                         <flux:table.cell align="end">
-                            <flux:button size="sm" variant="ghost" icon="trash" class="text-red-600 hover:text-red-700" wire:click="delete({{ $item->id }})" wire:confirm="{{ __('Yakin hapus transaksi tabungan ini?') }}" />
+                            <flux:button size="sm" variant="ghost" icon="trash" class="text-red-600 hover:text-red-700 cursor-pointer" wire:click="$set('deletingId', {{ $item->id }})" x-on:click="$flux.modal('confirm-delete-tabungan-modal').show()" />
                         </flux:table.cell>
                     </flux:table.row>
                 @empty
@@ -74,11 +74,12 @@
                 <flux:subheading>{{ __('Setor atau tarik tabungan santri.') }}</flux:subheading>
             </div>
 
-            <flux:select wire:model="santriId" :label="__('Santri')" placeholder="{{ __('Pilih Santri') }}">
-                @foreach ($this->santriOptions as $santri)
-                    <flux:select.option value="{{ $santri->id }}">{{ $santri->nama_lengkap }} ({{ $santri->noinduk }})</flux:select.option>
-                @endforeach
-            </flux:select>
+            <x-select-search 
+                wire:model="santriId" 
+                :options="$this->santriOptions" 
+                label="{{ __('Santri') }}" 
+                placeholder="{{ __('Pilih Santri') }}" 
+            />
 
             <flux:select wire:model="tipe" :label="__('Tipe Transaksi')" placeholder="{{ __('Pilih Tipe') }}">
                 <flux:select.option value="setor">{{ __('Setoran (+)') }}</flux:select.option>
@@ -98,4 +99,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Tabungan Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-tabungan-modal" 
+        title="{{ __('Hapus Transaksi Tabungan') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus catatan transaksi tabungan ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Transaksi') }}" 
+    />
 </div>

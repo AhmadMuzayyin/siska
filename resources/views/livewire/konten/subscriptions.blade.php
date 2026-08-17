@@ -50,9 +50,9 @@
                                 size="sm"
                                 variant="ghost"
                                 icon="trash"
-                                class="text-red-600 hover:text-red-700"
-                                wire:click="delete({{ $subscription->id }})"
-                                wire:confirm="{{ __('Yakin ingin menghapus langganan ini?') }}"
+                                class="text-red-600 hover:text-red-700 cursor-pointer"
+                                wire:click="$set('deletingId', {{ $subscription->id }})"
+                                x-on:click="$flux.modal('confirm-delete-subscription-modal').show()"
                             />
                         </flux:table.cell>
                     </flux:table.row>
@@ -89,4 +89,13 @@
             </div>
         </form>
     </flux:modal>
+
+    {{-- Confirm Delete Subscription Modal --}}
+    <x-confirm-modal 
+        name="confirm-delete-subscription-modal" 
+        title="{{ __('Hapus Langganan Newsletter') }}" 
+        description="{{ __('Apakah Anda yakin ingin menghapus data langganan email ini?') }}" 
+        action="delete" 
+        confirmText="{{ __('Hapus Langganan') }}" 
+    />
 </div>
