@@ -25,6 +25,12 @@
 
         <x-cookie-consent />
 
+        @auth
+            @if (auth()->user()->role === \App\Enums\UserRole::Admin)
+                <livewire:public.landing-page-builder />
+            @endif
+        @endauth
+
         @fluxScripts
     </body>
 </html>

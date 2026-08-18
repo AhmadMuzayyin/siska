@@ -1,6 +1,10 @@
 @php
     $setting = \App\Models\Setting::query()->first();
     $theme = $setting?->landing_theme ?? 'default';
+
+    $pageGalleryTitle = $setting?->getLandingContent('page_gallery_title', $theme === 'pixigon' ? __('Galeri Dokumentasi') : __('Galeri & Dokumentasi Kegiatan'), $theme);
+    $pageGallerySubtitle = $setting?->getLandingContent('page_gallery_subtitle', $theme === 'pixigon' ? __('Dokumentasi aktivitas, prestasi, dan momentum berharga santri lembaga kami.') : __('Dokumentasi momentum penting, kegiatan pembelajaran harian, perlombaan, dan acara keagamaan di lembaga kami.'), $theme);
+    $pageGalleryBannerImage = $setting?->getLandingContent('page_gallery_banner_image', 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=1400&q=80&auto=format&fit=crop', $theme);
 @endphp
 
 @if ($theme === 'pixigon')
@@ -8,7 +12,7 @@
     <div class="flex flex-col w-full overflow-hidden font-sans bg-white text-zinc-800">
         
         {{-- Inner Page Hero Banner Matching Screenshot 2 --}}
-        <section class="relative bg-[#f0f8ec] py-20 lg:py-28 overflow-hidden font-sans">
+        <section class="relative bg-[#f0f8ec] py-20 lg:py-28 overflow-hidden font-sans" data-editable-image="page_gallery_banner_image" data-image-label="Ganti Background Banner Galeri">
             {{-- Left Botanical Branch Doodle --}}
             <div class="hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 pointer-events-none opacity-40 text-emerald-800">
                 <svg class="w-36 h-48" viewBox="0 0 120 160" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -39,80 +43,73 @@
 
             {{-- Center Title & Breadcrumbs --}}
             <div class="container mx-auto px-4 sm:px-6 relative z-10 text-center max-w-4xl">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-900 tracking-tight mb-3">
-                    {{ __('Galeri Dokumentasi') }}
+                <h1 data-editable-field="page_gallery_title" class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-900 tracking-tight mb-3">
+                    {{ $pageGalleryTitle }}
                 </h1>
                 
+                <p data-editable-field="page_gallery_subtitle" class="text-zinc-600 text-sm sm:text-base max-w-2xl mx-auto mb-4">
+                    {{ $pageGallerySubtitle }}
+                </p>
+
                 <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-zinc-500">
                     <a href="{{ route('home') }}" wire:navigate class="hover:text-[#2e5b18] transition">{{ __('Beranda') }}</a>
                     <span>/</span>
                     <span class="text-zinc-800 font-semibold">{{ __('Dokumentasi Kegiatan') }}</span>
-                </div>
-
-                <div class="mt-4 flex justify-center text-zinc-400">
-                    <svg class="size-5 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
                 </div>
             </div>
         </section>
 
         {{-- Gallery Content Section --}}
         <section class="py-16 bg-white">
-            <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
-                
-                {{-- Category Filter Pills --}}
-                <div class="mb-10 flex flex-wrap items-center justify-between gap-4 border-b border-[#d6eda6] pb-6">
-                    <div class="flex flex-wrap gap-2">
+            <div class="container mx-auto px-4 sm:px-6">
+                {{-- Categories Pill Filter --}}
+                <div class="flex flex-wrap items-center justify-center gap-2 mb-12">
+                    <button
+                        wire:click="setGalleryType('semua')"
+                        class="px-5 py-2 rounded-full text-xs font-bold transition-all duration-200 {{ $activeGalleryType === 'semua' ? 'bg-[#6bb82d] text-white shadow-md' : 'bg-[#f0f8ec] text-zinc-700 hover:bg-[#d6eda6]' }}"
+                    >
+                        {{ __('Semua Dokumentasi') }}
+                    </button>
+
+                    @foreach($this->galleryTypes as $type)
                         <button
-                            type="button"
-                            wire:click="setGalleryType('semua')"
-                            class="rounded-full px-5 py-2 text-xs font-bold transition-all {{ $activeGalleryType === 'semua' ? 'bg-[#6bb82d] text-white shadow-md shadow-lime-600/20' : 'bg-[#f0f8ec] text-zinc-700 hover:bg-[#e4f2dc] border border-[#d6eda6]' }}"
+                            wire:click="setGalleryType('{{ $type }}')"
+                            class="px-5 py-2 rounded-full text-xs font-bold transition-all duration-200 {{ $activeGalleryType === $type ? 'bg-[#6bb82d] text-white shadow-md' : 'bg-[#f0f8ec] text-zinc-700 hover:bg-[#d6eda6]' }}"
                         >
-                            {{ __('Semua Foto') }}
+                            {{ ucfirst($type) }}
                         </button>
-
-                        @foreach ($this->galleryTypes as $type)
-                            <button
-                                type="button"
-                                wire:click="setGalleryType('{{ $type }}')"
-                                class="rounded-full px-5 py-2 text-xs font-bold transition-all {{ $activeGalleryType === $type ? 'bg-[#6bb82d] text-white shadow-md shadow-lime-600/20' : 'bg-[#f0f8ec] text-zinc-700 hover:bg-[#e4f2dc] border border-[#d6eda6]' }}"
-                            >
-                                {{ ucfirst($type) }}
-                            </button>
-                        @endforeach
-                    </div>
-
-                    <p class="text-xs text-zinc-500 font-medium">
-                        {{ __('Menampilkan: :type', ['type' => $activeGalleryType === 'semua' ? 'Semua Dokumentasi' : ucfirst($activeGalleryType)]) }}
-                    </p>
+                    @endforeach
                 </div>
 
-                {{-- Grid --}}
                 @if ($this->galleries->isEmpty())
-                    <div class="py-16 text-center">
-                        <flux:callout icon="photo" heading="{{ __('Belum Ada Foto') }}" text="{{ __('Dokumentasi untuk kategori ini belum tersedia.') }}" />
+                    <div class="text-center py-16 text-zinc-500">
+                        <flux:icon name="photo" class="size-12 mx-auto mb-3 opacity-40 text-emerald-600" />
+                        <p class="font-medium text-sm">{{ __('Belum ada dokumentasi foto untuk kategori ini.') }}</p>
                     </div>
                 @else
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {{-- 3-Column Masonry/Grid of Cards --}}
+                    <div data-db-locked="true" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-4 rounded-3xl">
                         @foreach ($this->galleries as $gallery)
-                            <div class="group overflow-hidden rounded-3xl border border-[#d6eda6] bg-white shadow-xs hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" wire:key="pixigon-galeri-{{ $gallery->id }}">
-                                <div class="relative aspect-video overflow-hidden bg-zinc-100">
-                                    <img
-                                        src="{{ $gallery->image }}"
-                                        alt="{{ $gallery->title }}"
-                                        class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            <div class="group rounded-3xl overflow-hidden border border-zinc-200/80 bg-white shadow-xs hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1" wire:key="galeri-{{ $gallery->id }}">
+                                <div class="aspect-[4/3] overflow-hidden relative bg-[#f0f8ec]">
+                                    <img 
+                                        src="{{ $gallery->image ? asset('storage/' . $gallery->image) : 'https://images.unsplash.com/photo-1585036156171-384164a8c675?w=600&auto=format&fit=crop&q=80' }}" 
+                                        alt="{{ $gallery->title }}" 
+                                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                         loading="lazy"
-                                        width="400" height="225"
                                     >
-                                    <span class="absolute top-3 right-3 rounded-full bg-[#2e5b18]/90 text-white border border-white/30 px-3 py-1 text-[10px] font-bold backdrop-blur-md shadow-xs">
-                                        {{ strtoupper($gallery->type->value ?? $gallery->type) }}
+                                    <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-white/90 backdrop-blur-xs text-[11px] font-bold text-[#2e5b18] shadow-xs">
+                                        {{ $gallery->type instanceof \App\Enums\GalleryType ? $gallery->type->label() : ucfirst((string) ($gallery->type ?? 'Kegiatan')) }}
                                     </span>
                                 </div>
-                                <div class="p-5">
-                                    <h4 class="font-bold text-[#2e5b18] text-sm group-hover:text-[#6bb82d] transition">{{ $gallery->title }}</h4>
+                                <div class="p-6">
+                                    <h4 class="text-base font-bold text-zinc-900 group-hover:text-[#2e5b18] transition-colors mb-2 leading-snug">
+                                        {{ $gallery->title }}
+                                    </h4>
                                     @if ($gallery->description)
-                                        <p class="mt-2 text-xs leading-relaxed text-zinc-600">{{ $gallery->description }}</p>
+                                        <p class="text-xs text-zinc-600 leading-relaxed line-clamp-2">
+                                            {{ $gallery->description }}
+                                        </p>
                                     @endif
                                 </div>
                             </div>
@@ -130,10 +127,10 @@
     {{-- ================= DEFAULT THEME (KLASIK EMERALD) ================= --}}
     <div class="flex flex-col w-full overflow-hidden">
         {{-- Hero Banner --}}
-        <section class="relative overflow-hidden bg-gradient-to-br from-[#06382b] via-[#094a38] to-[#021d16] py-20 text-white border-b-2 border-emerald-500/30">
+        <section class="relative overflow-hidden bg-gradient-to-br from-[#06382b] via-[#094a38] to-[#021d16] py-20 text-white border-b-2 border-emerald-500/30" data-editable-image="page_gallery_banner_image" data-image-label="Ganti Background Banner Galeri">
             <img
-                src="https://images.unsplash.com/photo-1609220136736-443140cffec6?w=1400&q=80&auto=format&fit=crop"
-                alt="Galeri Al-Hikmah"
+                src="{{ $pageGalleryBannerImage }}"
+                alt="Galeri"
                 class="absolute inset-0 size-full object-cover opacity-20"
                 loading="eager"
                 width="1400" height="400"
@@ -142,11 +139,11 @@
                 <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-emerald-200 mb-4">
                     ✦ {{ __('Dokumentasi Lengkap') }}
                 </span>
-                <flux:heading size="xl" class="text-4xl! font-extrabold text-white leading-tight sm:text-5xl!">
-                    {{ __('Galeri & Dokumentasi Kegiatan') }}
+                <flux:heading size="xl" class="text-4xl! font-extrabold text-white leading-tight sm:text-5xl!" data-editable-field="page_gallery_title">
+                    {{ $pageGalleryTitle }}
                 </flux:heading>
-                <p class="mt-4 max-w-2xl text-sm text-emerald-100/90 leading-relaxed">
-                    {{ __('Dokumentasi momentum penting, kegiatan pembelajaran harian, perlombaan, dan acara keagamaan di lembaga kami.') }}
+                <p class="mt-4 max-w-2xl text-sm text-emerald-100/90 leading-relaxed" data-editable-field="page_gallery_subtitle">
+                    {{ $pageGallerySubtitle }}
                 </p>
             </div>
         </section>
@@ -181,38 +178,39 @@
                     </p>
                 </div>
 
-                {{-- Gallery Grid --}}
                 @if ($this->galleries->isEmpty())
-                    <div class="py-16 text-center">
-                        <flux:callout icon="photo" heading="{{ __('Belum Ada Foto') }}" text="{{ __('Dokumentasi untuk kategori ini belum tersedia.') }}" />
-                    </div>
+                    <flux:callout icon="photo" heading="{{ __('Belum ada galeri') }}" text="{{ __('Dokumentasi untuk kategori ini akan segera diperbarui.') }}" />
                 @else
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <div data-db-locked="true" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-4 rounded-3xl">
                         @foreach ($this->galleries as $gallery)
-                            <div class="group overflow-hidden rounded-3xl border border-emerald-500/20 bg-white/95 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" wire:key="galeri-item-{{ $gallery->id }}">
+                            <div class="group overflow-hidden rounded-3xl border border-emerald-500/20 bg-white/95 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-2xl" wire:key="galeri-{{ $gallery->id }}">
                                 <div class="relative aspect-video overflow-hidden bg-emerald-900">
                                     <img
-                                        src="{{ $gallery->image }}"
+                                        src="{{ $gallery->image ? asset('storage/' . $gallery->image) : 'https://images.unsplash.com/photo-1585036156171-384164a8c675?w=400&q=80&auto=format&fit=crop' }}"
                                         alt="{{ $gallery->title }}"
                                         class="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                                         loading="lazy"
-                                        width="400" height="225"
+                                        width="400"
+                                        height="225"
                                     >
-                                    <span class="absolute top-3 right-3 rounded-full bg-[#06382b]/90 border border-emerald-400/30 px-3 py-1 text-[10px] font-bold text-emerald-200 backdrop-blur-md">
-                                        {{ strtoupper($gallery->type->value ?? $gallery->type) }}
+                                    <span class="absolute top-3 right-3 rounded-full bg-emerald-950/80 border border-emerald-400/30 px-3 py-1 text-[10px] font-bold text-emerald-200 backdrop-blur-md">
+                                        {{ $gallery->type instanceof \App\Enums\GalleryType ? $gallery->type->label() : ucfirst((string) ($gallery->type ?? 'Kegiatan')) }}
                                     </span>
                                 </div>
                                 <div class="p-5">
-                                    <h4 class="font-bold text-emerald-950 text-sm group-hover:text-emerald-700 transition">{{ $gallery->title }}</h4>
+                                    <h3 class="font-bold text-emerald-950 text-base group-hover:text-emerald-700 transition">{{ $gallery->title }}</h3>
                                     @if ($gallery->description)
                                         <p class="mt-2 text-xs leading-relaxed text-zinc-600">{{ $gallery->description }}</p>
                                     @endif
+                                    <span class="mt-4 block text-[11px] text-zinc-500">
+                                        {{ $gallery->created_at->translatedFormat('d F Y') }}
+                                    </span>
                                 </div>
                             </div>
                         @endforeach
                     </div>
 
-                    <div class="mt-12">
+                    <div class="mt-10">
                         {{ $this->galleries->links() }}
                     </div>
                 @endif

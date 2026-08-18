@@ -1,6 +1,9 @@
 @php
     $setting = \App\Models\Setting::query()->first();
     $theme = $setting?->landing_theme ?? 'default';
+    $pageContactTitle = $setting?->getLandingContent('page_contact_title', __('Hubungi Kami'), $theme);
+    $pageContactSubtitle = $setting?->getLandingContent('page_contact_subtitle', __('Ada pertanyaan seputar pendaftaran santri baru, kurikulum, atau administrasi? Kirimkan pesan Anda, kami akan segera merespons.'), $theme);
+    $pageContactBannerImage = $setting?->getLandingContent('page_contact_banner_image', 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1400&q=80&auto=format&fit=crop', $theme);
 @endphp
 
 <x-layouts::public :title="__('Kontak')">
@@ -9,7 +12,7 @@
         <div class="flex flex-col w-full overflow-hidden font-sans bg-white text-zinc-800">
             
             {{-- Inner Page Hero Banner Matching Screenshot 2 --}}
-            <section class="relative bg-[#f0f8ec] py-20 lg:py-28 overflow-hidden font-sans">
+            <section class="relative bg-[#f0f8ec] py-20 lg:py-28 overflow-hidden font-sans" data-editable-image="page_contact_banner_image" data-image-label="Ganti Background Banner Kontak">
                 {{-- Left Botanical Branch Doodle --}}
                 <div class="hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 pointer-events-none opacity-40 text-emerald-800">
                     <svg class="w-36 h-48" viewBox="0 0 120 160" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -40,10 +43,14 @@
 
                 {{-- Center Title & Breadcrumbs --}}
                 <div class="container mx-auto px-4 sm:px-6 relative z-10 text-center max-w-4xl">
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-900 tracking-tight mb-3">
-                        {{ __('Hubungi Kami') }}
+                    <h1 data-editable-field="page_contact_title" class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-900 tracking-tight mb-3">
+                        {{ $pageContactTitle }}
                     </h1>
                     
+                    <p data-editable-field="page_contact_subtitle" class="text-zinc-600 text-sm sm:text-base max-w-2xl mx-auto mb-4">
+                        {{ $pageContactSubtitle }}
+                    </p>
+
                     <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-zinc-500">
                         <a href="{{ route('home') }}" wire:navigate class="hover:text-[#2e5b18] transition">{{ __('Beranda') }}</a>
                         <span>/</span>
@@ -258,10 +265,10 @@
         {{-- ================= DEFAULT THEME (KLASIK EMERALD) ================= --}}
         <div class="flex flex-col w-full overflow-hidden font-sans">
             {{-- Hero Banner --}}
-            <section class="relative overflow-hidden bg-gradient-to-br from-[#06382b] via-[#094a38] to-[#021d16] py-20 text-white border-b-2 border-emerald-500/30">
+            <section class="relative overflow-hidden bg-gradient-to-br from-[#06382b] via-[#094a38] to-[#021d16] py-20 text-white border-b-2 border-emerald-500/30" data-editable-image="page_contact_banner_image" data-image-label="Ganti Background Banner Kontak">
                 <img
-                    src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1400&q=80&auto=format&fit=crop"
-                    alt="Kontak Al-Hikmah"
+                    src="{{ $pageContactBannerImage }}"
+                    alt="Kontak"
                     class="absolute inset-0 size-full object-cover opacity-20"
                     loading="eager"
                     width="1400" height="400"
@@ -270,11 +277,11 @@
                     <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-emerald-200 mb-4">
                         ✦ {{ __('Layanan Informasi') }}
                     </span>
-                    <h1 class="text-4xl sm:text-5xl font-extrabold text-white leading-tight">
-                        {{ __('Hubungi Kami') }}
+                    <h1 data-editable-field="page_contact_title" class="text-4xl sm:text-5xl font-extrabold text-white leading-tight">
+                        {{ $pageContactTitle }}
                     </h1>
-                    <p class="mt-4 max-w-2xl text-sm text-emerald-100/90 leading-relaxed">
-                        {{ __('Ada pertanyaan seputar pendaftaran santri baru, kurikulum, atau administrasi? Kirimkan pesan Anda, kami akan segera merespons.') }}
+                    <p data-editable-field="page_contact_subtitle" class="mt-4 max-w-2xl text-sm text-emerald-100/90 leading-relaxed">
+                        {{ $pageContactSubtitle }}
                     </p>
                 </div>
             </section>

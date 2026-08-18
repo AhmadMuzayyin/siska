@@ -6,14 +6,14 @@
 @php
     $setting = \App\Models\Setting::query()->first();
     $brandName = $name ?? $setting?->lembaga ?? config('app.name', 'SISKA');
-    $hasCustomLogo = $setting?->logo && \Illuminate\Support\Facades\Storage::disk('public')->exists($setting->logo);
+    $logoUrl = $setting?->logo_url;
 @endphp
 
 @if($sidebar)
     <flux:sidebar.brand :name="$brandName" {{ $attributes->class('gap-2.5 in-data-flux-sidebar-collapsed-desktop:in-data-flux-sidebar-active:opacity-100! in-data-flux-sidebar-collapsed-desktop:in-data-flux-sidebar-active:static!') }}>
         <x-slot name="logo" class="flex size-8 items-center justify-center shrink-0">
-            @if ($hasCustomLogo)
-                <img src="{{ \Illuminate\Support\Facades\Storage::url($setting->logo) }}" alt="Logo" class="size-7 object-contain rounded-xs" />
+            @if ($logoUrl)
+                <img src="{{ $logoUrl }}" alt="Logo" class="size-7 object-contain rounded-xs" />
             @else
                 <x-app-logo-icon class="size-7 text-emerald-600 dark:text-emerald-400 fill-current" />
             @endif
@@ -22,8 +22,8 @@
 @else
     <flux:brand :name="$brandName" {{ $attributes }}>
         <x-slot name="logo" class="flex size-8 items-center justify-center shrink-0">
-            @if ($hasCustomLogo)
-                <img src="{{ \Illuminate\Support\Facades\Storage::url($setting->logo) }}" alt="Logo" class="size-7 object-contain rounded-xs" />
+            @if ($logoUrl)
+                <img src="{{ $logoUrl }}" alt="Logo" class="size-7 object-contain rounded-xs" />
             @else
                 <x-app-logo-icon class="size-7 text-emerald-600 dark:text-emerald-400 fill-current" />
             @endif

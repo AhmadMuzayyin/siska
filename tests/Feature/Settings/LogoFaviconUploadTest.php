@@ -30,9 +30,14 @@ test('admin can upload logo and favicon', function () {
 
     expect($setting->logo)->not->toBeNull();
     expect($setting->favicon)->not->toBeNull();
+    expect($setting->logo_url)->not->toBeNull();
+    expect($setting->favicon_url)->not->toBeNull();
 
-    Storage::disk('public')->assertExists($setting->logo);
-    Storage::disk('public')->assertExists($setting->favicon);
+    $cleanLogoPath = ltrim(preg_replace('/^\/?storage\//', '', $setting->logo), '/');
+    $cleanFaviconPath = ltrim(preg_replace('/^\/?storage\//', '', $setting->favicon), '/');
+
+    Storage::disk('public')->assertExists($cleanLogoPath);
+    Storage::disk('public')->assertExists($cleanFaviconPath);
 });
 
 test('admin can remove logo and favicon', function () {

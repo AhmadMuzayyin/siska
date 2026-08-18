@@ -1,19 +1,61 @@
 @php
+    $setting = $this->setting;
+    $heroBadge = $setting?->getLandingContent('hero_badge', __('Sistem Informasi Akademik Terpadu'), 'default');
+    $heroTitle = $setting?->getLandingContent('hero_title', $setting?->lembaga ?? config('app.name'), 'default');
+    $heroSubtitle = $setting?->getLandingContent('hero_subtitle', $setting?->meta_deskripsi ?? __('Mengelola pendidikan Al-Qur\'an dan diniyah santri secara digital — akademik, presensi RFID, nilai, dan keuangan dalam satu sistem terpadu.'), 'default');
+    $heroCtaPrimary = $setting?->getLandingContent('hero_cta_primary_text', __('Daftar Santri Baru'), 'default');
+    $heroCtaSecondary = $setting?->getLandingContent('hero_cta_secondary_text', __('Lihat Program'), 'default');
+
+    $whyUsBadge = $setting?->getLandingContent('why_us_badge', __('Mengapa Memilih Kami'), 'default');
+    $whyUsTitle = $setting?->getLandingContent('why_us_title', __('Komitmen Menyajikan Pendidikan Al-Qur\'an Berkualitas & Berintegritas'), 'default');
+    $whyUsSubtitle = $setting?->getLandingContent('why_us_subtitle', __('Kami memadukan metode pembelajaran Al-Qur\'an teruji nasional dengan tata kelola akademik digital modern untuk kenyamanan santri dan kepastian perkembangan anak bagi orang tua.'), 'default');
+
+    $programsBadge = $setting?->getLandingContent('programs_badge', __('Kurikulum & Pendidikan'), 'default');
+    $programsTitle = $setting?->getLandingContent('programs_title', __('Program Pendidikan Unggulan'), 'default');
+    $programsSubtitle = $setting?->getLandingContent('programs_subtitle', __('Program terstruktur yang dirancang untuk memandu santri dari dasar hingga khatam.'), 'default');
+
+    $statsTitle = $setting?->getLandingContent('stats_title', __('Statistik Lembaga'), 'default');
+
+    $galleryBadge = $setting?->getLandingContent('gallery_badge', __('Dokumentasi Kegiatan'), 'default');
+    $galleryTitle = $setting?->getLandingContent('gallery_title', __('Galeri Foto Unggulan'), 'default');
+    $gallerySubtitle = $setting?->getLandingContent('gallery_subtitle', __('Dokumentasi aktivitas dan momentum berharga santri lembaga kami.'), 'default');
+
+    $teachersBadge = $setting?->getLandingContent('teachers_badge', __('Tenaga Pendidik'), 'default');
+    $teachersTitle = $setting?->getLandingContent('teachers_title', __('Para Pengajar'), 'default');
+    $teachersSubtitle = $setting?->getLandingContent('teachers_subtitle', __('Ustadz dan Ustadzah kompeten yang berdedikasi mendampingi santri.'), 'default');
+
+    $testimonialsBadge = $setting?->getLandingContent('testimonials_badge', __('Testimoni'), 'default');
+    $testimonialsTitle = $setting?->getLandingContent('testimonials_title', __('Kata Wali Santri & Alumni'), 'default');
+    $testimonialsSubtitle = $setting?->getLandingContent('testimonials_subtitle', __('Pengalaman wali murid dan santri belajar bersama lembaga kami.'), 'default');
+
+    $faqBadge = $setting?->getLandingContent('faq_badge', __('Pertanyaan Umum'), 'default');
+    $faqTitle = $setting?->getLandingContent('faq_title', __('Pertanyaan Yang Sering Diajukan'), 'default');
+    $faqSubtitle = $setting?->getLandingContent('faq_subtitle', __('Informasi penting seputar pendaftaran, kurikulum, dan sistem akademik.'), 'default');
+
+    $ctaTitle = $setting?->getLandingContent('cta_title', __('Tertarik Mendaftarkan Putra-Putri Anda?'), 'default');
+    $ctaSubtitle = $setting?->getLandingContent('cta_subtitle', __('Mari bergabung bersama keluarga besar lembaga kami untuk mencetak generasi Qurani yang berakhlak mulia dan mandiri.'), 'default');
+    $ctaButtonText = $setting?->getLandingContent('cta_button_text', __('Daftar Sekarang'), 'default');
+
+    $heroSlide1 = $setting?->getLandingContent('hero_slide_1_image', 'https://images.unsplash.com/photo-1585036156171-384164a8c675?w=1600&q=80&auto=format&fit=crop', 'default');
+    $heroSlide2 = $setting?->getLandingContent('hero_slide_2_image', 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=1600&q=80&auto=format&fit=crop', 'default');
+    $heroSlide3 = $setting?->getLandingContent('hero_slide_3_image', 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1600&q=80&auto=format&fit=crop', 'default');
+    $whyUsImage = $setting?->getLandingContent('why_us_image', 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80&auto=format&fit=crop', 'default');
+
     $heroSlides = [
         [
-            'image' => 'https://images.unsplash.com/photo-1585036156171-384164a8c675?w=1600&q=80&auto=format&fit=crop',
-            'badge' => __('Sistem Informasi Akademik Terpadu'),
-            'title' => $this->setting?->lembaga ?? config('app.name'),
-            'subtitle' => $this->setting?->meta_deskripsi ?? __('Mengelola pendidikan Al-Qur\'an dan diniyah santri secara digital — akademik, presensi RFID, nilai, dan keuangan dalam satu sistem terpadu.'),
+            'image' => $heroSlide1,
+            'badge' => $heroBadge,
+            'title' => $heroTitle,
+            'subtitle' => $heroSubtitle,
         ],
         [
-            'image' => 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=1600&q=80&auto=format&fit=crop',
+            'image' => $heroSlide2,
             'badge' => __('Metode Tilawati & Ijazah Resmi'),
             'title' => __('Mencetak Generasi Rabbani & Beradab'),
             'subtitle' => __('Pendidikan Al-Qur\'an terstruktur dengan metode praktis, menyenangkan, dan terstandarisasi nasional Nurul Falah Surabaya.'),
         ],
         [
-            'image' => 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1600&q=80&auto=format&fit=crop',
+            'image' => $heroSlide3,
             'badge' => __('Penerimaan Santri Baru Dibuka'),
             'title' => __('Madrasah Diniyah & TPQ Modern'),
             'subtitle' => __('Pembelajaran Fiqih, Akidah, Hadits, dan Bahasa Arab yang didampingi oleh Ustadz & Ustadzah berpengalaman.'),
@@ -25,6 +67,8 @@
     {{-- 1. Hero Section (Full-Width Auto-Play Slider with 2-Column Desktop Grid & Floating Admission Widget) --}}
     <section
         x-data="heroSliderComponent({{ json_encode($heroSlides) }})"
+        data-editable-image="hero_slide_1_image"
+        data-image-label="Ganti Foto Background Slider"
         class="relative w-full overflow-hidden bg-emerald-950 text-white min-h-[680px] lg:min-h-[750px] flex items-center"
         aria-labelledby="hero-heading"
     >
@@ -246,10 +290,10 @@
         <div class="mx-auto max-w-7xl px-6">
             <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
                 {{-- Left Image Composition & Experience Badge (5 cols) --}}
-                <div class="lg:col-span-5 relative">
+                <div class="lg:col-span-5 relative" data-editable-image="why_us_image" data-image-label="Ganti Foto Keunggulan">
                     <div class="relative overflow-hidden rounded-3xl border-2 border-emerald-500/30 shadow-2xl">
                         <img
-                            src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&q=80&auto=format&fit=crop"
+                            src="{{ $whyUsImage }}"
                             alt="Kegiatan Pembelajaran Santri"
                             class="w-full h-[420px] object-cover"
                             loading="lazy"
@@ -287,14 +331,14 @@
                 {{-- Right Rich Content Column (7 cols) --}}
                 <div class="lg:col-span-7 space-y-6">
                     <div>
-                        <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
-                            ✦ {{ __('Mengapa Memilih Kami') }}
+                        <span data-editable-field="why_us_badge" class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
+                            ✦ {{ $whyUsBadge }}
                         </span>
-                        <flux:heading id="why-us-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!">
-                            {{ __('Komitmen Menyajikan Pendidikan Al-Qur\'an Berkualitas & Berintegritas') }}
+                        <flux:heading id="why-us-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!" data-editable-field="why_us_title">
+                            {{ $whyUsTitle }}
                         </flux:heading>
-                        <p class="mt-3 text-sm text-zinc-600 leading-relaxed">
-                            {{ __('Kami memadukan metode pembelajaran Al-Qur\'an teruji nasional dengan tata kelola akademik digital modern untuk kenyamanan santri dan kepastian perkembangan anak bagi orang tua.') }}
+                        <p class="mt-3 text-sm text-zinc-600 leading-relaxed" data-editable-field="why_us_subtitle">
+                            {{ $whyUsSubtitle }}
                         </p>
                     </div>
 
@@ -350,11 +394,11 @@
         <div class="mx-auto max-w-7xl px-6">
             <div class="mb-12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
                 <div class="max-w-2xl">
-                    <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
-                        ✦ {{ __('Kurikulum & Pendidikan') }}
+                    <span data-editable-field="programs_badge" class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
+                        ✦ {{ $programsBadge }}
                     </span>
-                    <flux:heading id="program-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!">{{ __('Program Pendidikan Unggulan') }}</flux:heading>
-                    <p class="mt-2 text-sm text-emerald-900/80 leading-relaxed">{{ __('Program terstruktur yang dirancang untuk memandu santri dari dasar hingga khatam.') }}</p>
+                    <flux:heading id="program-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!" data-editable-field="programs_title">{{ $programsTitle }}</flux:heading>
+                    <p class="mt-2 text-sm text-emerald-900/80 leading-relaxed" data-editable-field="programs_subtitle">{{ $programsSubtitle }}</p>
                 </div>
                 <a href="{{ route('program') }}" wire:navigate class="inline-flex items-center gap-2 rounded-full border border-emerald-700/40 bg-emerald-700 px-5 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-emerald-800 shrink-0">
                     <span>{{ __('Lihat Kurikulum Lengkap') }}</span>
@@ -362,7 +406,7 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div data-db-locked="true" class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 p-4 rounded-3xl">
                 @forelse ($this->lembagas as $lembaga)
                     <div wire:key="lembaga-card-{{ $lembaga->id }}" class="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-emerald-500/20 bg-white/95 shadow-md backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
                         <div class="relative h-48 overflow-hidden bg-gradient-to-br from-[#06382b] to-[#0d5c46]">
@@ -424,9 +468,9 @@
     {{-- 5. Statistics Counter Banner (Full-Width High Contrast Dark Emerald Theme #06382b - eCademy Style) --}}
     <section class="w-full bg-gradient-to-r from-[#021d16] via-[#06382b] to-[#094a38] text-white py-16 border-y border-emerald-600/30" aria-labelledby="stats-heading">
         <div class="mx-auto max-w-7xl px-6">
-            <h2 id="stats-heading" class="sr-only">{{ __('Statistik Lembaga') }}</h2>
+            <h2 id="stats-heading" class="sr-only">{{ $statsTitle }}</h2>
 
-            <div class="grid grid-cols-2 gap-8 lg:grid-cols-4">
+            <div data-db-locked="true" class="grid grid-cols-2 gap-8 lg:grid-cols-4 p-4 rounded-3xl">
                 {{-- Stat 1 --}}
                 <div class="flex flex-col items-center text-center p-4 rounded-2xl bg-white/5 border border-emerald-500/20 backdrop-blur-md">
                     <div class="flex size-12 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-300 mb-3">
@@ -470,7 +514,7 @@
     {{-- 6. Agenda & Kegiatan Mendatang (Upcoming Events - eCademy Style) --}}
     <section class="w-full bg-[#edf7f4] py-20 border-b border-emerald-500/20" aria-labelledby="events-heading">
         <div class="mx-auto max-w-7xl px-6">
-            <div class="mb-12 max-w-2xl">
+            <div class="mb-12 max-w-2xl" data-editable="true">
                 <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
                     ✦ {{ __('Agenda Lembaga') }}
                 </span>
@@ -536,17 +580,17 @@
                                 <span class="text-[10px] font-bold uppercase tracking-wider mt-1">OKT</span>
                             </div>
                             <div>
-                                <span class="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800">{{ __('Parenting') }}</span>
-                                <h4 class="font-bold text-emerald-950 text-base mt-1">{{ __('Kajian Rutin & Silaturahmi Wali Santri') }}</h4>
+                                <span class="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800">{{ __('Rihlah Ilmiah') }}</span>
+                                <h4 class="font-bold text-emerald-950 text-base mt-1">{{ __('Kunjungan Edukasi & Ziarah Santri') }}</h4>
                             </div>
                         </div>
                         <p class="mt-4 text-xs text-zinc-600 leading-relaxed">
-                            {{ __('Pertemuan bulanan antara pengurus lembaga dan wali murid guna membahas perkembangan karakter santri di rumah.') }}
+                            {{ __('Kegiatan rekreasi edukatif untuk mengenalkan sejarah para ulama dan mempererat ukhuwah antar santri.') }}
                         </p>
                     </div>
 
                     <div class="mt-6 border-t border-emerald-100 pt-4 flex items-center justify-between text-xs text-zinc-500">
-                        <span class="flex items-center gap-1"><flux:icon name="map-pin" class="size-3.5 text-amber-500" /> {{ __('Masjid Al-Hikmah') }}</span>
+                        <span class="flex items-center gap-1"><flux:icon name="map-pin" class="size-3.5 text-amber-500" /> {{ __('Destinasi Edukasi') }}</span>
                         <span class="font-bold text-emerald-700">{{ __('09.00 WIB') }}</span>
                     </div>
                 </div>
@@ -559,11 +603,11 @@
         <div class="mx-auto max-w-7xl px-6">
             <div class="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
-                        ✦ {{ __('Dokumentasi Kegiatan') }}
+                    <span data-editable-field="gallery_badge" class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
+                        ✦ {{ $galleryBadge }}
                     </span>
-                    <flux:heading id="galeri-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!">{{ __('Galeri Foto Unggulan') }}</flux:heading>
-                    <p class="mt-2 text-sm text-[#06382b] font-medium leading-relaxed">{{ __('Dokumentasi aktivitas dan momentum berharga santri lembaga kami.') }}</p>
+                    <flux:heading id="galeri-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!" data-editable-field="gallery_title">{{ $galleryTitle }}</flux:heading>
+                    <p class="mt-2 text-sm text-[#06382b] font-medium leading-relaxed" data-editable-field="gallery_subtitle">{{ $gallerySubtitle }}</p>
                 </div>
 
                 <div class="flex flex-wrap gap-2">
@@ -582,7 +626,7 @@
             @if ($this->galleries->isEmpty())
                 <flux:callout icon="photo" heading="{{ __('Belum ada galeri') }}" text="{{ __('Dokumentasi untuk kategori ini akan segera diperbarui.') }}" />
             @else
-                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div data-db-locked="true" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 p-4 rounded-3xl">
                     @foreach ($this->galleries as $gallery)
                         <div class="group overflow-hidden rounded-3xl border border-emerald-500/20 bg-white/95 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-2xl" wire:key="galeri-{{ $gallery->id }}">
                             <div class="relative aspect-video overflow-hidden bg-emerald-900">
@@ -616,14 +660,14 @@
         <section class="w-full bg-[#edf7f4] py-20 border-b border-emerald-500/20" aria-labelledby="pengajar-heading">
             <div class="mx-auto max-w-7xl px-6">
                 <div class="mb-12 max-w-xl">
-                    <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
-                        ✦ {{ __('Tenaga Pendidik') }}
+                    <span data-editable-field="teachers_badge" class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
+                        ✦ {{ $teachersBadge }}
                     </span>
-                    <flux:heading id="pengajar-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!">{{ __('Para Pengajar') }}</flux:heading>
-                    <p class="mt-2 text-sm text-emerald-900/80">{{ __('Ustadz dan Ustadzah kompeten yang berdedikasi mendampingi santri.') }}</p>
+                    <flux:heading id="pengajar-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!" data-editable-field="teachers_title">{{ $teachersTitle }}</flux:heading>
+                    <p class="mt-2 text-sm text-emerald-900/80" data-editable-field="teachers_subtitle">{{ $teachersSubtitle }}</p>
                 </div>
 
-                <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+                <div data-db-locked="true" class="grid grid-cols-2 gap-6 sm:grid-cols-4 p-4 rounded-3xl">
                     @foreach ($this->pengajar as $guru)
                         <div class="flex flex-col items-center rounded-3xl border border-emerald-500/20 bg-white/95 p-6 text-center shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-1" wire:key="guru-{{ $guru->id }}">
                             <flux:avatar size="xl" :src="$guru->foto" :name="$guru->user->name" class="ring-4 ring-emerald-500/30" />
@@ -651,11 +695,11 @@
     <section class="w-full bg-[#dcf0ea] py-20 border-b border-emerald-500/20" aria-labelledby="testimonial-heading">
         <div class="mx-auto max-w-7xl px-6">
             <div class="mb-12 text-center">
-                <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
-                    ✦ {{ __('Testimoni') }}
+                <span data-editable-field="testimonials_badge" class="inline-flex items-center gap-1.5 rounded-full border border-emerald-600/30 bg-emerald-600/10 px-3.5 py-1 text-xs font-bold text-emerald-800 mb-3">
+                    ✦ {{ $testimonialsBadge }}
                 </span>
-                <flux:heading id="testimonial-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!">{{ __('Kata Wali Santri & Alumni') }}</flux:heading>
-                <p class="mt-2 text-sm text-emerald-900/80">{{ __('Pengalaman wali murid dan santri belajar bersama lembaga kami.') }}</p>
+                <flux:heading id="testimonial-heading" size="xl" class="text-3xl! font-bold text-emerald-950 sm:text-4xl!" data-editable-field="testimonials_title">{{ $testimonialsTitle }}</flux:heading>
+                <p class="mt-2 text-sm text-emerald-900/80" data-editable-field="testimonials_subtitle">{{ $testimonialsSubtitle }}</p>
             </div>
 
             <div class="grid grid-cols-1 gap-6 sm:grid-cols-3">
@@ -717,11 +761,11 @@
     <section class="w-full bg-[#094a38] text-white py-20 border-t border-emerald-600/20" aria-labelledby="faq-heading">
         <div class="mx-auto max-w-4xl px-6">
             <div class="mb-12 text-center">
-                <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-emerald-300 mb-3">
-                    ✦ {{ __('Pertanyaan Umum') }}
+                <span data-editable-field="faq_badge" class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-emerald-300 mb-3">
+                    ✦ {{ $faqBadge }}
                 </span>
-                <flux:heading id="faq-heading" size="xl" class="text-3xl! font-bold text-white sm:text-4xl!">{{ __('Pertanyaan Yang Sering Diajukan') }}</flux:heading>
-                <p class="mt-2 text-sm text-emerald-100/90">{{ __('Informasi penting seputar pendaftaran, kurikulum, dan sistem akademik.') }}</p>
+                <flux:heading id="faq-heading" size="xl" class="text-3xl! font-bold text-white sm:text-4xl!" data-editable-field="faq_title">{{ $faqTitle }}</flux:heading>
+                <p class="mt-2 text-sm text-emerald-100/90" data-editable-field="faq_subtitle">{{ $faqSubtitle }}</p>
             </div>
 
             <div class="flex flex-col gap-4">
@@ -788,13 +832,13 @@
         <div class="mx-auto max-w-7xl px-6">
             <div class="relative overflow-hidden flex flex-col items-center gap-6 rounded-3xl bg-gradient-to-r from-[#06382b] via-[#094a38] to-[#0d5c46] border-2 border-emerald-400/40 px-8 py-14 text-center text-white shadow-2xl sm:flex-row sm:justify-between sm:text-left">
                 <div class="relative z-10 max-w-xl space-y-2">
-                    <flux:heading size="xl" class="text-2xl! font-bold text-white sm:text-3xl!">{{ __('Tertarik Mendaftarkan Putra-Putri Anda?') }}</flux:heading>
-                    <p class="text-xs text-emerald-100/90 leading-relaxed">{{ __('Mari bergabung bersama keluarga besar lembaga kami untuk mencetak generasi Qurani yang berakhlak mulia dan mandiri.') }}</p>
+                    <flux:heading size="xl" class="text-2xl! font-bold text-white sm:text-3xl!" data-editable-field="cta_title">{{ $ctaTitle }}</flux:heading>
+                    <p class="text-xs text-emerald-100/90 leading-relaxed" data-editable-field="cta_subtitle">{{ $ctaSubtitle }}</p>
                 </div>
                 <div class="relative z-10 flex shrink-0 flex-wrap justify-center gap-3">
-                    <flux:button variant="primary" class="bg-emerald-500! text-emerald-950! hover:bg-emerald-400! font-extrabold shadow-xl border border-emerald-300 px-6 py-3" :href="route('santri.register.form')" wire:navigate>
+                    <flux:button variant="primary" class="bg-emerald-500! text-emerald-950! hover:bg-emerald-400! font-extrabold shadow-xl border border-emerald-300 px-6 py-3" :href="route('santri.register.form')" wire:navigate data-editable-field="cta_button_text">
                         <flux:icon name="user-plus" class="size-4 me-1.5" />
-                        {{ __('Daftar Sekarang') }}
+                        {{ $ctaButtonText }}
                     </flux:button>
                     <flux:button variant="ghost" class="text-white! hover:bg-white/10! border border-emerald-500/30 px-5 py-3" :href="route('contact.show')" wire:navigate>
                         <flux:icon name="chat-bubble-left-right" class="size-4 me-1.5 text-emerald-200" />

@@ -5,6 +5,7 @@ namespace App\Livewire\Akademik;
 use App\Models\Lembaga;
 use App\Models\Mapel as MapelModel;
 use App\Models\SettingRapor as SettingRaporModel;
+use App\Services\ImageKitService;
 use App\Services\LembagaService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
@@ -128,7 +129,7 @@ class SettingRapor extends Component
         Flux::toast(variant: 'success', text: __('Deskripsi nilai mata pelajaran berhasil disimpan.'));
     }
 
-    public function uploadTemplate(): void
+    public function uploadTemplate(ImageKitService $imageKitService): void
     {
         $this->authorize('create', SettingRaporModel::class);
 
@@ -139,9 +140,10 @@ class SettingRapor extends Component
             'template_file.mimes' => __('File template rapor hanya boleh dokumen Word (.docx) atau HTML/Blade.'),
         ]);
 
-        DB::transaction(function () {
-            $path = $this->template_file->store('templates/rapor', 'public');
+        $uploadResult = $imageKitService->upload($this->template_file, null, '/siska/templates/rapor', ['rapor', 'template']);
+        $path = $uploadResult->url;
 
+        DB::transaction(function () use ($path) {
             SettingRaporModel::query()->updateOrCreate(
                 [
                     'mapel_id' => null,
@@ -154,7 +156,7 @@ class SettingRapor extends Component
             $this->reset('template_file');
         });
 
-        Flux::toast(variant: 'success', text: __('Template Rapor berhasil diunggah.'));
+        Flux::toast(variant: 'success', text: __('Template Rapor berhasil diunggah ke ImageKit.'));
     }
 
     /**

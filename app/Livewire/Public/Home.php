@@ -9,6 +9,7 @@ use App\Models\Gallery;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Lembaga;
+use App\Models\Program;
 use App\Models\Santri;
 use App\Models\Setting;
 use Illuminate\Contracts\View\View;
@@ -47,6 +48,19 @@ class Home extends Component
     public function totalLembagaCount(): int
     {
         return Lembaga::query()->active()->count();
+    }
+
+    /**
+     * @return Collection<int, Program>
+     */
+    #[Computed]
+    public function programs(): Collection
+    {
+        return Program::query()
+            ->with('lembaga')
+            ->active()
+            ->ordered()
+            ->get();
     }
 
     /**

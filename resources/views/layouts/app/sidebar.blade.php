@@ -17,7 +17,7 @@
             $isOperasionalActive = request()->routeIs('kepegawaian.absensi') || request()->routeIs('kepegawaian.gaji');
             $isKeuanganActive = request()->routeIs('keuangan.*');
             $isKontenActive = request()->routeIs('konten.*');
-            $isAdminActive = request()->routeIs('admin.*') || request()->routeIs('settings*') || request()->routeIs('profile.edit') || request()->routeIs('security.edit') || request()->routeIs('appearance.edit');
+            $isAdminActive = request()->routeIs('admin.*') || request()->routeIs('profile.edit') || request()->routeIs('security.edit') || request()->routeIs('appearance.edit');
         @endphp
         <flux:sidebar sticky collapsible class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 flex flex-col justify-between h-screen overflow-hidden">
             {{-- Top Header Section --}}
@@ -153,6 +153,9 @@
                             expandable 
                             :expanded="$isKontenActive"
                         >
+                            <flux:sidebar.item icon="academic-cap" :href="route('konten.programs')" :current="request()->routeIs('konten.programs')" wire:navigate>
+                                {{ __('Program') }}
+                            </flux:sidebar.item>
                             <flux:sidebar.item icon="photo" :href="route('konten.galeri')" :current="request()->routeIs('konten.galeri')" wire:navigate>
                                 {{ __('Galeri') }}
                             </flux:sidebar.item>
@@ -185,9 +188,6 @@
                         </flux:sidebar.item>
                         <flux:sidebar.item icon="chat-bubble-left-right" :href="route('admin.whatsapp')" :current="request()->routeIs('admin.whatsapp')" wire:navigate>
                             {{ __('WhatsApp') }}
-                        </flux:sidebar.item>
-                        <flux:sidebar.item icon="adjustments-horizontal" :href="route('admin.settings')" :current="request()->routeIs('admin.settings') || request()->routeIs('settings*')" wire:navigate>
-                            {{ __('Pengaturan') }}
                         </flux:sidebar.item>
                     </flux:sidebar.group>
                 @endif

@@ -9,13 +9,13 @@ use App\Models\Nilai as NilaiModel;
 use App\Models\Santri as SantriModel;
 use App\Models\Semester;
 use App\Models\SettingRapor as SettingRaporModel;
+use App\Services\ImageKitService;
 use App\Services\LembagaService;
 use App\Services\SemesterService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -30,49 +30,35 @@ class Rapor extends Component
 
     public ?int $kelasFilter = null;
 
-    public string $statusFilter = 'semua'; // semua, lengkap, belum_lengkap
+    public string $statusFilter = 'semua';
+
+    public ?int $kelasId = null;
 
     public string $search = '';
 
-    // Settings popover properties
     public ?int $selectedLembagaId = null;
 
     public ?int $selectedMapelId = null;
 
-    public string $deskripsi_a = '';
+    public ?string $deskripsi_a = '';
 
-    public string $deskripsi_b = '';
+    public ?string $deskripsi_b = '';
 
-    public string $deskripsi_c = '';
+    public ?string $deskripsi_c = '';
 
-    public string $deskripsi_d = '';
+    public ?string $deskripsi_d = '';
 
     public $template_file = null;
 
     public ?string $currentTemplatePath = null;
 
-    public function mount(SemesterService $semesterService): void
+    public ?int $selectedSantriId = null;
+
+    public function mount(LembagaService $lembagaService, SemesterService $semesterService): void
     {
-        $this->authorize('viewAny', SettingRaporModel::class);
+        $this->selectedLembagaId = $lembagaService->getActiveLembagaId();
+        $this->semesterId = $semesterService->current()?->id ?? Semester::query()->active()->first()?->id;
 
-        $this->semesterId = $semesterService->current()?->id ?? Semester::query()->latest('id')->first()?->id;
-
-        $activeLembagaId = app(LembagaService::class)->getActiveLembagaId();
-        if ($activeLembagaId) {
-            $this->selectedLembagaId = $activeLembagaId;
-        }
-
-        $firstMapel = $this->mapelOptions->first();
-        if ($firstMapel) {
-            $this->selectedMapelId = $firstMapel->id;
-            $this->loadSettings();
-        }
-
-        $this->loadTemplatePath();
-    }
-
-    public function updatedSelectedLembagaId(): void
-    {
         $this->loadTemplatePath();
     }
 
@@ -81,38 +67,59 @@ class Rapor extends Component
         $setting = SettingRaporModel::query()
             ->where('lembaga_id', $this->selectedLembagaId)
             ->whereNull('mapel_id')
+            ->whereNotNull('template_path')
             ->first();
 
         if (! $setting && $this->selectedLembagaId) {
             $setting = SettingRaporModel::query()
                 ->whereNull('lembaga_id')
                 ->whereNull('mapel_id')
+                ->whereNotNull('template_path')
                 ->first();
         }
 
         $this->currentTemplatePath = $setting?->template_path;
     }
 
-    public function updatedSelectedMapelId(): void
+    public function updatedSelectedLembagaId(): void
     {
-        $this->loadSettings();
+        $this->loadTemplatePath();
+        $this->loadDeskripsiMapel();
     }
 
-    public function loadSettings(): void
+    public function updatedSelectedMapelId(): void
+    {
+        $this->loadDeskripsiMapel();
+    }
+
+    public function loadDeskripsiMapel(): void
     {
         if (! $this->selectedMapelId) {
+            $this->resetDeskripsi();
+
             return;
         }
 
-        $setting = SettingRaporModel::query()->where('mapel_id', $this->selectedMapelId)->first();
+        $setting = SettingRaporModel::query()
+            ->where('mapel_id', $this->selectedMapelId)
+            ->first();
+
         if ($setting) {
-            $this->deskripsi_a = $setting->deskripsi_a ?? '';
-            $this->deskripsi_b = $setting->deskripsi_b ?? '';
-            $this->deskripsi_c = $setting->deskripsi_c ?? '';
-            $this->deskripsi_d = $setting->deskripsi_d ?? '';
+            $this->deskripsi_a = $setting->deskripsi_a;
+            $this->deskripsi_b = $setting->deskripsi_b;
+            $this->deskripsi_c = $setting->deskripsi_c;
+            $this->deskripsi_d = $setting->deskripsi_d;
         } else {
-            $this->reset(['deskripsi_a', 'deskripsi_b', 'deskripsi_c', 'deskripsi_d']);
+            $this->resetDeskripsi();
         }
+    }
+
+    protected function resetDeskripsi(): void
+    {
+        $this->deskripsi_a = '';
+        $this->deskripsi_b = '';
+        $this->deskripsi_c = '';
+        $this->deskripsi_d = '';
     }
 
     public function saveDeskripsi(): void
@@ -131,7 +138,7 @@ class Rapor extends Component
             SettingRaporModel::query()->updateOrCreate(
                 [
                     'mapel_id' => $this->selectedMapelId,
-                    'lembaga_id' => $this->selectedLembagaId,
+                    'lembaga_id' => null,
                 ],
                 [
                     'deskripsi_a' => $this->deskripsi_a,
@@ -145,7 +152,7 @@ class Rapor extends Component
         Flux::toast(variant: 'success', text: __('Deskripsi nilai mata pelajaran berhasil disimpan.'));
     }
 
-    public function uploadTemplate(): void
+    public function uploadTemplate(ImageKitService $imageKitService): void
     {
         $this->authorize('create', SettingRaporModel::class);
 
@@ -161,9 +168,10 @@ class Rapor extends Component
             return;
         }
 
-        DB::transaction(function () {
-            $path = $this->template_file->store('templates/rapor', 'public');
+        $uploadResult = $imageKitService->upload($this->template_file, null, '/siska/templates/rapor', ['rapor', 'template']);
+        $path = $uploadResult->url;
 
+        DB::transaction(function () use ($path) {
             SettingRaporModel::query()->updateOrCreate(
                 [
                     'mapel_id' => null,
@@ -176,10 +184,10 @@ class Rapor extends Component
             $this->reset('template_file');
         });
 
-        Flux::toast(variant: 'success', text: __('Template Rapor berhasil diunggah.'));
+        Flux::toast(variant: 'success', text: __('Template Rapor berhasil diunggah ke ImageKit.'));
     }
 
-    public function deleteTemplate(): void
+    public function deleteTemplate(ImageKitService $imageKitService): void
     {
         $setting = SettingRaporModel::query()
             ->where('lembaga_id', $this->selectedLembagaId)
@@ -198,8 +206,8 @@ class Rapor extends Component
         if ($setting) {
             $this->authorize('delete', $setting);
 
-            if ($setting->template_path && Storage::disk('public')->exists($setting->template_path)) {
-                Storage::disk('public')->delete($setting->template_path);
+            if ($setting->template_path) {
+                $imageKitService->delete($setting->template_path);
             }
 
             $setting->update(['template_path' => null]);

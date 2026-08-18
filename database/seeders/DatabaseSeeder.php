@@ -87,6 +87,9 @@ class DatabaseSeeder extends Seeder
             'keterangan' => 'Kehadiran shalat berjamaah & amalan ibadah',
         ]);
 
+        // Seed Program Pendidikan
+        $this->call(ProgramSeeder::class);
+
         // Execute RoleAndPermissionSeeder AFTER user records are created
         $this->call(RoleAndPermissionSeeder::class);
     }

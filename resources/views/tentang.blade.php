@@ -2,6 +2,13 @@
     $setting = \App\Models\Setting::query()->first();
     $theme = $setting?->landing_theme ?? 'default';
     $lembagaName = $setting?->lembaga ?? config('app.name');
+
+    $pageAboutTitle = $setting?->getLandingContent('page_about_title', __('Tentang Kami'), $theme);
+    $pageAboutSubtitle = $setting?->getLandingContent('page_about_subtitle', __('Mengenal profil, visi misi, dan dedikasi :lembaga dalam membina generasi Qurani.', ['lembaga' => $lembagaName]), $theme);
+    $pageAboutVisi = $setting?->getLandingContent('page_about_visi', __('Menjadi lembaga pendidikan Al-Qur\'an terdepan yang melahirkan generasi Qurani berakhlak mulia, berprestasi, mandiri, dan berkhidmat untuk umat.'), $theme);
+    $pageAboutMisi = $setting?->getLandingContent('page_about_misi', "1. Menyelenggarakan pembelajaran Al-Qur'an terstandarisasi dengan metode Tilawati bersanad.\n2. Menanamkan nilai-nilai adab, aqidah, dan fiqih ibadah praktis sejak dini.\n3. Menyediakan tata kelola kelembagaan yang transparan, modern, dan berbasis digital.", $theme);
+    $pageAboutBannerImage = $setting?->getLandingContent('page_about_banner_image', 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1400&q=80&auto=format&fit=crop', $theme);
+    $pageAboutBuildingImage = $setting?->getLandingContent('page_about_building_image', 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=800&auto=format&fit=crop&q=80', $theme);
 @endphp
 
 <x-layouts::public :title="__('Tentang Kami')">
@@ -10,7 +17,7 @@
         <div class="flex flex-col w-full overflow-hidden font-sans bg-white text-zinc-800">
             
             {{-- Inner Page Hero Banner Matching Screenshot 2 --}}
-            <section class="relative bg-[#f0f8ec] py-20 lg:py-28 overflow-hidden font-sans">
+            <section class="relative bg-[#f0f8ec] py-20 lg:py-28 overflow-hidden font-sans" data-editable-image="page_about_banner_image" data-image-label="Ganti Background Banner Tentang">
                 {{-- Left Botanical Branch Doodle --}}
                 <div class="hidden lg:block absolute left-8 top-1/2 -translate-y-1/2 pointer-events-none opacity-40 text-emerald-800">
                     <svg class="w-36 h-48" viewBox="0 0 120 160" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -41,20 +48,18 @@
 
                 {{-- Center Title & Breadcrumbs --}}
                 <div class="container mx-auto px-4 sm:px-6 relative z-10 text-center max-w-4xl">
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-900 tracking-tight mb-3">
-                        {{ __('Tentang Kami') }}
+                    <h1 data-editable-field="page_about_title" class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-zinc-900 tracking-tight mb-3">
+                        {{ $pageAboutTitle }}
                     </h1>
                     
+                    <p data-editable-field="page_about_subtitle" class="text-zinc-600 text-sm sm:text-base max-w-2xl mx-auto mb-4">
+                        {{ $pageAboutSubtitle }}
+                    </p>
+
                     <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-zinc-500">
                         <a href="{{ route('home') }}" wire:navigate class="hover:text-[#2e5b18] transition">{{ __('Beranda') }}</a>
                         <span>/</span>
                         <span class="text-zinc-800 font-semibold">{{ __('Tentang Lembaga') }}</span>
-                    </div>
-
-                    <div class="mt-4 flex justify-center text-zinc-400">
-                        <svg class="size-5 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
                     </div>
                 </div>
             </section>
@@ -79,8 +84,8 @@
                                     <flux:icon name="flag" class="size-7 text-[#6bb82d]" />
                                 </div>
                                 <h3 class="text-2xl font-extrabold text-[#2e5b18]">{{ __('Visi Utama') }}</h3>
-                                <p class="text-sm text-zinc-700 leading-relaxed">
-                                    {{ __('Menjadi lembaga pendidikan Al-Qur\'an terdepan yang melahirkan generasi Qurani berakhlak mulia, berprestasi, mandiri, dan berkhidmat untuk umat.') }}
+                                <p data-editable-field="page_about_visi" class="text-sm text-zinc-700 leading-relaxed whitespace-pre-line">
+                                    {{ $pageAboutVisi }}
                                 </p>
                             </div>
                         </div>
@@ -92,20 +97,9 @@
                                     <flux:icon name="check-badge" class="size-7 text-[#6bb82d]" />
                                 </div>
                                 <h3 class="text-2xl font-extrabold text-[#2e5b18]">{{ __('Misi Lembaga') }}</h3>
-                                <ul class="space-y-3 text-xs sm:text-sm text-zinc-700">
-                                    <li class="flex items-start gap-2.5">
-                                        <flux:icon name="check-circle" class="size-4 shrink-0 text-[#6bb82d] mt-0.5" />
-                                        <span>{{ __('Menyelenggarakan pembelajaran Al-Qur\'an metode Tilawati secara intensif dan tartil.') }}</span>
-                                    </li>
-                                    <li class="flex items-start gap-2.5">
-                                        <flux:icon name="check-circle" class="size-4 shrink-0 text-[#6bb82d] mt-0.5" />
-                                        <span>{{ __('Membentuk adab dan karakter santri sesuai tuntunan Al-Qur\'an dan Sunnah.') }}</span>
-                                    </li>
-                                    <li class="flex items-start gap-2.5">
-                                        <flux:icon name="check-circle" class="size-4 shrink-0 text-[#6bb82d] mt-0.5" />
-                                        <span>{{ __('Mengembangkan kurikulum diniyah komprehensif (fiqih, aqidah, akhlaq, bahasa Arab).') }}</span>
-                                    </li>
-                                </ul>
+                                <div data-editable-field="page_about_misi" class="text-xs sm:text-sm text-zinc-700 whitespace-pre-line leading-relaxed">
+                                    {{ $pageAboutMisi }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -116,9 +110,9 @@
             <section class="py-20 bg-gradient-to-r from-[#e8f5e1] via-[#f0f8ec] to-[#e8f5e1]">
                 <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                        <div class="lg:col-span-5 rounded-3xl overflow-hidden shadow-lg border-2 border-white">
+                        <div class="lg:col-span-5 rounded-3xl overflow-hidden shadow-lg border-2 border-white" data-editable-image="page_about_building_image" data-image-label="Ganti Foto Fasilitas / Gedung">
                             <img 
-                                src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=800&auto=format&fit=crop&q=80" 
+                                src="{{ $pageAboutBuildingImage }}" 
                                 alt="Santri Belajar Bersama" 
                                 class="w-full h-full object-cover"
                             >
@@ -145,7 +139,7 @@
 
                                 <div class="p-5 rounded-2xl bg-white border border-[#d6eda6] shadow-xs text-center">
                                     <div class="size-10 rounded-xl bg-[#f0f8ec] text-[#2e5b18] flex items-center justify-center mx-auto mb-2">
-                                        <flux:icon name="users" class="size-5 text-[#6bb82d]" />
+                                        <flux:icon name="user-group" class="size-5 text-[#6bb82d]" />
                                     </div>
                                     <h4 class="font-bold text-xs text-zinc-900">{{ __('Pendampingan') }}</h4>
                                     <p class="text-[11px] text-zinc-500 mt-1">{{ __('Klasikal & Privat') }}</p>
@@ -168,9 +162,9 @@
         {{-- ================= DEFAULT THEME (KLASIK EMERALD) ================= --}}
         <div class="flex flex-col w-full overflow-hidden">
             {{-- Hero --}}
-            <section class="relative overflow-hidden bg-gradient-to-br from-[#06382b] via-[#094a38] to-[#021d16] py-20 text-white border-b-2 border-emerald-500/30">
+            <section class="relative overflow-hidden bg-gradient-to-br from-[#06382b] via-[#094a38] to-[#021d16] py-20 text-white border-b-2 border-emerald-500/30" data-editable-image="page_about_banner_image" data-image-label="Ganti Background Banner Tentang">
                 <img
-                    src="https://images.unsplash.com/photo-1585036156171-384164a8c675?w=1400&q=80&auto=format&fit=crop"
+                    src="{{ $pageAboutBannerImage }}"
                     alt="Santri mengaji Al-Hikmah"
                     class="absolute inset-0 size-full object-cover opacity-20"
                     loading="eager"
@@ -180,11 +174,11 @@
                     <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-emerald-200 mb-4">
                         ✦ {{ __('Profil & Identitas') }}
                     </span>
-                    <flux:heading size="xl" class="text-4xl! font-extrabold text-white leading-tight sm:text-5xl!">
-                        {{ __('Mendidik Generasi Qurani Beradab') }}
+                    <flux:heading size="xl" class="text-4xl! font-extrabold text-white leading-tight sm:text-5xl!" data-editable-field="page_about_title">
+                        {{ $pageAboutTitle }}
                     </flux:heading>
-                    <p class="mt-4 max-w-2xl text-sm text-emerald-100/90 leading-relaxed">
-                        {{ __('TPQ & Madin Al-Hikmah adalah lembaga pendidikan Al-Qur\'an dan Diniyah yang berkomitmen mencetak generasi berakhlak mulia menggunakan metode Tilawati — belajar Al-Qur\'an mudah dan menyenangkan.') }}
+                    <p class="mt-4 max-w-2xl text-sm text-emerald-100/90 leading-relaxed" data-editable-field="page_about_subtitle">
+                        {{ $pageAboutSubtitle }}
                     </p>
                 </div>
             </section>
@@ -219,8 +213,8 @@
                                 <flux:icon name="flag" class="size-7" />
                             </div>
                             <h3 class="text-2xl font-bold text-emerald-950">{{ __('Visi Utama') }}</h3>
-                            <p class="mt-3 text-xs text-zinc-600 leading-relaxed">
-                                {{ __('Menjadi lembaga pendidikan Al-Qur\'an terkemuka yang menghasilkan generasi Qurani yang berakhlak mulia, berprestasi, dan bermanfaat bagi agama, orang tua, serta masyarakat.') }}
+                            <p data-editable-field="page_about_visi" class="mt-3 text-xs text-zinc-600 leading-relaxed whitespace-pre-line">
+                                {{ $pageAboutVisi }}
                             </p>
                         </div>
 
@@ -229,24 +223,9 @@
                                 <flux:icon name="check-badge" class="size-7" />
                             </div>
                             <h3 class="text-2xl font-bold text-emerald-950">{{ __('Misi Lembaga') }}</h3>
-                            <ul class="mt-4 flex flex-col gap-3 text-xs text-zinc-600">
-                                <li class="flex items-start gap-2.5">
-                                    <flux:icon name="check-circle" class="mt-0.5 size-4 shrink-0 text-emerald-600" />
-                                    <span>{{ __('Menyelenggarakan pendidikan Al-Qur\'an yang berkualitas dengan metode pembelajaran yang efektif dan menyenangkan.') }}</span>
-                                </li>
-                                <li class="flex items-start gap-2.5">
-                                    <flux:icon name="check-circle" class="mt-0.5 size-4 shrink-0 text-emerald-600" />
-                                    <span>{{ __('Membentuk karakter dan kepribadian santri berdasarkan nilai-nilai Islam dan Al-Qur\'an.') }}</span>
-                                </li>
-                                <li class="flex items-start gap-2.5">
-                                    <flux:icon name="check-circle" class="mt-0.5 size-4 shrink-0 text-emerald-600" />
-                                    <span>{{ __('Mengembangkan potensi santri melalui program pendidikan diniyah komprehensif.') }}</span>
-                                </li>
-                                <li class="flex items-start gap-2.5">
-                                    <flux:icon name="check-circle" class="mt-0.5 size-4 shrink-0 text-emerald-600" />
-                                    <span>{{ __('Membangun kerja sama yang baik dengan orang tua dan masyarakat dalam mendidik generasi Qurani.') }}</span>
-                                </li>
-                            </ul>
+                            <div data-editable-field="page_about_misi" class="mt-4 text-xs text-zinc-600 leading-relaxed whitespace-pre-line">
+                                {{ $pageAboutMisi }}
+                            </div>
                         </div>
                     </div>
                 </div>

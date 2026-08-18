@@ -35,8 +35,8 @@ test('the about page renders', function () {
 test('the program page renders', function () {
     $this->get(route('program'))
         ->assertOk()
-        ->assertSee('Program Pendidikan Al-Hikmah')
-        ->assertSee('Taman Pendidikan Al-Qur\'an');
+        ->assertSee('Program Pendidikan')
+        ->assertSee('Kurikulum');
 });
 
 test('the galeri page renders', function () {

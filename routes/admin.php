@@ -24,6 +24,7 @@ use App\Livewire\Keuangan\Spp;
 use App\Livewire\Keuangan\Tabungan;
 use App\Livewire\Konten\Contacts;
 use App\Livewire\Konten\Galleries;
+use App\Livewire\Konten\Programs;
 use App\Livewire\Konten\Subscriptions;
 use App\Livewire\Settings\Index;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('import/{type}/template', [ExportImportController::class, 'downloadTemplate'])->name('import.template');
     Route::post('import/{type}', [ExportImportController::class, 'importExcel'])->name('import.excel');
 
+    Route::livewire('konten/programs', Programs::class)->name('konten.programs');
     Route::livewire('konten/galeri', Galleries::class)->name('konten.galeri');
     Route::livewire('konten/pesan', Contacts::class)->name('konten.pesan');
     Route::livewire('konten/langganan', Subscriptions::class)->name('konten.langganan');

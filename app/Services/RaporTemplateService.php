@@ -135,22 +135,47 @@ class RaporTemplateService
     }
 
     /**
+     * Resolve template file from ImageKit URL or local storage disk.
+     */
+    public function getLocalTemplateFile(SettingRapor $settingRapor): string
+    {
+        $path = $settingRapor->template_path;
+        if (empty($path)) {
+            throw new \RuntimeException('Template rapor belum dikonfigurasi.');
+        }
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            $ext = pathinfo(parse_url($path, PHP_URL_PATH) ?: '', PATHINFO_EXTENSION) ?: 'docx';
+            $tempFile = tempnam(sys_get_temp_dir(), 'rapor_tpl_').'.'.$ext;
+            $content = @file_get_contents($path);
+            if ($content === false) {
+                throw new \RuntimeException('Gagal mengunduh file template dari ImageKit: '.$path);
+            }
+            file_put_contents($tempFile, $content);
+
+            return $tempFile;
+        }
+
+        $file = storage_path('app/public/'.$path);
+        if (! file_exists($file)) {
+            throw new \RuntimeException('File template tidak ditemukan: '.$path);
+        }
+
+        return $file;
+    }
+
+    /**
      * Render report template based on file format (.docx, .xml, .html) into PDF / printable output.
      *
      * @param  array<string, mixed>  $data
      */
     public function renderReport(SettingRapor $settingRapor, array $data): Response|BinaryFileResponse
     {
-        $path = $settingRapor->template_path;
-        $file = storage_path('app/public/'.$path);
-
-        if (! file_exists($file)) {
-            throw new \RuntimeException('File template tidak ditemukan: '.$path);
-        }
+        $file = $this->getLocalTemplateFile($settingRapor);
 
         // If file is a zipped .docx archive
         if ($this->isZipArchive($file)) {
-            return $this->renderDocxToPdf($settingRapor, $data);
+            return $this->renderDocxToPdf($settingRapor, $data, $file);
         }
 
         $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
@@ -169,9 +194,9 @@ class RaporTemplateService
      *
      * @param  array<string, mixed>  $data
      */
-    protected function renderDocxToPdf(SettingRapor $settingRapor, array $data): BinaryFileResponse|Response
+    protected function renderDocxToPdf(SettingRapor $settingRapor, array $data, ?string $resolvedFile = null): BinaryFileResponse|Response
     {
-        $docxFile = $this->generateDocxReport($settingRapor, $data);
+        $docxFile = $this->generateDocxReport($settingRapor, $data, $resolvedFile);
         $fileName = 'Rapor_'.Str::slug($data['nama']).'_'.date('Y').'.pdf';
 
         try {
@@ -277,9 +302,9 @@ class RaporTemplateService
      *
      * @param  array<string, mixed>  $data
      */
-    public function generateDocxReport(SettingRapor $settingRapor, array $data): string
+    public function generateDocxReport(SettingRapor $settingRapor, array $data, ?string $resolvedFile = null): string
     {
-        $templateFile = storage_path('app/public/'.$settingRapor->template_path);
+        $templateFile = $resolvedFile ?: $this->getLocalTemplateFile($settingRapor);
 
         if (! file_exists($templateFile)) {
             throw new \RuntimeException('File template tidak ditemukan: '.$settingRapor->template_path);
