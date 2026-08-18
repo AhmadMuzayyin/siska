@@ -290,11 +290,19 @@ class TelegramService
         // 1. Handle Callback Query (e.g. confirm_guru:12)
         if ($update->has('callback_query')) {
             $callbackQuery = $update->getCallbackQuery();
-            $callbackId = (string) $callbackQuery->get('id');
-            $data = (string) $callbackQuery->get('data');
-            $message = $callbackQuery->get('message');
-            $chatId = $message?->get('chat')?->get('id');
-            $messageId = $message?->get('message_id');
+            $callbackId = (string) ($callbackQuery->get('id') ?: $callbackQuery->id);
+            $data = (string) ($callbackQuery->get('data') ?: $callbackQuery->data);
+            $message = $callbackQuery->get('message') ?: $callbackQuery->message;
+            $chat = $message ? ($message->get('chat') ?: $message->chat) : null;
+            $chatId = $chat ? ($chat->get('id') ?: $chat->id) : null;
+            $messageId = $message ? ($message->get('message_id') ?: $message->message_id) : null;
+
+            Log::info('Telegram Processing Callback Query', [
+                'callback_id' => $callbackId,
+                'data' => $data,
+                'chat_id' => $chatId,
+                'message_id' => $messageId,
+            ]);
 
             if (str_starts_with($data, 'confirm_guru:')) {
                 $guruId = (int) substr($data, strlen('confirm_guru:'));
@@ -307,6 +315,7 @@ class TelegramService
                     ]);
 
                     $teacherName = $guru->user?->name ?? "Guru #{$guru->id}";
+
                     $this->answerCallbackQuery(
                         $callbackId,
                         "✅ Sukses! Akun Guru {$teacherName} telah diaktifkan.",
@@ -324,7 +333,7 @@ class TelegramService
                             ."━━━━━━━━━━━━━━━━━━━━\n"
                             .'<i>Akun guru telah aktif dan dapat langsung masuk ke portal.</i>';
 
-                        $this->editMessageText($chatId, $messageId, $updatedText, []);
+                        $this->editMessageText($chatId, (int) $messageId, $updatedText, []);
                     }
                 } else {
                     $this->answerCallbackQuery($callbackId, 'Data guru tidak ditemukan.', showAlert: true);
