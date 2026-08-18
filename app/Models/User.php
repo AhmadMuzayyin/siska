@@ -39,7 +39,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read Guru|null $guru
  * @property-read Collection<int, ConnectedAccount> $connectedAccounts
  */
-#[Fillable(['name', 'email', 'password', 'role', 'account_type', 'lembaga_id', 'santri_id'])]
+#[Fillable(['name', 'email', 'email_verified_at', 'password', 'role', 'account_type', 'lembaga_id', 'santri_id'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {

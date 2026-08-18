@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['user_id', 'alamat', 'whatsapp', 'gender', 'foto', 'status', 'rfid_uid', 'pendidikan_terakhir'])]
+#[Fillable(['user_id', 'alamat', 'whatsapp', 'gender', 'foto', 'status', 'rfid_uid', 'pendidikan_terakhir', 'notification_read_at'])]
 class Guru extends Model
 {
     use HasFactory;
@@ -22,6 +22,7 @@ class Guru extends Model
         return [
             'gender' => Gender::class,
             'status' => GuruStatus::class,
+            'notification_read_at' => 'datetime',
         ];
     }
 

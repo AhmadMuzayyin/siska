@@ -9,6 +9,7 @@ use App\Models\Lembaga;
 use App\Models\Santri;
 use App\Models\Setting;
 use App\Rules\IndonesianPhoneNumber;
+use App\Services\TelegramService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -129,7 +130,10 @@ class DaftarSantri extends Component
         $validated['pendidikan_ibu'] = filled($validated['pendidikan_ibu']) ? $validated['pendidikan_ibu'] : '-';
         $validated['pekerjaan_ibu'] = filled($validated['pekerjaan_ibu']) ? $validated['pekerjaan_ibu'] : '-';
 
-        Santri::query()->create($validated);
+        $santri = Santri::query()->create($validated);
+
+        // Kirim notifikasi Telegram ke Admin
+        app(TelegramService::class)->sendNewSantriNotification($santri);
 
         $this->submitted = true;
         session()->flash('status', 'Pendaftaran berhasil dikirim, menunggu konfirmasi admin.');

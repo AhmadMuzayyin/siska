@@ -8,6 +8,7 @@ use App\Models\Kelas;
 use App\Models\Lembaga;
 use App\Models\Santri;
 use App\Services\SettingService;
+use App\Services\TelegramService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -51,9 +52,12 @@ class SantriRegistrationController extends Controller
             $data['lembaga_id'] = Kelas::query()->find($data['kelas_id'])?->lembaga_id;
         }
 
-        DB::transaction(function () use ($data) {
-            Santri::query()->create($data);
+        $santri = DB::transaction(function () use ($data) {
+            return Santri::query()->create($data);
         });
+
+        // Kirim notifikasi Telegram ke Admin
+        app(TelegramService::class)->sendNewSantriNotification($santri);
 
         return back()->with('status', 'Pendaftaran berhasil dikirim, menunggu konfirmasi admin.');
     }

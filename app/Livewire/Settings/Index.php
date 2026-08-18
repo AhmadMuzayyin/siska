@@ -8,6 +8,7 @@ use App\Enums\UserRole;
 use App\Models\Setting;
 use App\Services\ImageKitService;
 use App\Services\SettingService;
+use App\Services\TelegramService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -61,6 +62,10 @@ class Index extends Component
 
     public bool $is_ppdb_open = true;
 
+    public string $telegram_bot_token = '';
+
+    public string $telegram_admin_chat_id = '';
+
     /**
      * @var array<string, mixed>
      */
@@ -101,6 +106,8 @@ class Index extends Component
         $this->landing_theme = (string) ($setting->landing_theme ?: 'default');
         $this->is_input_nilai_open = (bool) ($setting->is_input_nilai_open ?? true);
         $this->is_ppdb_open = (bool) ($setting->is_ppdb_open ?? true);
+        $this->telegram_bot_token = (string) ($setting->telegram_bot_token ?? '');
+        $this->telegram_admin_chat_id = (string) ($setting->telegram_admin_chat_id ?? '');
 
         // Load landing page content
         $allCustom = $setting->landing_custom_content ?? [];
@@ -224,6 +231,8 @@ class Index extends Component
             'google_maps_url' => 'nullable|url|max:1000',
             'is_input_nilai_open' => 'boolean',
             'is_ppdb_open' => 'boolean',
+            'telegram_bot_token' => 'nullable|string|max:255',
+            'telegram_admin_chat_id' => 'nullable|string|max:255',
             'logo_upload' => 'nullable|image|mimes:png,jpg,jpeg,svg,webp|max:2048',
             'favicon_upload' => 'nullable|file|mimes:png,jpg,jpeg,svg,ico|max:1024',
         ]);
@@ -264,11 +273,33 @@ class Index extends Component
             'google_maps_url' => $validated['google_maps_url'],
             'is_input_nilai_open' => $validated['is_input_nilai_open'],
             'is_ppdb_open' => $validated['is_ppdb_open'],
+            'telegram_bot_token' => $validated['telegram_bot_token'],
+            'telegram_admin_chat_id' => $validated['telegram_admin_chat_id'],
             'logo' => $logoPath,
             'favicon' => $faviconPath,
         ]);
 
         Flux::toast(variant: 'success', text: __('Pengaturan lembaga & aplikasi berhasil disimpan.'));
+    }
+
+    public function testTelegramNotification(TelegramService $telegramService): void
+    {
+        if (Auth::user()?->role !== UserRole::Admin) {
+            abort(403);
+        }
+
+        $msg = "🤖 <b>Uji Coba Notifikasi SISKA Berhasil!</b>\n\n"
+            ."Bot Telegram Anda telah berhasil terhubung dengan sistem SISKA.\n"
+            .'• <b>Waktu Uji:</b> '.now()->translatedFormat('d F Y, H:i:s')." WIB\n"
+            .'• <b>Status:</b> Siap menerima notifikasi!';
+
+        $result = $telegramService->sendMessage($msg);
+
+        if ($result) {
+            Flux::toast(variant: 'success', text: __('Pesan uji coba Telegram berhasil dikirim ke Chat ID admin!'));
+        } else {
+            Flux::toast(variant: 'danger', text: __('Gagal mengirim pesan uji coba Telegram. Pastikan Bot Token & Chat ID benar serta bot sudah dimulai (/start).'));
+        }
     }
 
     public function savePageContent(SettingService $settingService): void

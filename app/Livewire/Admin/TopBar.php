@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Admin;
 
+use App\Enums\GuruStatus;
 use App\Enums\SantriStatus;
 use App\Models\Contact;
+use App\Models\Guru;
 use App\Models\Santri;
 use App\Models\Setting;
 use App\Services\LembagaService;
@@ -20,14 +22,21 @@ class TopBar extends Component
 
     #[On('semester-changed')]
     #[On('lembaga-changed')]
+    #[On('notification-updated')]
+    #[On('refreshTopBar')]
     public function refreshTopBar(): void
     {
-        // Re-renders top-bar component state automatically when semester or lembaga changes
+        // Re-renders top-bar component state automatically in real-time
     }
 
     public function markAsRead(string $type, int $id): void
     {
-        if ($type === 'santri') {
+        if ($type === 'guru') {
+            $guru = Guru::query()->find($id);
+            if ($guru) {
+                $guru->update(['notification_read_at' => now()]);
+            }
+        } elseif ($type === 'santri') {
             $santri = Santri::query()->find($id);
             if ($santri) {
                 $santri->update(['notification_read_at' => now()]);
@@ -40,6 +49,13 @@ class TopBar extends Component
         }
     }
 
+    public function openNotification(string $type, int $id, string $url): mixed
+    {
+        $this->markAsRead($type, $id);
+
+        return redirect()->to($url);
+    }
+
     public function markAllAsRead(): void
     {
         Contact::query()->where('is_dibaca', false)->update(['is_dibaca' => true]);
@@ -49,12 +65,26 @@ class TopBar extends Component
             ->whereNull('notification_read_at')
             ->update(['notification_read_at' => now()]);
 
+        Guru::query()
+            ->where('status', GuruStatus::TidakAktif)
+            ->whereNull('notification_read_at')
+            ->update(['notification_read_at' => now()]);
+
         Flux::toast(variant: 'success', text: __('Seluruh notifikasi telah ditandai dibaca.'));
     }
 
     public function render(): View
     {
         $setting = Setting::query()->first();
+
+        /** @var Collection<int, Guru> $pendingGurus */
+        $pendingGurus = Guru::query()
+            ->with('user')
+            ->where('status', GuruStatus::TidakAktif)
+            ->whereNull('notification_read_at')
+            ->latest()
+            ->take(10)
+            ->get();
 
         /** @var Collection<int, Santri> $pendingSantris */
         $pendingSantris = Santri::query()
@@ -72,12 +102,13 @@ class TopBar extends Component
             ->take(10)
             ->get();
 
-        $unreadCount = $pendingSantris->count() + $recentContacts->count();
+        $unreadCount = $pendingGurus->count() + $pendingSantris->count() + $recentContacts->count();
         $activeSemester = app(SemesterService::class)->current();
         $activeLembaga = app(LembagaService::class)->current();
         $activeLembagaName = $activeLembaga?->nama ?? __('Semua Lembaga');
 
         return view('livewire.admin.top-bar', [
+            'pendingGurus' => $pendingGurus,
             'pendingSantris' => $pendingSantris,
             'recentContacts' => $recentContacts,
             'unreadCount' => $unreadCount,

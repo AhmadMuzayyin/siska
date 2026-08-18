@@ -146,25 +146,32 @@
         </div>
 
         {{-- Filter Pills --}}
-        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+        <div class="grid grid-cols-4 gap-1 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
             <button
                 type="button"
                 wire:click="$set('activeFilter', 'all')"
-                class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center {{ $activeFilter === 'all' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200' }}"
+                class="py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center truncate {{ $activeFilter === 'all' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200' }}"
             >
                 {{ __('Semua') }} ({{ $unreadCount }})
             </button>
             <button
                 type="button"
-                wire:click="$set('activeFilter', 'santri')"
-                class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center {{ $activeFilter === 'santri' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200' }}"
+                wire:click="$set('activeFilter', 'guru')"
+                class="py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center truncate {{ $activeFilter === 'guru' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200' }}"
             >
-                {{ __('Santri Baru') }} ({{ $pendingSantris->count() }})
+                {{ __('Guru') }} ({{ $pendingGurus->count() }})
+            </button>
+            <button
+                type="button"
+                wire:click="$set('activeFilter', 'santri')"
+                class="py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center truncate {{ $activeFilter === 'santri' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200' }}"
+            >
+                {{ __('Santri') }} ({{ $pendingSantris->count() }})
             </button>
             <button
                 type="button"
                 wire:click="$set('activeFilter', 'kontak')"
-                class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center {{ $activeFilter === 'kontak' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200' }}"
+                class="py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer text-center truncate {{ $activeFilter === 'kontak' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200' }}"
             >
                 {{ __('Pesan') }} ({{ $recentContacts->count() }})
             </button>
@@ -173,14 +180,71 @@
         {{-- Notification Cards List --}}
         <div class="space-y-3 max-h-[calc(100vh-14rem)] overflow-y-auto pr-1">
             
-            {{-- 1. Pendaftaran Calon Santri Baru --}}
+            {{-- 1. Pendaftaran Guru Baru (Google Auth / Registrasi) --}}
+            @if ($activeFilter === 'all' || $activeFilter === 'guru')
+                @foreach ($pendingGurus as $guru)
+                    <div 
+                        wire:key="notif-guru-{{ $guru->id }}"
+                        class="p-3.5 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/60 space-y-2 transition-all hover:shadow-xs cursor-pointer group"
+                        wire:click="openNotification('guru', {{ $guru->id }}, '{{ route('kepegawaian.guru') }}')"
+                    >
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="size-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                                    {{ $guru->user?->name ?? 'Guru Baru' }}
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] text-zinc-500 dark:text-zinc-400 shrink-0">
+                                    {{ $guru->created_at?->diffForHumans() }}
+                                </span>
+                                <button 
+                                    type="button" 
+                                    wire:click.stop="markAsRead('guru', {{ $guru->id }})" 
+                                    title="{{ __('Tandai Dibaca') }}" 
+                                    class="text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 p-1 rounded-md hover:bg-emerald-100 dark:hover:bg-emerald-900/40 cursor-pointer transition-colors"
+                                >
+                                    <flux:icon name="check" class="size-3.5" />
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed">
+                            {{ __('Mendaftar via') }} <strong class="text-zinc-900 dark:text-zinc-100">{{ $guru->user?->account_type?->value === 'google' ? 'Google OAuth' : 'Registrasi Akun' }}</strong>
+                            &bull; <span class="text-zinc-500 dark:text-zinc-400">{{ $guru->user?->email }}</span>
+                        </p>
+
+                        <div class="flex items-center justify-between pt-1 border-t border-emerald-200/50 dark:border-emerald-800/40">
+                            <span class="inline-flex items-center rounded-md bg-emerald-100 dark:bg-emerald-900/50 px-2 py-0.5 text-[10px] font-bold text-emerald-800 dark:text-emerald-300">
+                                {{ __('Perlu Konfirmasi') }}
+                            </span>
+
+                            <button
+                                type="button"
+                                wire:click.stop="openNotification('guru', {{ $guru->id }}, '{{ route('kepegawaian.guru') }}')"
+                                class="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
+                            >
+                                <span>{{ __('Konfirmasi Guru') }}</span>
+                                <flux:icon name="arrow-right" class="size-3" />
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+
+            {{-- 2. Pendaftaran Calon Santri Baru --}}
             @if ($activeFilter === 'all' || $activeFilter === 'santri')
                 @foreach ($pendingSantris as $santri)
-                    <div class="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 space-y-2 transition-all hover:shadow-xs">
+                    <div 
+                        wire:key="notif-santri-{{ $santri->id }}"
+                        class="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 space-y-2 transition-all hover:shadow-xs cursor-pointer group"
+                        wire:click="openNotification('santri', {{ $santri->id }}, '{{ route('kesantrian.santri') }}')"
+                    >
                         <div class="flex items-start justify-between gap-2">
                             <div class="flex items-center gap-2">
                                 <span class="size-2 rounded-full bg-amber-500 shrink-0"></span>
-                                <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                                <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">
                                     {{ $santri->nama_lengkap }}
                                 </span>
                             </div>
@@ -188,7 +252,12 @@
                                 <span class="text-[10px] text-zinc-500 dark:text-zinc-400 shrink-0">
                                     {{ $santri->created_at?->diffForHumans() }}
                                 </span>
-                                <button type="button" wire:click="markAsRead('santri', {{ $santri->id }})" title="{{ __('Tandai Dibaca') }}" class="text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 p-0.5 rounded cursor-pointer">
+                                <button 
+                                    type="button" 
+                                    wire:click.stop="markAsRead('santri', {{ $santri->id }})" 
+                                    title="{{ __('Tandai Dibaca') }}" 
+                                    class="text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 p-1 rounded-md hover:bg-amber-100 dark:hover:bg-amber-900/40 cursor-pointer transition-colors"
+                                >
                                     <flux:icon name="check" class="size-3.5" />
                                 </button>
                             </div>
@@ -206,28 +275,31 @@
                                 {{ __('Menunggu Persetujuan') }}
                             </span>
 
-                            <a
-                                href="{{ route('kesantrian.santri') }}"
-                                wire:click="markAsRead('santri', {{ $santri->id }})"
-                                wire:navigate
-                                class="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1"
+                            <button
+                                type="button"
+                                wire:click.stop="openNotification('santri', {{ $santri->id }}, '{{ route('kesantrian.santri') }}')"
+                                class="text-xs font-bold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
                             >
                                 <span>{{ __('Verifikasi') }}</span>
                                 <flux:icon name="arrow-right" class="size-3" />
-                            </a>
+                            </button>
                         </div>
                     </div>
                 @endforeach
             @endif
 
-            {{-- 2. Pesan Masuk Publik --}}
+            {{-- 3. Pesan Masuk Publik --}}
             @if ($activeFilter === 'all' || $activeFilter === 'kontak')
                 @foreach ($recentContacts as $contact)
-                    <div class="p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/60 space-y-2 transition-all hover:shadow-xs">
+                    <div 
+                        wire:key="notif-contact-{{ $contact->id }}"
+                        class="p-3.5 rounded-2xl bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800/60 space-y-2 transition-all hover:shadow-xs cursor-pointer group"
+                        wire:click="openNotification('contact', {{ $contact->id }}, '{{ route('konten.pesan') }}')"
+                    >
                         <div class="flex items-start justify-between gap-2">
                             <div class="flex items-center gap-2">
                                 <span class="size-2 rounded-full bg-blue-500 shrink-0"></span>
-                                <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">
+                                <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
                                     {{ $contact->name ?? ($contact->nama ?? 'Pengirim') }}
                                 </span>
                             </div>
@@ -235,7 +307,12 @@
                                 <span class="text-[10px] text-zinc-500 dark:text-zinc-400 shrink-0">
                                     {{ $contact->created_at?->diffForHumans() }}
                                 </span>
-                                <button type="button" wire:click="markAsRead('contact', {{ $contact->id }})" title="{{ __('Tandai Dibaca') }}" class="text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 p-0.5 rounded cursor-pointer">
+                                <button 
+                                    type="button" 
+                                    wire:click.stop="markAsRead('contact', {{ $contact->id }})" 
+                                    title="{{ __('Tandai Dibaca') }}" 
+                                    class="text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 p-1 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/40 cursor-pointer transition-colors"
+                                >
                                     <flux:icon name="check" class="size-3.5" />
                                 </button>
                             </div>
@@ -251,22 +328,21 @@
                                 {{ __('Pesan Masuk') }}
                             </span>
 
-                            <a
-                                href="{{ route('konten.pesan') }}"
-                                wire:click="markAsRead('contact', {{ $contact->id }})"
-                                wire:navigate
-                                class="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1"
+                            <button
+                                type="button"
+                                wire:click.stop="openNotification('contact', {{ $contact->id }}, '{{ route('konten.pesan') }}')"
+                                class="text-xs font-bold text-blue-600 hover:text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
                             >
                                 <span>{{ __('Buka Pesan') }}</span>
                                 <flux:icon name="arrow-right" class="size-3" />
-                            </a>
+                            </button>
                         </div>
                     </div>
                 @endforeach
             @endif
 
             {{-- Empty State --}}
-            @if ($unreadCount === 0 || ($activeFilter === 'santri' && $pendingSantris->isEmpty()) || ($activeFilter === 'kontak' && $recentContacts->isEmpty()))
+            @if ($unreadCount === 0 || ($activeFilter === 'guru' && $pendingGurus->isEmpty()) || ($activeFilter === 'santri' && $pendingSantris->isEmpty()) || ($activeFilter === 'kontak' && $recentContacts->isEmpty()))
                 <div class="py-12 px-4 text-center flex flex-col items-center justify-center space-y-3">
                     <div class="size-12 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                         <flux:icon name="check-circle" class="size-7" />
@@ -276,7 +352,7 @@
                             {{ __('Tidak Ada Notifikasi Baru') }}
                         </h4>
                         <p class="text-xs text-zinc-500 dark:text-zinc-400 max-w-xs">
-                            {{ __('Seluruh data santri dan pesan kontak masuk telah ditinjau dan mutakhir.') }}
+                            {{ __('Seluruh data guru, santri, dan pesan kontak masuk telah ditinjau dan mutakhir.') }}
                         </p>
                     </div>
                 </div>

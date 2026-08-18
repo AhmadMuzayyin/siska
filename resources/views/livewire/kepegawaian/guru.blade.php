@@ -47,12 +47,33 @@
                         <flux:table.cell>{{ $guru->user->email }}</flux:table.cell>
                         <flux:table.cell>{{ $guru->whatsapp }}</flux:table.cell>
                         <flux:table.cell class="py-0">
-                            <flux:badge size="sm" :color="$guru->status->value === 'aktif' ? 'green' : 'zinc'">
-                                {{ $guru->status->value === 'aktif' ? __('Aktif') : __('Tidak Aktif') }}
-                            </flux:badge>
+                            @if ($guru->status->value === 'aktif')
+                                <button type="button" wire:click="toggleStatus({{ $guru->id }})" title="{{ __('Klik untuk nonaktifkan') }}" class="cursor-pointer">
+                                    <flux:badge size="sm" color="green" icon="check-circle">
+                                        {{ __('Aktif') }}
+                                    </flux:badge>
+                                </button>
+                            @else
+                                <button type="button" wire:click="toggleStatus({{ $guru->id }})" title="{{ __('Klik untuk aktifkan') }}" class="cursor-pointer">
+                                    <flux:badge size="sm" color="amber" icon="clock">
+                                        {{ __('Perlu Konfirmasi / Non-Aktif') }}
+                                    </flux:badge>
+                                </button>
+                            @endif
                         </flux:table.cell>
                         <flux:table.cell align="end">
-                            <div class="flex justify-end gap-1">
+                            <div class="flex items-center justify-end gap-1.5 whitespace-nowrap">
+                                @if ($guru->status->value !== 'aktif')
+                                    <button
+                                        type="button"
+                                        wire:click="toggleStatus({{ $guru->id }})"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white shadow-2xs transition-colors cursor-pointer"
+                                        title="{{ __('Konfirmasi & Aktifkan Guru') }}"
+                                    >
+                                        <flux:icon name="check" class="size-3.5 shrink-0" />
+                                        <span>{{ __('Aktifkan') }}</span>
+                                    </button>
+                                @endif
                                 <flux:button size="sm" variant="ghost" icon="pencil-square" wire:click="edit({{ $guru->id }})" />
                                 <flux:button
                                     size="sm"

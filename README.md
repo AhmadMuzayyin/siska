@@ -1,6 +1,6 @@
 # SISKA - Sistem Informasi Santri dan Kelembagaan
 
-SISKA adalah sistem manajemen terpadu untuk pondok pesantren dan institusi pendidikan Islam yang mencakup pengelolaan santri, akademik, presensi RFID, keuangan/SPP, penggajian guru, publikasi landing page, serta multi-lembaga.
+SISKA adalah sistem manajemen terpadu modern untuk pondok pesantren, madrasah, dan institusi pendidikan Islam. Sistem ini mencakup pengelolaan santri, akademik & rapor, presensi RFID, keuangan/SPP, penggajian guru, publikasi landing page multi-tema dengan visual editor, notifikasi bot Telegram, serta arsitektur multi-lembaga.
 
 ---
 
@@ -9,9 +9,51 @@ SISKA adalah sistem manajemen terpadu untuk pondok pesantren dan institusi pendi
 - **Framework**: [Laravel 13](https://laravel.com) (PHP 8.4+)
 - **Frontend & Reactivity**: [Livewire 4](https://livewire.laravel.com) + [Livewire Flux](https://flux.livewire.com) + [Alpine.js](https://alpinejs.dev)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com)
-- **Autentikasi & Keamanan**: [Laravel Fortify v1](https://laravel.com/docs/fortify) (2FA TOTP, Password Confirmation, Rate Limiting, CSP Middleware)
-- **Database**: MySQL / SQLite (Development & Testing)
+- **Cloud Media Storage**: [ImageKit.io](https://imagekit.io) (Upload CDN & Media Optimization API)
+- **Bot & Notifikasi**: [Telegram Bot SDK](https://telegram-bot-sdk.com/docs/) (`irazasyed/telegram-bot-sdk`)
+- **Autentikasi & OAuth**: [Laravel Fortify](https://laravel.com/docs/fortify) (2FA TOTP, Passkeys) + [Laravel Socialite](https://laravel.com/docs/socialite) (Google OAuth)
+- **Database**: MySQL / SQLite
 - **Testing**: [Pest PHP v4](https://pestphp.com)
+
+---
+
+## 🌟 Fitur Unggulan Terbaru
+
+### 1. 🤖 Integrasi Bot Telegram (Notifikasi & Perintah Interaktif)
+- **Notifikasi Otomatis ke Admin**:
+  - **Pendaftaran Guru Baru**: Notifikasi instan dengan tombol inline **`[ ✅ Konfirmasi & Aktifkan ]`** untuk aktivasi 1-klik langsung dari chat Telegram.
+  - **Pendaftaran Calon Santri Baru**: Detail nama, lembaga, kelas, dan nomor kontak wali santri saat mendaftar online (`/daftar`).
+  - **Input Nilai oleh Guru**: Notifikasi mata pelajaran, nama guru, semester, santri, dan nilai yang disimpan.
+  - **Notifikasi Login Pengguna**: Notifikasi saat user (Guru, Santri, Operator, Kepala Madrasah, Keuangan) berhasil masuk ke sistem.
+- **Perintah Interaktif Bot (*Commands*)**:
+  - `/start` : Panduan bot dan informasi sistem SISKA.
+  - `/online` : Menampilkan daftar pengguna yang sedang aktif/login pada sistem.
+  - `/akademik` : Status guru yang sudah input nilai vs yang belum input nilai pada semester berjalan (`Format: 1. Nama - ✅ Sudah Input / ⏳ Belum Input`).
+  - `/staff` : Daftar seluruh staf lembaga (Nama, Email, Jabatan / Role, dan Wali Kelas).
+- **Pengujian di Localhost**:
+  Jalankan `php artisan telegram:poll` untuk menerima update dan klik tombol di localhost tanpa perlu setup domain/ngrok.
+
+### 2. 🎨 Visual Inline Content Editor (CMS Publik)
+- Mode edit visual inline langsung di seluruh halaman website publik (Beranda, Program, Galeri, Tentang Kami, Kontak).
+- Kemudahan mengubah teks judul, deskripsi, hingga mengganti foto banner latar belakang secara instan tanpa masuk ke panel admin teknis.
+
+### 3. 🗂️ Drawer / Slider Flyout CRUD (No Modals)
+- Seluruh form tambah, ubah, dan detail data master (Guru, Santri, Kelas, Mapel, Jadwal, Tagihan, dll.) menggunakan drawer/slider flyout di sisi kanan layar untuk pengalaman UX yang cepat, konsisten, dan rapi.
+
+### 4. ☁️ Media Cloud Storage via ImageKit.io API
+- Seluruh berkas unggahan (foto profil guru/santri, logo lembaga, favicon, dokumen lampiran, dan foto kegiatan galeri) diunggah dan dioptimasi secara otomatis melalui ImageKit.io API.
+
+### 5. 🔐 Google OAuth & Konfirmasi Guru Baru
+- Guru dapat mendaftar dan masuk secara praktis menggunakan akun Google.
+- Akun guru baru yang mendaftar via Google otomatis berstatus *pending* (*tidak aktif*) dan wajib dikonfirmasi oleh Administrator sebelum dapat mengakses dashboard.
+
+### 6. 🔔 Real-Time Notification TopBar
+- Panel notifikasi reaktif dengan 4 tab filter (*Semua, Guru, Santri, Pesan*).
+- Status notifikasi berubah menjadi terbaca (*read*) secara instan tanpa *reload* halaman saat kartu diklik atau saat tindakan konfirmasi dilakukan.
+
+### 7. ⚙️ Halaman Pengaturan (Settings) Terpadu
+- Tampilan grid responsif multi-kolom untuk pengaturan identitas lembaga, SEO, cutoff payroll, WhatsApp gateway, dan integrasi Bot Telegram.
+- Tab Profil dan Keamanan (2FA, Ubah Password) digabung dalam satu antarmuka yang ringkas dan aman.
 
 ---
 
@@ -33,7 +75,7 @@ cd siska
 composer setup
 ```
 
-Atau lakukan instalasi manual:
+Atau instalasi manual:
 ```bash
 # Install dependensi PHP & Node
 composer install
@@ -54,18 +96,42 @@ npm run build
 ```bash
 # Menjalankan server aplikasi & Vite secara bersamaan
 composer run dev
-# atau:
-php artisan serve
-npm run dev
+
+# (Opsional) Menjalankan listener Telegram Bot di localhost
+php artisan telegram:poll
 ```
 
 ---
 
-## 🔒 Panduan Konfigurasi Keamanan Environment (`.env`)
+## ⚙️ Konfigurasi Environment Tambahan (`.env`)
 
-Seluruh penjelasan variabel konfigurasi lingkungan (`.env`) terkait keamanan dikumpulkan dalam bagian ini untuk mempermudah audit dan deployment.
+Selain konfigurasi dasar Laravel, lengkapi variabel berikut untuk mengaktifkan seluruh fitur cloud & notifikasi:
 
-### 📊 Ringkasan Perbedaan Konfigurasi: Local vs Production
+```dotenv
+# ImageKit.io (Media & Document Storage)
+IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
+IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_id
+
+# Google OAuth Login
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_REDIRECT_URI="${APP_URL}/auth/google/callback"
+
+# Telegram Bot Integration
+TELEGRAM_BOT_TOKEN=123456789:ABCDefghIJKLmnOPQRstUVwxYZ...
+TELEGRAM_ADMIN_CHAT_ID=987654321
+TELEGRAM_WEBHOOK_SECRET=your_optional_webhook_secret
+
+# Hardware RFID Endpoint (Opsional)
+RFID_DEVICE_KEY=your_random_64_hex_secret
+```
+
+> **Tips Telegram**: Pengaturan Bot Token & Chat ID juga dapat dikonfigurasi dan diuji secara visual melalui menu **Pengaturan → Pengaturan Lembaga → Integrasi Bot Telegram**.
+
+---
+
+## 🔒 Konfigurasi Keamanan (Production vs Local)
 
 | Variabel `.env` | Nilai di Local | Rekomendasi di Production | Prioritas |
 |---|---|---|---|
@@ -78,82 +144,10 @@ Seluruh penjelasan variabel konfigurasi lingkungan (`.env`) terkait keamanan dik
 | `SESSION_SAME_SITE` | `lax` | `strict` | 🟠 Tinggi |
 | `TRUSTED_PROXIES` | `*` | IP spesifik Reverse Proxy / Load Balancer | 🟡 Sedang |
 | `LOG_LEVEL` | `debug` | `warning` / `error` | 🟠 Tinggi |
-| `RFID_DEVICE_KEY` | *(opsional)* | Kunci rahasia SHA-256 (64 hex) | 🔴 Kritis (jika modul RFID aktif) |
-
----
-
-### 📖 Penjelasan Detail Parameter Keamanan
-
-#### 1. Mode Aplikasi (`APP_ENV` & `APP_DEBUG`)
-- **`APP_ENV=production`**: Mengaktifkan seluruh proteksi internal framework dan middleware keamanan, termasuk *Content Security Policy (CSP)* ketat.
-- **`APP_DEBUG=false`**: Menonaktifkan halaman detail error (Ignition/Whoops). Mencegah kebocoran stack trace, kode sumber, struktur database, kredensial koneksi, dan token environment kepada publik saat terjadi error 500.
-
-#### 2. Keamanan Akun Database (Least Privilege)
-Jangan pernah menggunakan akun `root` MySQL pada server production. Buat user khusus dengan hak akses terbatas hanya pada database `siska`:
-
-```sql
--- Jalankan di console MySQL/MariaDB server production:
-CREATE USER 'siska_app'@'localhost' IDENTIFIED BY 'GantiDenganPasswordSangatKuat123!#';
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, INDEX, REFERENCES ON siska.* TO 'siska_app'@'localhost';
-FLUSH PRIVILEGES;
-```
-
-Kemudian sesuaikan pada `.env`:
-```dotenv
-DB_USERNAME=siska_app
-DB_PASSWORD=GantiDenganPasswordSangatKuat123!#
-```
-
-#### 3. Keamanan Sesi Pengguna (`SESSION_*`)
-- **`SESSION_ENCRYPT=true`**: Mengenkripsi seluruh muatan payload sesi sebelum disimpan ke tabel `sessions`. Melindungi data sesi dari pembacaan langsung jika database sempat diakses pihak yang tidak berhak.
-- **`SESSION_SECURE_COOKIE=true`**: Memaksa browser hanya mengirim cookie sesi (`siska_session`) melalui jalur aman **HTTPS**. Mencegah pencurian sesi melalui serangan *Man-in-the-Middle (MitM)*.
-- **`SESSION_SAME_SITE=strict`**: Mencegah cookie sesi dikirim pada request lintas situs (*Cross-Site Request Forgery / CSRF*).
-
-#### 4. Proxy dan Load Balancer (`TRUSTED_PROXIES`)
-Aplikasi SISKA mengimplementasikan pembatasan laju (*Rate Limiting*) berbasis alamat IP pengguna asli.
-- **Di Local**: `TRUSTED_PROXIES=*` aman digunakan karena request datang dari localhost.
-- **Di Production**: 
-  - Jika server berada di balik Nginx Reverse Proxy, AWS ALB, atau Cloudflare, masukkan daftar IP proxy yang dipercaya (contoh: `TRUSTED_PROXIES=10.0.0.1,10.0.0.2`).
-  - Jika menggunakan shared/cloud hosting di mana IP proxy dinamis, tetap gunakan `TRUSTED_PROXIES=*`.
-
-#### 5. Pembatasan Level Log (`LOG_LEVEL`)
-- **`LOG_LEVEL=warning`**: Di production, hanya mencatat event warning, error, dan critical. Mencegah log file membengkak serta menghindari pencatatan query database atau payload sensitif yang biasanya muncul pada level `debug`.
-
-#### 6. Autentikasi Hardware RFID (`RFID_DEVICE_KEY`)
-Endpoint absensi santri via alat fisik (`POST /api/rfid/scan`) dilindungi oleh middleware `VerifyRfidDeviceKey` yang memvalidasi header `X-Device-Key` menggunakan perbandingan waktu konstan (`hash_equals`) untuk mencegah *timing attack*.
-- Buat kunci rahasia acak:
-  ```bash
-  php -r "echo bin2hex(random_bytes(32));"
-  ```
-- Pasang nilai tersebut pada `.env` server dan firmware/alat pembaca RFID:
-  ```dotenv
-  RFID_DEVICE_KEY=8f14e45fceea167a5a36dedd4bea2543...
-  ```
-
----
-
-## 🛡️ Fitur Keamanan Bawaan Lainnya
-
-1. **HTTP Security Headers Middleware (`App\Http\Middleware\SecurityHeaders`)**:
-   - `X-Content-Type-Options: nosniff` (Mencegah MIME-type sniffing).
-   - `X-Frame-Options: SAMEORIGIN` (Mencegah serangan Clickjacking/iframe).
-   - `Referrer-Policy: strict-origin-when-cross-origin`.
-   - `Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()`.
-   - `Content-Security-Policy (CSP)`: Dikonfigurasi otomatis aktif pada mode `production` untuk mengamankan eksekusi script, style, font, dan frame.
-2. **Two-Factor Authentication (2FA / TOTP)**:
-   - Pengguna dapat mengaktifkan 2FA melalui menu **Settings > Security**.
-   - Kompatibel dengan aplikasi Google Authenticator, Microsoft Authenticator, dan Authy.
-   - Dilengkapi *Recovery Codes* terenkripsi.
-3. **Penonaktifan Registrasi Terbuka**:
-   - `Features::registration()` dinonaktifkan secara default. Pembuatan user baru dilakukan secara terkelola melalui panel **Admin > Users**.
-4. **Rate Limiting**:
-   - Form kontak publik (`/kontak`) dan pendaftaran santri online (`/daftar`) dibatasi 6 request per menit untuk mencegah spam bot dan serangan DoS.
 
 ---
 
 ## 🚢 Prosedur Deployment ke Production
-
-Setiap kali melakukan deployment kode baru atau pembaruan konfigurasi di server production:
 
 ```bash
 # 1. Update kode sumber
@@ -165,30 +159,31 @@ composer install --no-dev --optimize-autoloader
 # 3. Jalankan migrasi database
 php artisan migrate --force
 
-# 4. Build asset frontend untuk production
+# 4. Build asset frontend
 npm ci
 npm run build
 
-# 5. Optimasi cache konfigurasi dan rute Laravel
+# 5. Optimasi cache Laravel
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 php artisan event:cache
 
-# 6. Restart queue worker (jika menggunakan antrean background)
-php artisan queue:restart
+# 6. Pasang Webhook Telegram (Cukup 1x di Production)
+# Buka URL berikut di browser:
+# https://api.telegram.org/bot<TOKEN_BOT>/setWebhook?url=https://domain-anda.com/api/telegram/webhook
 ```
 
 ---
 
 ## 🧪 Pengujian (Automated Testing)
 
-Seluruh fitur dan mekanisme keamanan telah memiliki pengujian otomatis menggunakan **Pest PHP**:
+Seluruh modul dan alur logika diuji secara komprehensif menggunakan **Pest PHP**:
 
 ```bash
 # Menjalankan seluruh test suite
 php artisan test --compact
 
-# Menjalankan khusus test pengerasan keamanan
-php artisan test --compact tests/Feature/SecurityHardeningTest.php
+# Menjalankan test khusus Telegram Service & Webhook
+php artisan test --compact tests/Feature/Services/TelegramServiceTest.php tests/Feature/Telegram/TelegramWebhookTest.php
 ```

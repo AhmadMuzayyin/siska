@@ -41,8 +41,9 @@ use Illuminate\Support\Facades\Storage;
     'logo', 'favicon', 'meta_deskripsi', 'meta_keyword',
     'payroll_cutoff_day', 'fitur_pesan_whatsapp', 'pesan_whatsapp', 'api_key_whatsapp',
     'is_input_nilai_open', 'is_ppdb_open',
+    'telegram_bot_token', 'telegram_admin_chat_id',
 ])]
-#[Hidden(['api_key_whatsapp'])]
+#[Hidden(['api_key_whatsapp', 'telegram_bot_token'])]
 class Setting extends Model
 {
     /** @use HasFactory<SettingFactory> */

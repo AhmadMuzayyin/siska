@@ -12,6 +12,7 @@
         "php": "^8.3",
         "dompdf/dompdf": "^3.1",
         "imagekit/imagekit": "^4.0",
+        "irazasyed/telegram-bot-sdk": "^3.16",
         "laravel/chisel": "^0.1.0",
         "laravel/fortify": "^1.37.2",
         "laravel/framework": "^13.17",

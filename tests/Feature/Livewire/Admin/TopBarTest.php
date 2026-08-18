@@ -1,10 +1,12 @@
 <?php
 
 use App\Enums\Gender;
+use App\Enums\GuruStatus;
 use App\Enums\SantriStatus;
 use App\Enums\UserRole;
 use App\Livewire\Admin\TopBar;
 use App\Models\Contact;
+use App\Models\Guru;
 use App\Models\Santri;
 use App\Models\Semester;
 use App\Models\TahunAkademik;
@@ -24,7 +26,19 @@ test('renders the top bar component for authenticated users', function () {
         ->assertSee('notifications-flyout');
 });
 
-test('displays notification count for pending santri and unread messages', function () {
+test('displays notification count for pending santri, guru, and unread messages', function () {
+    $guruUser = User::factory()->create([
+        'name' => 'Ustadz Baru Mendaftar',
+        'email' => 'ustadzbaru@gmail.com',
+        'role' => UserRole::Guru,
+    ]);
+
+    $guru = Guru::factory()->create([
+        'user_id' => $guruUser->id,
+        'status' => GuruStatus::TidakAktif,
+        'notification_read_at' => null,
+    ]);
+
     $santri = Santri::factory()->create([
         'nama_lengkap' => 'Calon Santri Baru',
         'status' => SantriStatus::PendingApproval,
@@ -39,8 +53,11 @@ test('displays notification count for pending santri and unread messages', funct
 
     Livewire::actingAs($this->admin)
         ->test(TopBar::class)
+        ->assertSee('Ustadz Baru Mendaftar')
         ->assertSee('Calon Santri Baru')
         ->assertSee('Wali Santri Penanya')
+        ->call('markAsRead', 'guru', $guru->id)
+        ->assertDontSee('Ustadz Baru Mendaftar')
         ->call('markAsRead', 'contact', $contact->id)
         ->assertDontSee('Wali Santri Penanya')
         ->call('markAllAsRead')
@@ -56,4 +73,25 @@ test('updates active semester display when semester-changed event is dispatched'
         ->dispatch('semester-changed')
         ->assertSee('2026/2027')
         ->assertSee('Genap');
+});
+
+test('openNotification marks item as read and redirects to target url', function () {
+    $guruUser = User::factory()->create([
+        'name' => 'Guru Notif Test',
+        'email' => 'gurunotif@gmail.com',
+        'role' => UserRole::Guru,
+    ]);
+
+    $guru = Guru::factory()->create([
+        'user_id' => $guruUser->id,
+        'status' => GuruStatus::TidakAktif,
+        'notification_read_at' => null,
+    ]);
+
+    Livewire::actingAs($this->admin)
+        ->test(TopBar::class)
+        ->call('openNotification', 'guru', $guru->id, route('kepegawaian.guru'))
+        ->assertRedirect(route('kepegawaian.guru'));
+
+    expect($guru->fresh()->notification_read_at)->not->toBeNull();
 });

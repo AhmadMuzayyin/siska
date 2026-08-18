@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\AccountType;
+use App\Enums\Gender;
+use App\Enums\GuruStatus;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Models\Guru;
 use App\Models\User;
+use App\Services\TelegramService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
 
@@ -26,7 +34,9 @@ class GoogleAuthController extends Controller
 
     /**
      * Obtain the user information from Google.
-     * STRICT RULE: Only users with 'guru' role are permitted to authenticate via Google OAuth.
+     * STRICT RULE:
+     * 1. If user doesn't exist, automatically register Guru with status 'tidak_aktif' (requires admin confirmation).
+     * 2. If user exists, must have Guru role and active status to authenticate.
      */
     public function handleGoogleCallback(): RedirectResponse
     {
@@ -45,9 +55,33 @@ class GoogleAuthController extends Controller
 
         $user = User::query()->where('email', $email)->first();
 
-        // 1. Check if user exists in database
+        // 1. If user does not exist in database, automatically register as Guru with 'tidak_aktif' status
         if (! $user) {
-            return redirect()->route('login')->with('error', __('Akun Guru dengan email :email tidak terdaftar dalam sistem.', ['email' => $email]));
+            [$newUser, $newGuru] = DB::transaction(function () use ($googleUser, $email) {
+                $newUser = User::query()->create([
+                    'name' => $googleUser->getName() ?: 'Guru',
+                    'email' => $email,
+                    'password' => Hash::make(Str::random(32)),
+                    'role' => UserRole::Guru,
+                    'account_type' => AccountType::Google,
+                    'email_verified_at' => now(),
+                ]);
+
+                $newGuru = Guru::query()->create([
+                    'user_id' => $newUser->id,
+                    'alamat' => '-',
+                    'whatsapp' => '-',
+                    'gender' => Gender::LakiLaki,
+                    'status' => GuruStatus::TidakAktif,
+                ]);
+
+                return [$newUser, $newGuru];
+            });
+
+            // Kirim notifikasi Telegram ke Admin dengan tombol konfirmasi
+            app(TelegramService::class)->sendNewGuruNotification($newUser, $newGuru);
+
+            return redirect()->route('login')->with('warning', __('Pendaftaran akun Guru (:email) melalui Google berhasil. Akun Anda saat ini berstatus non-aktif dan memerlukan konfirmasi/persetujuan dari Administrator sebelum dapat masuk.', ['email' => $email]));
         }
 
         // 2. Check if user role is Guru
@@ -55,7 +89,13 @@ class GoogleAuthController extends Controller
             return redirect()->route('login')->with('error', __('Login dengan Akun Google khusus untuk akun ber-role Guru. Akun Anda bukan role Guru.'));
         }
 
-        // Authenticate teacher user
+        // 3. Check if Guru record exists and is active
+        $guru = $user->guru;
+        if (! $guru || $guru->status !== GuruStatus::Aktif) {
+            return redirect()->route('login')->with('warning', __('Akun Guru Anda (:email) belum diaktifkan oleh Administrator. Silakan hubungi Admin untuk konfirmasi pengaktifan akun.', ['email' => $email]));
+        }
+
+        // 4. Authenticate active teacher user
         Auth::login($user, remember: true);
         request()->session()->regenerate();
 

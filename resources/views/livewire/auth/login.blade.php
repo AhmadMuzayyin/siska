@@ -148,6 +148,13 @@
                                 </div>
                             @endif
 
+                            @if (session('warning'))
+                                <div class="rounded-2xl bg-amber-50 border border-amber-300 p-4 text-xs font-semibold text-amber-900 flex items-start gap-2.5 shadow-2xs">
+                                    <flux:icon name="exclamation-triangle" class="size-5 text-amber-600 shrink-0 mt-0.5" />
+                                    <span class="leading-relaxed">{{ session('warning') }}</span>
+                                </div>
+                            @endif
+
                             @if (session('error'))
                                 <div class="rounded-2xl bg-rose-50 border border-rose-300 p-4 text-xs font-bold text-rose-800 flex items-center gap-2.5 shadow-2xs">
                                     <flux:icon name="exclamation-circle" class="size-5 text-rose-600 shrink-0" />
@@ -491,6 +498,13 @@
                                 <div class="rounded-2xl bg-emerald-50 border border-emerald-500 p-4 text-xs font-bold text-emerald-900 flex items-center gap-3 shadow-xs">
                                     <flux:icon name="check-circle" class="size-5 text-emerald-600 shrink-0" />
                                     <span>{{ session('status') }}</span>
+                                </div>
+                            @endif
+
+                            @if (session('warning'))
+                                <div class="rounded-2xl bg-amber-50 border border-amber-300 p-4 text-xs font-semibold text-amber-900 flex items-start gap-2.5 shadow-2xs">
+                                    <flux:icon name="exclamation-triangle" class="size-5 text-amber-600 shrink-0 mt-0.5" />
+                                    <span class="leading-relaxed">{{ session('warning') }}</span>
                                 </div>
                             @endif
 

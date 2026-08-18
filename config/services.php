@@ -51,4 +51,10 @@ return [
         'url_endpoint' => env('IMAGEKIT_URL_ENDPOINT'),
     ],
 
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'chat_id' => env('TELEGRAM_ADMIN_CHAT_ID'),
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+    ],
+
 ];

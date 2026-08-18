@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Kesantrian;
 
+use App\Enums\UserRole;
 use App\Models\Kelas as KelasModel;
 use App\Models\Mapel as MapelModel;
 use App\Models\Nilai as NilaiModel;
@@ -12,6 +13,7 @@ use App\Services\LembagaService;
 use App\Services\PredikatCalculator;
 use App\Services\SemesterService;
 use App\Services\SettingService;
+use App\Services\TelegramService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
@@ -95,6 +97,24 @@ class Nilai extends Component
                 ]);
             }
         });
+
+        // Kirim notifikasi Telegram jika diinput oleh guru
+        $currentUser = auth()->user();
+        if ($currentUser && $currentUser->role === UserRole::Guru) {
+            $mapel = MapelModel::query()->find($this->mapelId);
+            $santri = SantriModel::query()->find($santriId);
+            $semester = Semester::query()->with('tahunAkademik')->find($this->semesterId);
+
+            if ($mapel && $santri && $semester) {
+                app(TelegramService::class)->sendGradeInputNotification(
+                    $currentUser,
+                    $mapel,
+                    $santri,
+                    $semester,
+                    $validated
+                );
+            }
+        }
 
         Flux::toast(variant: 'success', text: __('Nilai tersimpan.'), duration: 2000);
     }

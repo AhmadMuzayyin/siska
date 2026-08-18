@@ -147,6 +147,25 @@ class Guru extends Component
         }
     }
 
+    public function toggleStatus(int $id): void
+    {
+        $guru = GuruModel::query()->with('user')->findOrFail($id);
+        $this->authorize('update', $guru);
+
+        $newStatus = $guru->status === GuruStatus::Aktif ? GuruStatus::TidakAktif : GuruStatus::Aktif;
+        $updates = ['status' => $newStatus];
+        if ($newStatus === GuruStatus::Aktif && is_null($guru->notification_read_at)) {
+            $updates['notification_read_at'] = now();
+        }
+        $guru->update($updates);
+
+        $message = $newStatus === GuruStatus::Aktif
+            ? __('Akun guru :name berhasil diaktifkan.', ['name' => $guru->user->name])
+            : __('Akun guru :name dinonaktifkan.', ['name' => $guru->user->name]);
+
+        Flux::toast(variant: 'success', text: $message);
+    }
+
     /**
      * @return LengthAwarePaginator<int, GuruModel>
      */

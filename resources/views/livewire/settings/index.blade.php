@@ -185,6 +185,31 @@
                         <flux:switch wire:model="fitur_pesan_whatsapp" :label="__('Aktifkan Notifikasi WhatsApp')" description="{{ __('Kirim pesan presensi dan tagihan otomatis ke wali santri.') }}" />
                         <flux:textarea wire:model="pesan_whatsapp" :label="__('Template Pesan Default')" rows="2" placeholder="Assalamu'alaikum wr. wb..." />
                     </div>
+
+                    {{-- Card 6: Integrasi Bot Telegram --}}
+                    <div class="rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-6 shadow-xs space-y-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <flux:heading size="md">{{ __('Integrasi Bot Telegram') }}</flux:heading>
+                                <flux:subheading>{{ __('Notifikasi instan admin & bot commands.') }}</flux:subheading>
+                            </div>
+                            <flux:button type="button" size="xs" variant="filled" wire:click="testTelegramNotification" class="bg-blue-600! hover:bg-blue-700! text-white! font-bold text-[11px] shrink-0">
+                                <flux:icon name="paper-airplane" class="size-3.5 me-1" />
+                                {{ __('Tes Bot') }}
+                            </flux:button>
+                        </div>
+
+                        <flux:input wire:model="telegram_bot_token" type="password" :label="__('Telegram Bot Token')" placeholder="123456789:ABCDefghIJKLmnOPQRstUVwxYZ..." />
+                        <flux:input wire:model="telegram_admin_chat_id" :label="__('Admin Chat ID / Channel ID')" placeholder="123456789 atau -100123456789" description="{{ __('Dapatkan Chat ID Anda via bot @userinfobot di Telegram.') }}" />
+
+                        <div class="rounded-xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/50 p-3 text-[11px] text-blue-800 dark:text-blue-300 space-y-1">
+                            <p class="font-bold flex items-center gap-1">
+                                <flux:icon name="information-circle" class="size-3.5" />
+                                {{ __('Webhook URL:') }}
+                            </p>
+                            <code class="block font-mono bg-white dark:bg-zinc-900 px-2 py-1 rounded text-zinc-800 dark:text-zinc-200 select-all">{{ url('/api/telegram/webhook') }}</code>
+                        </div>
+                    </div>
                 </div>
             </div>
 

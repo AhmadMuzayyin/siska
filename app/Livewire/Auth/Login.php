@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Auth;
 
+use App\Enums\GuruStatus;
 use App\Enums\UserRole;
 use App\Models\Santri;
 use App\Models\Setting;
@@ -62,6 +63,14 @@ class Login extends Component
 
         // 1. Attempt standard email/password authentication
         if (Auth::attempt(['email' => $input, 'password' => $this->password], $this->remember)) {
+            $user = Auth::user();
+            if ($user && $user->role === UserRole::Guru && $user->guru && $user->guru->status !== GuruStatus::Aktif) {
+                Auth::logout();
+                throw ValidationException::withMessages([
+                    'email' => __('Akun Guru Anda belum diaktifkan oleh Administrator. Silakan hubungi Admin untuk konfirmasi pengaktifan akun.'),
+                ]);
+            }
+
             RateLimiter::clear($this->throttleKey());
             Session::regenerate();
 

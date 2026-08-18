@@ -23,7 +23,10 @@ class ApproveSantriRegistrationAction
                 throw new KelasPenuhException($kelas);
             }
 
-            $santri->update(['status' => SantriStatus::Aktif]);
+            $santri->update([
+                'status' => SantriStatus::Aktif,
+                'notification_read_at' => $santri->notification_read_at ?? now(),
+            ]);
 
             return $santri->fresh();
         });

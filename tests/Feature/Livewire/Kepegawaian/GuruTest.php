@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\GuruStatus;
 use App\Enums\UserRole;
 use App\Livewire\Kepegawaian\Guru as GuruComponent;
 use App\Models\Guru;
@@ -100,4 +101,22 @@ test('deletes a guru with no dependencies', function () {
         ->call('delete', $guru->id);
 
     expect(Guru::query()->whereKey($guru->id)->exists())->toBeFalse();
+});
+
+test('admin can toggle and activate guru status', function () {
+    $guru = Guru::factory()->create(['status' => GuruStatus::TidakAktif]);
+
+    Livewire::actingAs($this->admin)
+        ->test(GuruComponent::class)
+        ->call('toggleStatus', $guru->id)
+        ->assertHasNoErrors();
+
+    expect($guru->fresh()->status)->toBe(GuruStatus::Aktif);
+
+    Livewire::actingAs($this->admin)
+        ->test(GuruComponent::class)
+        ->call('toggleStatus', $guru->id)
+        ->assertHasNoErrors();
+
+    expect($guru->fresh()->status)->toBe(GuruStatus::TidakAktif);
 });
