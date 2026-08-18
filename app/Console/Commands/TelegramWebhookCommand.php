@@ -71,6 +71,21 @@ class TelegramWebhookCommand extends Command
 
                 $api->setWebhook($params);
                 $this->info("✅ Webhook berhasil didaftarkan ke: {$targetUrl}");
+
+                // Daftarkan Command Palette Menu ke Telegram Bot API
+                try {
+                    $api->setMyCommands([
+                        'commands' => [
+                            ['command' => 'start', 'description' => 'Panduan & informasi bot SISKA'],
+                            ['command' => 'online', 'description' => 'Listing user yang sedang login / aktif'],
+                            ['command' => 'akademik', 'description' => 'Status guru yang sudah vs belum input nilai'],
+                            ['command' => 'staff', 'description' => 'Listing seluruh staf lembaga & wali kelas'],
+                        ],
+                    ]);
+                    $this->info('✅ Command Palette Menu (/start, /online, /akademik, /staff) berhasil didaftarkan ke Telegram!');
+                } catch (Throwable $e) {
+                    $this->warn('Catatan setMyCommands: '.$e->getMessage());
+                }
             } catch (Throwable $e) {
                 $this->error('Gagal mendaftarkan webhook: '.$e->getMessage());
 
